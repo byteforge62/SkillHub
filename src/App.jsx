@@ -1,107 +1,122 @@
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from './assets/vite.svg'
+import heroImg from './assets/hero.png'
+import './App.css'
 
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import { SignUp } from "./components/pages/SignUp";
-import { Login } from "./components/pages/Login";
-import { PublicLayout } from "./components/pages/PublicLayout";
-import { UserLayout } from "./components/user/UserLayout";
-import { UserDashboard } from "./components/user/UserDashboard";
-import { MyCourses } from "./components/user/course/MyCourses";
-import { Certificates } from "./components/user/certificate/Certificates";
-import { Messages } from "./components/user/messages/Messages";
-import { LearningPage } from "./components/user/course/LearningPage";
-import { LeaderBoard } from "./components/user/leaderboard/LeaderBoard";
-import { Profile } from "./components/user/Profile";
-import { Settings } from "./components/user/Settings";
-import { CourseDetails } from "./components/user/course/CourseDetails";
-import { AdminLayout } from "./components/admin/AdminLayout";
-import { AdminDashboard } from "./components/admin/AdminDashboard";
-import { Courses } from "./components/admin/course/Courses";
-import { Users } from "./components/admin/users/Users";
-import { UserDetails } from "./components/admin/users/UserDetails";
-import { Resources } from "./components/admin/resource/Resources";
-import { Community } from "./components/user/communities/Community";
-import { CommunityDetails } from "./components/user/communities/CommunityDetails";
-import { Toaster } from "react-hot-toast";
-import { Activities } from "./components/user/activity/Activities";
-import { Notifications } from "./components/user/notification/Notifications";
-import { Report } from "./components/user/report/Report";
-import { Reports } from "./components/admin/report/Reports";
-import { ReportsDetail } from "./components/admin/report/ReportsDetail";
-import { AdminSettings } from "./components/admin/AdminSettings";
-import { AdminCommunityDetails } from "./components/admin/community/AdminCommunityDetails";
-import { AdminCourseDetails } from "./components/admin/course/AdminCourseDetails";
-import { CourseLessons } from "./components/admin/resource/CourseLessons";
-import { CourseQuiz } from "./components/admin/resource/CourseQuiz";
-import { EditCourse } from "./components/admin/course/EditCourse";
-import { AddCourse } from "./components/admin/course/AddCourse";
-import { HelpSupport } from "./components/user/help/HelpSupport";
-import { PublicProfile } from "./components/user/PublicProfile";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
-import { GlobalLoader } from "./components/common/GlobalLoader";
-import { AuthListener } from "./components/common/AuthListener";
 function App() {
+  const [count, setCount] = useState(0)
+
   return (
     <>
-    <GlobalLoader/>
-    <AuthListener/>
-      <Routes>
-        <Route path="/" element={<PublicLayout />}></Route>
-        <Route path="signup" element={<SignUp />}></Route>
-        <Route path="login" element={<Login />}></Route>
-        <Route element={<ProtectedRoute allowdRole="user" />}>
-          <Route path="user" element={<UserLayout />}>
-            <Route path="dashboard" element={<UserDashboard />}></Route>
-            <Route
-              path="communities"
-              element={<Community basePath="user" />}
-            ></Route>
-            <Route path="community/:id" element={<CommunityDetails />}></Route>
-            <Route path="mycourses" element={<MyCourses />}></Route>
-            <Route path="certificates" element={<Certificates />}></Route>
-            <Route path="messages" element={<Messages />}></Route>
-            <Route path="leaderboard" element={<LeaderBoard />}></Route>
-            <Route path="profile" element={<Profile />}></Route>
-            <Route path="settings" element={<Settings />}></Route>
-            <Route path="course/:courseId" element={<CourseDetails />}></Route>
-            <Route path="learn/:courseId" element={<LearningPage />}></Route>
-            <Route path="activities" element={<Activities />}></Route>
-            <Route path="notifications" element={<Notifications />}></Route>
-            <Route path="report" element={<Report />}></Route>
-            <Route path="help" element={<HelpSupport />}></Route>
-            <Route path="view-profile/:id" element={<PublicProfile />}></Route>
-          </Route>
-        </Route>
-        <Route element={<ProtectedRoute allowdRole="admin"/> }>
-        <Route path="admin" element={<AdminLayout />}>
-          <Route path="admindashboard" element={<AdminDashboard />}></Route>
-          <Route path="resources" element={<Resources />}></Route>
-          <Route path="resources/:courseId" element={<CourseLessons />}></Route>
-          <Route path="quiz/:courseId" element={<CourseQuiz />}></Route>
+      <section id="center">
+        <div className="hero">
+          <img src={heroImg} className="base" width="170" height="179" alt="" />
+          <img src={reactLogo} className="framework" alt="React logo" />
+          <img src={viteLogo} className="vite" alt="Vite logo" />
+        </div>
+        <div>
+          <h1>Get started</h1>
+          <p>
+            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+          </p>
+        </div>
+        <button
+          type="button"
+          className="counter"
+          onClick={() => setCount((count) => count + 1)}
+        >
+          Count is {count}
+        </button>
+      </section>
 
-          <Route path="courses" element={<Courses />}></Route>
-          <Route path="courses/:id" element={<AdminCourseDetails />}></Route>
-          <Route path="courses/edit/:id" element={<EditCourse />}></Route>
-          <Route path="courses/new" element={<AddCourse />}></Route>
-          <Route path="users" element={<Users />}></Route>
-          <Route path="users/:id" element={<UserDetails />}></Route>
-          <Route path="reports" element={<Reports />}></Route>
-          <Route path="reports/:id" element={<ReportsDetail />}></Route>
-          <Route
-            path="communities"
-            element={<Community basePath="admin" />}
-          ></Route>
-          <Route
-            path="community/:id"
-            element={<AdminCommunityDetails basePath="admin" />}
-          ></Route>
-          <Route path="settings" element={<AdminSettings />}></Route>
-        </Route>
-        </Route>
-      </Routes>
-      <Toaster position="top-right" />
+      <div className="ticks"></div>
+
+      <section id="next-steps">
+        <div id="docs">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#documentation-icon"></use>
+          </svg>
+          <h2>Documentation</h2>
+          <p>Your questions, answered</p>
+          <ul>
+            <li>
+              <a href="https://vite.dev/" target="_blank">
+                <img className="logo" src={viteLogo} alt="" />
+                Explore Vite
+              </a>
+            </li>
+            <li>
+              <a href="https://react.dev/" target="_blank">
+                <img className="button-icon" src={reactLogo} alt="" />
+                Learn more
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div id="social">
+          <svg className="icon" role="presentation" aria-hidden="true">
+            <use href="/icons.svg#social-icon"></use>
+          </svg>
+          <h2>Connect with us</h2>
+          <p>Join the Vite community</p>
+          <ul>
+            <li>
+              <a href="https://github.com/vitejs/vite" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#github-icon"></use>
+                </svg>
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://chat.vite.dev/" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#discord-icon"></use>
+                </svg>
+                Discord
+              </a>
+            </li>
+            <li>
+              <a href="https://x.com/vite_js" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#x-icon"></use>
+                </svg>
+                X.com
+              </a>
+            </li>
+            <li>
+              <a href="https://bsky.app/profile/vite.dev" target="_blank">
+                <svg
+                  className="button-icon"
+                  role="presentation"
+                  aria-hidden="true"
+                >
+                  <use href="/icons.svg#bluesky-icon"></use>
+                </svg>
+                Bluesky
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <div className="ticks"></div>
+      <section id="spacer"></section>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
