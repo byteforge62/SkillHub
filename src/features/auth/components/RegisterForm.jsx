@@ -6,6 +6,8 @@ import Logo from '@/components/ui/Logo'
 import Input from '@/components/ui/Input'
 import PasswordInput from '@/components/ui/PasswordInput'
 import Button from '@/components/ui/Button'
+import AuthHeader from "@/components/auth/AuthHeader";
+
 
 import registerFormSchema from '../validation/registerFormSchema'
 import useRegister from '../hooks/useRegister'
@@ -32,17 +34,10 @@ export const RegisterForm = () => {
   }
   return (
     <Card className="w-full max-w-md">
-      <div className="mb-8 text-center">
-        <Logo />
-
-        <h2 className="mt-6 text-3xl font-bold">
-          Create Account
-        </h2>
-
-        <p className="mt-2 text-text-secondary">
-          Join SkillHub and Start Your Learning Journey.
-        </p>
-      </div>
+      <AuthHeader
+        title="Create Account"
+        subtitle="Join SkillHub and start your learning journey."
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input

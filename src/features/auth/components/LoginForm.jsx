@@ -6,6 +6,7 @@ import Logo from "@/components/ui/Logo";
 import Input from "@/components/ui/Input";
 import PasswordInput from "@/components/ui/PasswordInput";
 import Button from "@/components/ui/Button";
+import AuthHeader from "@/components/auth/AuthHeader";
 
 import loginFormSchema from "../validation/loginFormSchema";
 import useLogin from "../hooks/useLogin";
@@ -32,15 +33,7 @@ export const LoginForm = () => {
   };
   return (
     <Card className="w-full max-w-md">
-      <div className="mb-8 text-center">
-        <Logo />
-        <h2 className="mt-6 text-3xl font-bold">
-          Welcome Back
-        </h2>
-        <p className="mt-2 text-text-secondary">
-          Sign in to continue learning.
-        </p>
-      </div>
+      <AuthHeader title="Welcome Back" subtitle="Sign in to continue learning" />
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5"

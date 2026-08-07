@@ -15,6 +15,7 @@ import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
+import { VerifyResetOtpPage } from "@/features/auth/pages/VerifyResetOtpPage";
 
 const router = createBrowserRouter([
     {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
                 path:"/unauthorized",
                 element:<UnauthorizedPage/>
             },
+            {
+                path:"/verify-reset-otp",
+                element:<VerifyResetOtpPage/>
+            }
         ]
     },
     {

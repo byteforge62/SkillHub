@@ -8,6 +8,7 @@ import Logo from "@/components/ui/Logo";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import OtpInput from "@/components/ui/OtpInput";
+import AuthHeader from "@/components/auth/AuthHeader";
 
 import verifyEmailFormSchema from "../validation/verifyEmailFormSchema";
 import useVerifyEmail from "../hooks/useVerifyEmail";
@@ -49,19 +50,10 @@ const VerifyEmailForm = () => {
   return (
     <Card className="w-full max-w-md">
 
-      <div className="mb-8 text-center">
-
-        <Logo />
-
-        <h2 className="mt-6 text-3xl font-bold">
-          Verify Email
-        </h2>
-
-        <p className="mt-2 text-text-secondary">
-          Enter the 6-digit code sent to your email.
-        </p>
-
-      </div>
+      <AuthHeader
+        title="Verify Email"
+        subtitle="Enter the 6-digit verification code sent to your email."
+      />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
