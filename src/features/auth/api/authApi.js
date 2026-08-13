@@ -35,12 +35,17 @@ export const resetPasswordRequest = async (payload) => {
   return data;
 };
 
-export const refreshTokenRequest = async (payload) => {
-  const { data } = await client.post("/refresh-token", payload);
+export const refreshTokenRequest = async () => {
+  const { data } = await client.post("/refresh-token");
   return data;
 };
 
-export const logoutRequest = async (payload) => {
-  const { data } = await client.post("/logout", payload);
+export const logoutRequest = async () => {
+  const { data } = await client.post("/logout");
   return data;
 };
+
+export const getCurrentUserRequest = async () => {
+  const {data} = await client.get("/user/me");
+  return data.data;
+}
