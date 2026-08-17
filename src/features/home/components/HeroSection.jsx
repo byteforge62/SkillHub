@@ -1,88 +1,91 @@
 import { Link } from "react-router-dom";
-
+import { SkillHubLearningScene } from "./SkillHubLearningScene";
 export const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden border-b border-border">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-16 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="max-w-xl">
-          <div className="mb-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-text-muted">
-            <span className="h-2 w-2 rounded-full bg-success" />
-            Technical learning workspace
+    <section className="relative overflow-hidden">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-[1440px] items-center gap-16 px-6 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12 lg:py-24 xl:px-16">
+        {/* Copy */}
+        <div className="relative z-20 max-w-[620px]">
+          <div className="flex items-center gap-3">
+            <span className="h-2 w-2 bg-primary" />
+
+            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-text-muted">
+              SkillHub / Learning Platform
+            </span>
           </div>
 
-          <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-            Learn.
+          <h1 className="mt-8 max-w-[600px] text-[clamp(3.4rem,6vw,6.2rem)] font-semibold leading-[0.9] tracking-[-0.055em] text-text-primary">
+            For people who
             <br />
-            Build.
+            <span className="text-primary">build</span> with
             <br />
-            <span className="text-primary">Keep moving.</span>
+            technology.
           </h1>
 
-          <p className="mt-8 max-w-lg text-lg leading-8 text-text-secondary">
-            Discover courses, technical resources, useful tools,
-            interactive quizzes, and live events — all in one
-            workspace built for people who love technology.
+          <p className="mt-8 max-w-[500px] text-[17px] leading-8 text-text-secondary">
+            A place to discover what to learn, practise what you know,
+            and keep moving toward the things you want to build.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link
-              to="/register"
-              className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-            >
-              Enter SkillHub
-            </Link>
-
-            <a
-              href="#resources"
-              className="rounded-lg border border-border px-6 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-hover"
-            >
-              Explore the workspace
-            </a>
-          </div>
-
-          <div className="mt-12 flex items-center gap-8 border-t border-border pt-6 font-mono text-xs text-text-muted">
-            <span>COURSES</span>
-            <span>RESOURCES</span>
-            <span>QUIZZES</span>
-            <span>EVENTS</span>
-          </div>
-        </div>
-
-        <div className="relative min-h-[520px] overflow-hidden rounded-2xl border border-border bg-surface">
-          <div className="absolute inset-0">
-            <div className="absolute left-1/2 top-1/2 h-px w-[80%] -translate-x-1/2 bg-border" />
-            <div className="absolute left-1/2 top-1/2 h-[80%] w-px -translate-y-1/2 bg-border" />
-
-            <div className="absolute left-[22%] top-[25%] h-2 w-2 rounded-full bg-primary" />
-            <div className="absolute left-[68%] top-[31%] h-2 w-2 rounded-full bg-primary" />
-            <div className="absolute left-[52%] top-[52%] h-3 w-3 rounded-full bg-primary" />
-            <div className="absolute left-[28%] top-[68%] h-2 w-2 rounded-full bg-primary" />
-            <div className="absolute left-[76%] top-[73%] h-2 w-2 rounded-full bg-primary" />
-
-            <div className="absolute left-[22%] top-[25%] h-px w-[47%] origin-left rotate-[8deg] bg-border" />
-            <div className="absolute left-[52%] top-[52%] h-px w-[28%] origin-left rotate-[-42deg] bg-border" />
-            <div className="absolute left-[28%] top-[68%] h-px w-[30%] origin-left rotate-[-28deg] bg-border" />
-          </div>
-
-          <div className="absolute left-6 top-6 font-mono text-xs text-text-muted">
-            / KNOWLEDGE_SPACE
-          </div>
-
-          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-            <div>
-              <p className="font-mono text-xs text-text-muted">
-                ACTIVE NODE
+          <div className="mt-10 grid max-w-[470px] grid-cols-2 border-y border-border">
+            <div className="border-r border-border py-4 pr-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
+                Discover
               </p>
 
-              <p className="mt-1 text-lg font-semibold">
-                React Fundamentals
+              <p className="mt-2 text-sm font-medium text-text-primary">
+                Courses · Resources
               </p>
             </div>
 
-            <span className="font-mono text-xs text-success">
-              ● CONNECTED
-            </span>
+            <div className="py-4 pl-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
+                Practice
+              </p>
+
+              <p className="mt-2 text-sm font-medium text-text-primary">
+                Quizzes · Tools
+              </p>
+            </div>
+
+            <div className="border-r border-t border-border py-4 pr-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
+                Connect
+              </p>
+
+              <p className="mt-2 text-sm font-medium text-text-primary">
+                Events · Community
+              </p>
+            </div>
+
+            <div className="border-t border-border py-4 pl-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
+                Build
+              </p>
+
+              <p className="mt-2 text-sm font-medium text-text-primary">
+                Projects · Skills
+              </p>
+            </div>
           </div>
+
+          <div className="mt-8">
+            <Link
+              to="/register"
+              className="group inline-flex items-center gap-3 text-sm font-semibold text-text-primary"
+            >
+              Enter SkillHub
+
+              <span className="flex h-8 w-8 items-center justify-center border border-border transition-all duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                →
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Visual world */}
+        <div className="relative h-[620px] w-full lg:h-[680px]">
+          <SkillHubLearningScene />
         </div>
       </div>
     </section>

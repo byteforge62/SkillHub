@@ -1,85 +1,141 @@
+import { motion } from "framer-motion";
+
 const resources = [
   {
-    time: "14:32",
-    title: "React Server Components",
+    title: "React Documentation",
+    description:
+      "Official references and guides for understanding and building with React.",
     type: "Documentation",
-    source: "react.dev",
-    votes: "+24",
+    technology: "React",
   },
   {
-    time: "13:51",
-    title: "TanStack Query Patterns",
-    type: "Community Resource",
-    source: "github.com",
-    votes: "+17",
-  },
-  {
-    time: "12:08",
-    title: "Advanced CSS Architecture",
+    title: "Understanding CSS Architecture",
+    description:
+      "Practical approaches to structuring styles as a project grows.",
     type: "Article",
-    source: "web.dev",
-    votes: "+31",
+    technology: "CSS",
   },
   {
-    time: "11:42",
-    title: "Understanding Node.js Streams",
-    type: "Guide",
-    source: "nodejs.org",
-    votes: "+12",
+    title: "Open Source Projects",
+    description:
+      "Explore real repositories and see how developers structure working projects.",
+    type: "Repository",
+    technology: "Open Source",
   },
 ];
 
 export const ResourceSection = () => {
   return (
-    <section
-      id="resources"
-      className="border-b border-border"
-    >
-      <div className="mx-auto max-w-7xl px-6 py-24">
-        <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
-              01 / Resources
-            </p>
+    <section id="resources" className="relative">
+      <div className="mx-auto w-full max-w-[1440px] px-6 py-24 sm:px-8 lg:px-12 lg:py-32 xl:px-16">
 
-            <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight sm:text-4xl">
-              Find useful things without digging through noise.
-            </h2>
+        {/* Intro */}
 
-            <p className="mt-5 max-w-md leading-7 text-text-secondary">
-              A focused stream for courses, documentation, articles,
-              repositories, and resources shared by the community.
-            </p>
-          </div>
+        <motion.div
+          className="max-w-[620px]"
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          <h2 className="text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
+            Resources
+          </h2>
 
-          <div className="border-y border-border">
-            {resources.map((resource) => (
-              <div
-                key={resource.title}
-                className="group grid grid-cols-[70px_1fr_auto] items-center gap-4 border-b border-border py-5 last:border-b-0"
-              >
-                <span className="font-mono text-xs text-text-muted">
-                  {resource.time}
-                </span>
+          <p className="mt-4 max-w-[560px] text-base leading-7 text-text-secondary sm:text-[17px]">
+            There is always something worth exploring. Find documentation,
+            articles, projects, and technical knowledge that can help you
+            understand what you're learning.
+          </p>
+        </motion.div>
 
-                <div>
-                  <p className="font-medium text-text-primary transition-colors group-hover:text-primary">
-                    {resource.title}
-                  </p>
+        {/* Resource list */}
 
-                  <p className="mt-1 text-xs text-text-muted">
-                    {resource.type} · {resource.source}
-                  </p>
+        <div className="mt-16 border-t border-border">
+          {resources.map((resource, index) => (
+            <motion.a
+              key={resource.title}
+              href="#"
+              className="group grid gap-5 border-b border-border py-8 transition-colors duration-200 hover:bg-surface/40 sm:grid-cols-[1fr_1.2fr_auto] sm:items-center sm:px-4"
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.25,
+              }}
+              transition={{
+                duration: 0.45,
+                delay: index * 0.07,
+              }}
+            >
+              {/* Resource */}
+
+              <div>
+                <h3 className="text-base font-semibold tracking-[-0.02em] text-text-primary">
+                  {resource.title}
+                </h3>
+
+                <div className="mt-2 flex items-center gap-3">
+                  <span className="text-xs text-text-muted">
+                    {resource.type}
+                  </span>
+
+                  <span className="h-1 w-1 rounded-full bg-border" />
+
+                  <span className="text-xs text-text-muted">
+                    {resource.technology}
+                  </span>
                 </div>
-
-                <span className="font-mono text-xs text-text-secondary">
-                  ↑ {resource.votes.replace("+", "")}
-                </span>
               </div>
-            ))}
-          </div>
+
+              {/* Description */}
+
+              <p className="max-w-[500px] text-sm leading-6 text-text-secondary">
+                {resource.description}
+              </p>
+
+              {/* Arrow */}
+
+              <span className="flex h-8 w-8 items-center justify-center text-text-muted transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary">
+                →
+              </span>
+            </motion.a>
+          ))}
         </div>
+
+        {/* Bottom */}
+
+        <motion.div
+          className="mt-7 flex items-center justify-between"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{
+            delay: 0.25,
+            duration: 0.5,
+          }}
+        >
+          <span className="text-xs text-text-muted">
+            Documentation · Articles · Projects
+          </span>
+
+          <a
+            href="#"
+            className="text-sm font-medium text-text-primary transition-colors hover:text-primary"
+          >
+            Browse all resources →
+          </a>
+        </motion.div>
       </div>
     </section>
-  )
-}
+  );
+};

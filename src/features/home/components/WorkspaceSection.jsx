@@ -1,82 +1,108 @@
-import React from 'react'
+import { motion } from "framer-motion";
+
+const modules = [
+  {
+    title: "Practice",
+    description:
+      "Test what you've learned with quizzes that help you check your understanding and identify what needs more work.",
+  },
+  {
+    title: "Community",
+    description:
+      "Learn from other people through discussions, shared knowledge, questions, and experiences around the technologies you're exploring.",
+  },
+  {
+    title: "Events",
+    description:
+      "Take part in technical sessions, workshops, and community activities that give you opportunities to learn beyond a course.",
+  },
+  {
+    title: "Tools",
+    description:
+      "Use practical utilities for the small tasks that come up while learning, experimenting, and working with code.",
+  },
+];
 
 export const WorkspaceSection = () => {
   return (
-    <section
-      id="workspace"
-      className="border-b border-border"
-    >
-      <div className="mx-auto max-w-7xl px-6 py-24">
-        <div className="mb-16 max-w-2xl">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
-            03 / Workspace
-          </p>
+    <section id="workspace" className="relative">
+      <div className="mx-auto w-full max-w-[1440px] px-6 py-28 sm:px-8 lg:px-12 lg:py-32 xl:px-16">
 
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-            More than a course catalogue.
+        {/* Introduction */}
+
+        <motion.div
+          className="max-w-[700px]"
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.35,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          <h2 className="text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
+            Learning doesn't stop at the lesson.
           </h2>
 
-          <p className="mt-5 leading-7 text-text-secondary">
-            SkillHub brings the tools around learning into the same
-            environment — resources, quizzes, events, and technical
-            utilities.
+          <p className="mt-4 max-w-[620px] text-base leading-7 text-text-secondary sm:text-[17px]">
+            Courses give you a direction, but learning also happens when you
+            practise what you know, ask questions, learn from other people,
+            attend something useful, or reach for a tool that helps you solve
+            a problem.
           </p>
+        </motion.div>
+
+        {/* Supporting features */}
+
+        <div className="mt-16 border-t border-border">
+          {modules.map((module, index) => (
+            <motion.article
+              key={module.title}
+              className="grid gap-5 border-b border-border py-8 sm:grid-cols-[0.7fr_1.3fr] sm:items-start sm:py-9 lg:grid-cols-[0.55fr_1.45fr] lg:py-10"
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.25,
+              }}
+              transition={{
+                duration: 0.45,
+                delay: index * 0.06,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <h3 className="text-xl font-semibold tracking-[-0.03em] text-text-primary sm:text-2xl">
+                {module.title}
+              </h3>
+
+              <p className="max-w-[620px] text-sm leading-7 text-text-secondary sm:text-[15px]">
+                {module.description}
+              </p>
+            </motion.article>
+          ))}
         </div>
 
-        <div className="grid border-y border-border md:grid-cols-4">
-          <div className="border-b border-border p-6 md:border-b-0 md:border-r">
-            <span className="font-mono text-xs text-primary">01</span>
+        {/* Small closing note */}
 
-            <h3 className="mt-12 text-lg font-semibold">
-              Resources
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-text-secondary">
-              Discover documentation, articles, repositories, and
-              community-shared knowledge.
-            </p>
-          </div>
-
-          <div className="border-b border-border p-6 md:border-b-0 md:border-r">
-            <span className="font-mono text-xs text-primary">02</span>
-
-            <h3 className="mt-12 text-lg font-semibold">
-              Quizzes
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-text-secondary">
-              Test your understanding through interactive technical
-              challenges.
-            </p>
-          </div>
-
-          <div className="border-b border-border p-6 md:border-b-0 md:border-r">
-            <span className="font-mono text-xs text-primary">03</span>
-
-            <h3 className="mt-12 text-lg font-semibold">
-              Events
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-text-secondary">
-              Keep track of live technical sessions, workshops, and
-              community events.
-            </p>
-          </div>
-
-          <div className="p-6">
-            <span className="font-mono text-xs text-primary">04</span>
-
-            <h3 className="mt-12 text-lg font-semibold">
-              Tools
-            </h3>
-
-            <p className="mt-3 text-sm leading-6 text-text-secondary">
-              Keep useful developer utilities close while you learn
-              and build.
-            </p>
-          </div>
-        </div>
+        <p className="mt-7 text-sm text-text-muted">
+          Everything around learning, without taking you away from it.
+        </p>
       </div>
     </section>
-  )
-}
+  );
+};

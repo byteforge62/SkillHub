@@ -4,51 +4,59 @@ import Logo from "@/components/ui/Logo";
 
 export const LandingNavbar = () => {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="shrink-0">
+    <header className="border-b border-border">
+      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center px-6 sm:px-8 lg:px-12 xl:px-16">
+        {/* Brand */}
+        <Link
+          to="/"
+          className="flex shrink-0 items-center"
+          aria-label="SkillHub home"
+        >
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        {/* Navigation */}
+        <nav className="ml-12 hidden items-center gap-7 md:flex lg:ml-16">
           <a
             href="#resources"
-            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
+            className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
             Resources
           </a>
 
           <a
             href="#learning"
-            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
+            className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
             Learning
           </a>
 
           <a
             href="#workspace"
-            className="text-sm text-text-secondary transition-colors hover:text-text-primary"
+            className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
             Workspace
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Actions */}
+        <div className="ml-auto flex shrink-0 items-center gap-5">
           <Link
             to="/login"
-            className="hidden px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary sm:block"
+            className="text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary"
           >
             Sign in
           </Link>
 
           <Link
             to="/register"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+            className="inline-flex h-10 items-center gap-2 border border-primary bg-primary px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-primary-hover"
           >
             Enter SkillHub
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
