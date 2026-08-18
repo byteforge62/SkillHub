@@ -49,6 +49,7 @@ const ResetPasswordForm = () => {
         className="space-y-5"
       >
         <Input
+          id="email"
           label="Email"
           disabled
           error={errors.email?.message}

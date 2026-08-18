@@ -23,13 +23,7 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values) => {
-    console.log("Form Values:", values);
-
-    console.log("Before mutate");
-
     loginMutation.mutate(values);
-
-    console.log("After mutate");
   };
   return (
     <Card className="w-full max-w-md">

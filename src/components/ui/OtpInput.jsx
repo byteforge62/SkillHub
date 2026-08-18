@@ -61,10 +61,8 @@ const OtpInput = ({
 
     onChange(pastedValue);
 
-    const lastIndex = Math.min(
-      pastedValue.length,
-      length
-    ) - 1;
+    const lastIndex =
+      Math.min(pastedValue.length, length) - 1;
 
     if (lastIndex >= 0) {
       inputRefs.current[lastIndex]?.focus();
@@ -72,7 +70,7 @@ const OtpInput = ({
   };
 
   return (
-    <div className="flex justify-center gap-3">
+    <div className="grid w-full grid-cols-6 gap-2 sm:gap-3">
       {Array.from({ length }).map((_, index) => (
         <input
           key={index}
@@ -92,20 +90,23 @@ const OtpInput = ({
           onPaste={handlePaste}
           aria-label={`OTP Digit ${index + 1}`}
           className="
-            h-14
-            w-14
+            h-12
+            w-full
+            min-w-0
             rounded-xl
             border
             border-border
             bg-surface
             text-center
-            text-xl
+            text-lg
             font-semibold
             outline-none
             transition-all
             focus:border-primary
             focus:ring-2
             focus:ring-primary/20
+            sm:h-14
+            sm:text-xl
           "
         />
       ))}

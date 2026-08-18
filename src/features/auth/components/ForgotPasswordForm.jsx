@@ -13,10 +13,10 @@ import useForgotPassword from "../hooks/useForgotPassword";
 export const ForgotPasswordForm = () => {
   const forgotPasswordMutation = useForgotPassword();
 
-  const {register,handleSubmit,formState:{errors}} = useForm({
-    resolve: zodResolver(forgotPasswordFormSchema),
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
-      email:"",
+      email: "",
     }
   });
 

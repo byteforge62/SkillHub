@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Card from "@/components/ui/Card";
-import Logo from "@/components/ui/Logo";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import OtpInput from "@/components/ui/OtpInput";
@@ -35,9 +34,6 @@ const VerifyEmailForm = () => {
   });
 
   const onSubmit = (values) => {
-    console.log("Submitted", values);
-    console.log("OTP:")
-
     verifyMutation.mutate(values);
   };
 
@@ -61,6 +57,7 @@ const VerifyEmailForm = () => {
       >
 
         <Input
+        id="email"
           label="Email"
           disabled
           {...register("email")}

@@ -1,8 +1,15 @@
-const Logo = () => {
+import clsx from "clsx";
+
+const Logo = ({ className }) => {
   return (
-    <h1 className="text-3xl font-bold tracking-tight">
+    <span
+      className={clsx(
+        "text-3xl font-bold tracking-tight",
+        className
+      )}
+    >
       SkillHub
-    </h1>
+    </span>
   );
 };
 

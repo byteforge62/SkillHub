@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const resources = [
   {
@@ -22,6 +22,13 @@ const resources = [
     type: "Repository",
     technology: "Open Source",
   },
+  {
+    title: "JavaScript Event Loop Explained",
+    description:
+      "A practical explanation of the call stack, queues, and asynchronous execution.",
+    type: "Article",
+    technology: "JavaScript",
+  },
 ];
 
 export const ResourceSection = () => {
@@ -31,16 +38,7 @@ export const ResourceSection = () => {
 
         {/* Intro */}
 
-        <motion.div
-          className="max-w-[620px]"
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
+        <div className="max-w-[620px]">
           <h2 className="text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
             Resources
           </h2>
@@ -50,37 +48,21 @@ export const ResourceSection = () => {
             articles, projects, and technical knowledge that can help you
             understand what you're learning.
           </p>
-        </motion.div>
+        </div>
 
         {/* Resource list */}
 
         <div className="mt-16 border-t border-border">
-          {resources.map((resource, index) => (
-            <motion.a
+          {resources.map((resource) => (
+            <Link
               key={resource.title}
-              href="#"
+              to="#"
               className="group grid gap-5 border-b border-border py-8 transition-colors duration-200 hover:bg-surface/40 sm:grid-cols-[1fr_1.2fr_auto] sm:items-center sm:px-4"
-              initial={{
-                opacity: 0,
-                y: 10,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.25,
-              }}
-              transition={{
-                duration: 0.45,
-                delay: index * 0.07,
-              }}
             >
               {/* Resource */}
 
               <div>
-                <h3 className="text-base font-semibold tracking-[-0.02em] text-text-primary">
+                <h3 className="text-base font-semibold tracking-[-0.02em] text-text-primary transition-colors duration-200 group-hover:text-primary">
                   {resource.title}
                 </h3>
 
@@ -89,7 +71,10 @@ export const ResourceSection = () => {
                     {resource.type}
                   </span>
 
-                  <span className="h-1 w-1 rounded-full bg-border" />
+                  <span
+                    className="h-1 w-1 rounded-full bg-border"
+                    aria-hidden="true"
+                  />
 
                   <span className="text-xs text-text-muted">
                     {resource.technology}
@@ -105,36 +90,30 @@ export const ResourceSection = () => {
 
               {/* Arrow */}
 
-              <span className="flex h-8 w-8 items-center justify-center text-text-muted transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary">
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 items-center justify-center text-text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary"
+              >
                 →
               </span>
-            </motion.a>
+            </Link>
           ))}
         </div>
 
         {/* Bottom */}
 
-        <motion.div
-          className="mt-7 flex items-center justify-between"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{
-            delay: 0.25,
-            duration: 0.5,
-          }}
-        >
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-xs text-text-muted">
-            Documentation · Articles · Projects
+            Documentation · Articles · Projects · Guides
           </span>
 
-          <a
-            href="#"
+          <Link
+            to="#"
             className="text-sm font-medium text-text-primary transition-colors hover:text-primary"
           >
             Browse all resources →
-          </a>
-        </motion.div>
+          </Link>
+        </div>
       </div>
     </section>
   );
