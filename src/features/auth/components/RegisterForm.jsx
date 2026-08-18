@@ -11,6 +11,7 @@ import AuthHeader from "@/components/auth/AuthHeader";
 
 import registerFormSchema from '../validation/registerFormSchema'
 import useRegister from '../hooks/useRegister'
+import AuthNavigation from '@/components/auth/AuthNavigation'
 
 
 export const RegisterForm = () => {
@@ -75,6 +76,7 @@ export const RegisterForm = () => {
           Create Account
         </Button>
       </form>
+      <AuthNavigation prompt="Already have an account" label="Login" to="/login"/>
     </Card>
   )
 }

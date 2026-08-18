@@ -10,6 +10,7 @@ import AuthHeader from "@/components/auth/AuthHeader";
 
 import loginFormSchema from "../validation/loginFormSchema";
 import useLogin from "../hooks/useLogin";
+import AuthNavigation from "@/components/auth/AuthNavigation";
 
 export const LoginForm = () => {
   const loginMutation = useLogin();
@@ -59,6 +60,7 @@ export const LoginForm = () => {
           Sign In
         </Button>
       </form>
+      <AuthNavigation prompt="Don't have an account?" label="Sign up" to="/register" />
     </Card>
   )
 }
