@@ -12,6 +12,12 @@ import { DashboardPage } from "@/features/dashboard/pages/DashboardPage";
 import { AdminDashboardPage } from "@/features/admin/pages/AdminDashboardPage";
 import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
+import { ToolsPage } from "@/features/tools/pages/ToolsPage";
+import { JsonFormatter } from "@/features/tools/tools/json/JsonFormatter";
+import { JwtDecoder } from "@/features/tools/tools/jwt/JwtDecoder";
+import { Base64Tool } from "@/features/tools/tools/base64/Base64Tool";
+import { UrlEncoder } from "@/features/tools/tools/url/UrlEncoder";
+import { UuidGenerator } from "@/features/tools/tools/uuid/UuidGenerator";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
 import { VerifyResetOtpPage } from "@/features/auth/pages/VerifyResetOtpPage";
@@ -82,6 +88,30 @@ const router = createBrowserRouter([
         ],
       },
 
+      {
+        path: "/tools",
+        element: <ToolsPage />,
+      },
+      {
+        path: "/tools/json-formatter",
+        element: <JsonFormatter />,
+      },
+      {
+        path: "/tools/jwt-decoder",
+        element: <JwtDecoder />,
+      },
+      {
+        path: "/tools/base64",
+        element: <Base64Tool />,
+      },
+      {
+        path: "/tools/url-encoder",
+        element: <UrlEncoder />,
+      },
+      {
+        path: "/tools/uuid-generator",
+        element: <UuidGenerator />,
+      },
       // ADMIN
       {
         element: <AdminRoute />,
