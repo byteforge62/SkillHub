@@ -18,6 +18,8 @@ import { JwtDecoder } from "@/features/tools/tools/jwt/JwtDecoder";
 import { Base64Tool } from "@/features/tools/tools/base64/Base64Tool";
 import { UrlEncoder } from "@/features/tools/tools/url/UrlEncoder";
 import { UuidGenerator } from "@/features/tools/tools/uuid/UuidGenerator";
+import { RegexTester } from "@/features/tools/tools/regex/RegexTester";
+import { MarkdownPreviewer } from "@/features/tools/tools/markdown/MarkdownPreviewer";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
 import { VerifyResetOtpPage } from "@/features/auth/pages/VerifyResetOtpPage";
@@ -111,6 +113,14 @@ const router = createBrowserRouter([
       {
         path: "/tools/uuid-generator",
         element: <UuidGenerator />,
+      },
+      {
+        path: "/tools/regex-tester",
+        element: <RegexTester />,
+      },
+      {
+        path: "/tools/markdown-preview",
+        element: <MarkdownPreviewer />,
       },
       // ADMIN
       {
