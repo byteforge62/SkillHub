@@ -2,8 +2,29 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCourseById } from "../api/courseApi";
 
+import useMyEnrollments from "@/features/enrollment/hooks/useEnrollment";
+import useEnrollInCourse from "@/features/enrollment/hooks/useErollInCourse";
+
 export const CourseDetailsPage = () => {
   const { courseId } = useParams();
+
+  const {
+    data: enrollmentData,
+    isLoading: enrollmentsLoading,
+  } = useMyEnrollments();
+
+  const enrollMutation = useEnrollInCourse();
+
+  const enrollments = enrollmentData?.data || [];
+
+  const enrollment = enrollments.find(
+    (item) =>
+      item.courseId?._id === courseId ||
+      item.courseId === courseId
+  );
+
+  const isEnrolled = enrollment?.status === "active";
+  const isCompleted = enrollment?.status === "completed";
 
   const {
     data,
@@ -146,12 +167,40 @@ export const CourseDetailsPage = () => {
                 </span>
               </div>
 
-              <button
-                type="button"
-                className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3 font-semibold transition hover:bg-blue-500"
-              >
-                Start Learning
-              </button>
+              {enrollmentsLoading ? (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-6 w-full cursor-not-allowed rounded-xl bg-white/10 px-5 py-3 font-semibold text-slate-400"
+                >
+                  Checking enrollment...
+                </button>
+              ) : isEnrolled ? (
+                <Link
+                  to={`/learning/${courseId}`}
+                  className="mt-6 flex w-full items-center justify-center rounded-xl bg-blue-600 px-5 py-3 font-semibold transition hover:bg-blue-500"
+                >
+                  Continue Learning
+                </Link>
+              ) : isCompleted ? (
+                <Link
+                  to={`/learning/${courseId}`}
+                  className="mt-6 flex w-full items-center justify-center rounded-xl bg-green-600 px-5 py-3 font-semibold transition hover:bg-green-500"
+                >
+                  Review Course
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled={enrollMutation.isPending}
+                  onClick={() => enrollMutation.mutate(courseId)}
+                  className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3 font-semibold transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {enrollMutation.isPending
+                    ? "Enrolling..."
+                    : "Enroll & Start Learning"}
+                </button>
+              )}
             </div>
           </aside>
         </section>
