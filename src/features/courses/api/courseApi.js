@@ -1,7 +1,7 @@
 import apiClient from "@/lib/axios/client";
 
-export const getCourses = async() => {
-  const response = await apiClient.get("/courses",{params});
+export const getCourses = async(params = {}) => {
+  const response = await apiClient.get("/courses",{params: params});
   return response.data;
 }
 

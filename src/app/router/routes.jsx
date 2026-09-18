@@ -14,6 +14,8 @@ import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
 import { ToolsPage } from "@/features/tools/pages/ToolsPage";
 import { LearningPage } from "@/features/learning/pages/LearningPage";
+import { CoursesPage } from "@/features/courses/pages/CoursesPage";
+import { CourseDetailsPage } from "@/features/courses/pages/CourseDetailsPage";
 import { JsonFormatter } from "@/features/tools/tools/json/JsonFormatter";
 import { JwtDecoder } from "@/features/tools/tools/jwt/JwtDecoder";
 import { Base64Tool } from "@/features/tools/tools/base64/Base64Tool";
@@ -127,6 +129,14 @@ const router = createBrowserRouter([
       {
         path:"/learn/:courseId",
         element: <LearningPage/>
+      },
+      {
+        path:"/courses",
+        element: <CoursesPage/>
+      },
+      {
+        path:"/courses/:courseId",
+        element: <CourseDetailsPage/>
       },
       // ADMIN
       {
