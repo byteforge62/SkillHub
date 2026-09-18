@@ -127,7 +127,7 @@ const router = createBrowserRouter([
         element: <MarkdownPreviewer />,
       },
       {
-        path:"/learn/:courseId",
+        path:"/learning/:courseId",
         element: <LearningPage/>
       },
       {
