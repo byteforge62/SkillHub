@@ -13,6 +13,7 @@ import { AdminDashboardPage } from "@/features/admin/pages/AdminDashboardPage";
 import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
 import { ToolsPage } from "@/features/tools/pages/ToolsPage";
+import { LearningPage } from "@/features/learning/pages/LearningPage";
 import { JsonFormatter } from "@/features/tools/tools/json/JsonFormatter";
 import { JwtDecoder } from "@/features/tools/tools/jwt/JwtDecoder";
 import { Base64Tool } from "@/features/tools/tools/base64/Base64Tool";
@@ -20,6 +21,7 @@ import { UrlEncoder } from "@/features/tools/tools/url/UrlEncoder";
 import { UuidGenerator } from "@/features/tools/tools/uuid/UuidGenerator";
 import { RegexTester } from "@/features/tools/tools/regex/RegexTester";
 import { MarkdownPreviewer } from "@/features/tools/tools/markdown/MarkdownPreviewer";
+
 import LoginPage from "@/features/auth/pages/LoginPage";
 import VerifyEmailPage from "@/features/auth/pages/VerifyEmailPage";
 import { VerifyResetOtpPage } from "@/features/auth/pages/VerifyResetOtpPage";
@@ -121,6 +123,10 @@ const router = createBrowserRouter([
       {
         path: "/tools/markdown-preview",
         element: <MarkdownPreviewer />,
+      },
+      {
+        path:"/learn/:courseId",
+        element: <LearningPage/>
       },
       // ADMIN
       {
