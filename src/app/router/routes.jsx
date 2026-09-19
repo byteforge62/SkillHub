@@ -80,82 +80,90 @@ const router = createBrowserRouter([
 
   // PROTECTED
   {
-    element: <ProtectedRoute />,
-    children: [
-      // USER DASHBOARD
-      {
-        path: "/dashboard",
-        element: <DashboardLayout />,
-        children: [
-          {
-            index: true,
-            element: <DashboardPage />,
-          },
-        ],
-      },
+  element: <ProtectedRoute />,
+  children: [
+    // USER APP SHELL
+    {
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: "/dashboard",
+          element: <DashboardPage />,
+        },
+        {
+          path: "/courses",
+          element: <CoursesPage />,
+        },
+        {
+          path: "/courses/:courseId",
+          element: <CourseDetailsPage />,
+        },
+        {
+          path: "/learning/:courseId",
+          element: <LearningPage />,
+        },
+      ],
+    },
 
-      {
-        path: "/tools",
-        element: <ToolsPage />,
-      },
-      {
-        path: "/tools/json-formatter",
-        element: <JsonFormatter />,
-      },
-      {
-        path: "/tools/jwt-decoder",
-        element: <JwtDecoder />,
-      },
-      {
-        path: "/tools/base64",
-        element: <Base64Tool />,
-      },
-      {
-        path: "/tools/url-encoder",
-        element: <UrlEncoder />,
-      },
-      {
-        path: "/tools/uuid-generator",
-        element: <UuidGenerator />,
-      },
-      {
-        path: "/tools/regex-tester",
-        element: <RegexTester />,
-      },
-      {
-        path: "/tools/markdown-preview",
-        element: <MarkdownPreviewer />,
-      },
-      {
-        path:"/learning/:courseId",
-        element: <LearningPage/>
-      },
-      {
-        path:"/courses",
-        element: <CoursesPage/>
-      },
-      {
-        path:"/courses/:courseId",
-        element: <CourseDetailsPage/>
-      },
-      // ADMIN
-      {
-        element: <AdminRoute />,
-        children: [
-          {
-            path: "/admin",
-            element: <AdminLayout />,
-            children: [
-              {
-                index: true,
-                element: <AdminDashboardPage />,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+    // TOOLS
+    {
+      path: "/tools",
+      element: <ToolsPage />,
+    },
+
+    {
+      path: "/tools/json-formatter",
+      element: <JsonFormatter />,
+    },
+
+    {
+      path: "/tools/jwt-decoder",
+      element: <JwtDecoder />,
+    },
+
+    {
+      path: "/tools/base64",
+      element: <Base64Tool />,
+    },
+
+    {
+      path: "/tools/url-encoder",
+      element: <UrlEncoder />,
+    },
+
+    {
+      path: "/tools/uuid-generator",
+      element: <UuidGenerator />,
+    },
+
+    {
+      path: "/tools/regex-tester",
+      element: <RegexTester />,
+    },
+
+    {
+      path: "/tools/markdown-preview",
+      element: <MarkdownPreviewer />,
+    },
+
+    // ADMIN
+    {
+      element: <AdminRoute />,
+      children: [
+        {
+          path: "/admin",
+          element: <AdminLayout />,
+          children: [
+            {
+              index: true,
+              element: <AdminDashboardPage />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+},
 ]);
 
 export default router;

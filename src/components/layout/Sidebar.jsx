@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   BookOpen,
+  GraduationCap,
   User,
   X,
 } from "lucide-react";
@@ -13,6 +14,11 @@ const navigation = [
     label: "Dashboard",
     path: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Courses",
+    path:"/courses",
+    icon: GraduationCap
   },
   {
     label: "My Learning",
