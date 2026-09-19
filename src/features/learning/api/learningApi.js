@@ -6,7 +6,7 @@ export const getCourseSections = async (courseId) => {
 };
 
 export const getSectionLessons = async (sectionId) => {
-  const response = await apiClient.get(`/lessons/section/${sectionId}`);
+  const response = await apiClient.get(`/sections/${sectionId}/lessons`);
   return response.data;
 };
 

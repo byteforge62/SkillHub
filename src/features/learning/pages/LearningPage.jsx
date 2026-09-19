@@ -7,11 +7,12 @@ import Card from "@/components/ui/Card";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
-import { getCourseSections } from "../api/learningApi";
+import { getCourseSections, getSectionLessons, getLessonById } from "../api/learningApi";
 
 export const LearningPage = () => {
   const { courseId } = useParams();
   const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   const {
     data: courseData,
@@ -40,6 +41,26 @@ export const LearningPage = () => {
   } = useQuery({
     queryKey: ["my-enrollments"],
     queryFn: getMyEnrollments,
+  });
+
+  const {
+    data: lessonsData,
+    isLoading: lessonsLoading,
+    isError: lessonsError
+  } = useQuery({
+    queryKey: ["section-lessons", selectedSection?._id],
+    queryFn: () => getSectionLessons(selectedSection._id),
+    enabled: Boolean(selectedSection?._id)
+  })
+
+  const {
+    data: lessonData,
+    isLoading: lessonLoading,
+    isError: lessonError,
+  } = useQuery({
+    queryKey: ["lesson", selectedLesson?._id],
+    queryFn: () => getLessonById(selectedLesson._id),
+    enabled: Boolean(selectedLesson?._id),
   });
 
   const course = courseData?.data;
@@ -204,9 +225,7 @@ export const LearningPage = () => {
 
             <div className="mt-4">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-text-muted">
-                  Progress
-                </span>
+                <span className="text-text-muted">Progress</span>
 
                 <span className="font-medium text-text-secondary">
                   {progress}%
@@ -217,10 +236,7 @@ export const LearningPage = () => {
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-500"
                   style={{
-                    width: `${Math.min(
-                      Math.max(progress, 0),
-                      100
-                    )}%`,
+                    width: `${Math.min(Math.max(progress, 0), 100)}%`,
                   }}
                 />
               </div>
@@ -236,34 +252,92 @@ export const LearningPage = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {sections.map((section) => (
-                  <div
-                    key={section._id}
-                    className="rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-surface-hover"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                          Section {section.order}
-                        </p>
+                {sections.map((section) => {
+                  const isSelected =
+                    selectedSection?._id === section._id;
 
-                        <h3 className="mt-1 text-sm font-semibold text-text-primary">
-                          {section.title}
-                        </h3>
+                  return (
+                    <div key={section._id}>
+                      {/* Section */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedSection(section);
+                          setSelectedLesson(null);
+                        }}
+                        className={[
+                          "w-full rounded-xl border p-4 text-left transition-colors",
+                          isSelected
+                            ? "border-primary bg-primary/5"
+                            : "border-border bg-surface hover:bg-surface-hover",
+                        ].join(" ")}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                              Section {section.order}
+                            </p>
 
-                        {section.description && (
-                          <p className="mt-1 text-xs leading-5 text-text-muted">
-                            {section.description}
-                          </p>
-                        )}
-                      </div>
+                            <h3 className="mt-1 text-sm font-semibold text-text-primary">
+                              {section.title}
+                            </h3>
 
-                      <span className="shrink-0 text-xs text-text-muted">
-                        {section.order}
-                      </span>
+                            {section.description && (
+                              <p className="mt-1 text-xs leading-5 text-text-muted">
+                                {section.description}
+                              </p>
+                            )}
+                          </div>
+
+                          <span className="shrink-0 text-xs text-text-muted">
+                            {section.order}
+                          </span>
+                        </div>
+                      </button>
+
+                      {/* Lessons */}
+                      {isSelected && (
+                        <div className="mt-2 space-y-1 pl-3">
+                          {lessonsLoading ? (
+                            <p className="px-3 py-2 text-xs text-text-muted">
+                              Loading lessons...
+                            </p>
+                          ) : lessonsError ? (
+                            <p className="px-3 py-2 text-xs text-error">
+                              Unable to load lessons.
+                            </p>
+                          ) : (lessonsData?.data || []).length === 0 ? (
+                            <p className="px-3 py-2 text-xs text-text-muted">
+                              No lessons available.
+                            </p>
+                          ) : (
+                            (lessonsData?.data || []).map((lesson, index) => (
+                              <button
+                                key={lesson._id}
+                                type="button"
+                                onClick={() => setSelectedLesson(lesson)}
+                                className={[
+                                  "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
+                                  selectedLesson?._id === lesson._id
+                                    ? "bg-primary/10 text-primary"
+                                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary",
+                                ].join(" ")}
+                              >
+                                <span className="shrink-0 text-xs text-text-muted">
+                                  {index + 1}
+                                </span>
+
+                                <span className="min-w-0 truncate">
+                                  {lesson.title}
+                                </span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -301,7 +375,7 @@ export const LearningPage = () => {
               </div>
 
               <div className="pt-6">
-                {/* Lesson renderer will be added here */}
+
               </div>
             </div>
           )}
