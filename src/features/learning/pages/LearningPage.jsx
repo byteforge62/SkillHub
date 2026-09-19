@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { LessonContent } from "../components/LessonContent";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
@@ -375,7 +376,7 @@ export const LearningPage = () => {
               </div>
 
               <div className="pt-6">
-
+              <LessonContent lesson={lessonData?.data} />
               </div>
             </div>
           )}
