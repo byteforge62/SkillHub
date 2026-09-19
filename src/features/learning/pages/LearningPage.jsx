@@ -2,12 +2,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
+import { getCourseSections } from "../api/learningApi";
 
 export const LearningPage = () => {
   const { courseId } = useParams();
-
   const [selectedLesson, setSelectedLesson] = useState(null);
 
   const {
@@ -17,6 +20,16 @@ export const LearningPage = () => {
   } = useQuery({
     queryKey: ["course", courseId],
     queryFn: () => getCourseById(courseId),
+    enabled: Boolean(courseId),
+  });
+
+  const {
+    data: sectionsData,
+    isLoading: sectionsLoading,
+    isError: sectionsError,
+  } = useQuery({
+    queryKey: ["course-sections", courseId],
+    queryFn: () => getCourseSections(courseId),
     enabled: Boolean(courseId),
   });
 
@@ -31,7 +44,13 @@ export const LearningPage = () => {
 
   const course = courseData?.data;
 
-  const enrollments = enrollmentData?.data || [];
+  const sections = Array.isArray(sectionsData?.data)
+    ? sectionsData.data
+    : [];
+
+  const enrollments = Array.isArray(enrollmentData?.data)
+    ? enrollmentData.data
+    : [];
 
   const enrollment = useMemo(() => {
     return enrollments.find(
@@ -42,45 +61,49 @@ export const LearningPage = () => {
   }, [enrollments, courseId]);
 
   useEffect(() => {
-    if (!enrollment) return;
-
-    // We will populate this from the course sections/lessons API next.
     setSelectedLesson(null);
   }, [enrollment]);
 
-  if (courseLoading || enrollmentLoading) {
+  if (courseLoading || enrollmentLoading || sectionsLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 px-5 py-10 text-white">
-        <div className="mx-auto max-w-7xl animate-pulse">
-          <div className="h-8 w-64 rounded bg-white/10" />
+      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
+        <div className="mx-auto max-w-7xl">
+          <div className="h-6 w-32 animate-pulse rounded-md bg-surface-hover" />
 
-          <div className="mt-8 grid min-h-[600px] gap-6 lg:grid-cols-[280px_1fr]">
-            <div className="rounded-2xl bg-white/5" />
-            <div className="rounded-2xl bg-white/5" />
+          <div className="mt-6 grid gap-6 lg:grid-cols-[300px_1fr]">
+            <div className="h-[650px] animate-pulse rounded-2xl bg-surface shadow-card" />
+            <div className="h-[650px] animate-pulse rounded-2xl bg-surface shadow-card" />
           </div>
         </div>
       </div>
     );
   }
 
-  if (courseError || enrollmentError) {
+  if (courseError || sectionsError || enrollmentError) {
     return (
-      <div className="min-h-screen bg-slate-950 px-5 py-10 text-white">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-red-400/20 bg-red-400/5 p-6">
-          <h1 className="text-xl font-semibold text-red-300">
-            Unable to load learning workspace
-          </h1>
+      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
+        <div className="mx-auto max-w-3xl">
+          <Card>
+            <div className="text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-error/10 text-error">
+                !
+              </div>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Something went wrong while loading this course.
-          </p>
+              <h1 className="mt-5 text-2xl">
+                Unable to load learning workspace
+              </h1>
 
-          <Link
-            to="/courses"
-            className="mt-5 inline-flex rounded-lg bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/15"
-          >
-            ← Back to Courses
-          </Link>
+              <p className="mt-3 text-sm text-text-muted">
+                Something went wrong while loading this course.
+              </p>
+
+              <Link to="/courses" className="mt-6 inline-flex">
+                <Button variant="secondary">
+                  ← Back to Courses
+                </Button>
+              </Link>
+            </div>
+          </Card>
         </div>
       </div>
     );
@@ -92,114 +115,198 @@ export const LearningPage = () => {
 
   if (!enrollment) {
     return (
-      <div className="min-h-screen bg-slate-950 px-5 py-10 text-white">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white/[0.03] p-8 text-center">
-          <h1 className="text-2xl font-bold">
-            Enrollment Required
-          </h1>
+      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
+        <div className="mx-auto max-w-3xl">
+          <Card>
+            <div className="text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-2xl">
+                📚
+              </div>
 
-          <p className="mt-3 text-slate-400">
-            You need to enroll in this course before you can start
-            learning.
-          </p>
+              <h1 className="mt-5 text-2xl">
+                Enrollment Required
+              </h1>
 
-          <Link
-            to={`/courses/${courseId}`}
-            className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 font-semibold transition hover:bg-blue-500"
-          >
-            Go to Course
-          </Link>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-text-muted">
+                You need to enroll in this course before you can
+                start learning.
+              </p>
+
+              <Link
+                to={`/courses/${courseId}`}
+                className="mt-6 inline-flex"
+              >
+                <Button>
+                  Go to Course
+                </Button>
+              </Link>
+            </div>
+          </Card>
         </div>
       </div>
     );
   }
 
+  const progress = enrollment.progress || 0;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-background text-text-primary">
       {/* Header */}
-      <header className="border-b border-white/10 bg-slate-950/90">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+      <header className="border-b border-border bg-surface">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8">
           <div className="min-w-0">
             <Link
               to="/courses"
-              className="text-xs text-slate-500 transition hover:text-slate-300"
+              className="text-sm text-text-muted transition-colors hover:text-text-primary"
             >
               ← Courses
             </Link>
 
-            <h1 className="mt-1 truncate text-lg font-semibold">
+            <h1 className="mt-2 truncate text-xl sm:text-2xl">
               {course.title}
             </h1>
           </div>
 
-          <div className="shrink-0 text-right">
-            <p className="text-xs text-slate-500">
+          <div className="hidden shrink-0 text-right sm:block">
+            <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
               Course Progress
             </p>
 
-            <p className="text-sm font-semibold text-blue-400">
-              {enrollment.progress || 0}%
+            <p className="mt-1 text-lg font-semibold text-primary">
+              {progress}%
             </p>
           </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="h-1 w-full bg-surface-hover">
+          <div
+            className="h-full bg-primary transition-all duration-500"
+            style={{
+              width: `${Math.min(Math.max(progress, 0), 100)}%`,
+            }}
+          />
         </div>
       </header>
 
       {/* Workspace */}
       <main className="mx-auto grid max-w-7xl gap-6 px-5 py-6 sm:px-8 lg:grid-cols-[300px_1fr]">
         {/* Sidebar */}
-        <aside className="rounded-2xl border border-white/10 bg-white/[0.03]">
-          <div className="border-b border-white/10 p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-blue-400">
+        <Card className="!p-0 overflow-hidden">
+          <div className="border-b border-border px-5 py-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
               Course Content
             </p>
 
-            <h2 className="mt-2 font-semibold">
+            <h2 className="mt-2 text-lg">
               {course.title}
             </h2>
+
+            <div className="mt-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-text-muted">
+                  Progress
+                </span>
+
+                <span className="font-medium text-text-secondary">
+                  {progress}%
+                </span>
+              </div>
+
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-hover">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{
+                    width: `${Math.min(
+                      Math.max(progress, 0),
+                      100
+                    )}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="p-4">
-            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
-              <p className="text-sm font-medium text-slate-300">
-                Sections & Lessons
-              </p>
+            {sections.length === 0 ? (
+              <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                <p className="text-sm text-text-muted">
+                  No sections are available for this course yet.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {sections.map((section) => (
+                  <div
+                    key={section._id}
+                    className="rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-surface-hover"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                          Section {section.order}
+                        </p>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Course sections and lessons will appear here.
-              </p>
-            </div>
+                        <h3 className="mt-1 text-sm font-semibold text-text-primary">
+                          {section.title}
+                        </h3>
+
+                        {section.description && (
+                          <p className="mt-1 text-xs leading-5 text-text-muted">
+                            {section.description}
+                          </p>
+                        )}
+                      </div>
+
+                      <span className="shrink-0 text-xs text-text-muted">
+                        {section.order}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </aside>
+        </Card>
 
-        {/* Lesson Content */}
-        <section className="min-h-[600px] rounded-2xl border border-white/10 bg-white/[0.03]">
+        {/* Lesson workspace */}
+        <Card className="min-h-[650px]">
           {!selectedLesson ? (
             <div className="flex min-h-[600px] items-center justify-center p-8 text-center">
               <div className="max-w-md">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/10 text-3xl">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-3xl">
                   📚
                 </div>
 
-                <h2 className="mt-5 text-2xl font-bold">
+                <h2 className="mt-6 text-2xl">
                   Start Learning
                 </h2>
 
-                <p className="mt-3 text-sm leading-6 text-slate-400">
+                <p className="mt-3 text-sm leading-6 text-text-muted">
                   Select a lesson from the course content to begin
                   learning.
                 </p>
               </div>
             </div>
           ) : (
-            <div className="p-8">
-              <h2 className="text-2xl font-bold">
-                {selectedLesson.title}
-              </h2>
+            <div>
+              <div className="border-b border-border pb-6">
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                  Lesson
+                </p>
+
+                <h2 className="mt-2 text-2xl">
+                  {selectedLesson.title}
+                </h2>
+              </div>
+
+              <div className="pt-6">
+                {/* Lesson renderer will be added here */}
+              </div>
             </div>
           )}
-        </section>
+        </Card>
       </main>
     </div>
   );
 };
-

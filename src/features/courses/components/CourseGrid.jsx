@@ -1,17 +1,16 @@
 import { CourseCard } from "./CourseCard";
 
-
 export const CourseGrid = ({ courses = [] }) => {
   if (courses.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-16 text-center">
+      <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center shadow-card">
         <div className="text-4xl">📚</div>
 
-        <h3 className="mt-4 text-lg font-semibold text-white">
+        <h3 className="mt-4 text-lg font-semibold text-text-primary">
           No courses found
         </h3>
 
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-text-muted">
           There are no published courses available right now.
         </p>
       </div>
@@ -26,4 +25,3 @@ export const CourseGrid = ({ courses = [] }) => {
     </div>
   );
 };
-
