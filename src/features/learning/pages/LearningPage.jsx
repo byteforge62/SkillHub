@@ -8,7 +8,7 @@ import { LessonContent } from "../components/LessonContent";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
-import { getCourseSections, getSectionLessons, getLessonById } from "../api/learningApi";
+import { getCourseSections, getSectionLessons, getLessonById, getResourceById } from "../api/learningApi";
 
 export const LearningPage = () => {
   const { courseId } = useParams();
@@ -64,6 +64,28 @@ export const LearningPage = () => {
     enabled: Boolean(selectedLesson?._id),
   });
 
+  const resourceBlock = useMemo(() => {
+    return (
+      lessonData?.data?.blocks?.find(
+        (block) => block.type === "resource"
+      ) || null
+    );
+  }, [lessonData]);
+
+  const {
+    data: resourceData,
+    isLoading: resourceLoading,
+    isError: resourceError,
+  } = useQuery({
+    queryKey: [
+      "resource",
+      resourceBlock?.data?.resourceId,
+    ],
+    queryFn: () =>
+      getResourceById(resourceBlock.data.resourceId),
+    enabled: Boolean(resourceBlock?.data?.resourceId),
+  });
+
   const course = courseData?.data;
 
   const sections = Array.isArray(sectionsData?.data)
@@ -81,6 +103,9 @@ export const LearningPage = () => {
         item.courseId === courseId
     );
   }, [enrollments, courseId]);
+
+
+
 
   useEffect(() => {
     setSelectedLesson(null);
@@ -376,7 +401,12 @@ export const LearningPage = () => {
               </div>
 
               <div className="pt-6">
-              <LessonContent lesson={lessonData?.data} />
+                <LessonContent
+                  lesson={lessonData?.data}
+                  resourceData={resourceData}
+                  resourceLoading={resourceLoading}
+                  resourceError={resourceError}
+                />
               </div>
             </div>
           )}

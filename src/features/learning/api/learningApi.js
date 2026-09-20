@@ -14,3 +14,8 @@ export const getLessonById = async (lessonId) => {
   const response = await apiClient.get(`/lessons/${lessonId}`);
   return response.data;
 };
+
+export const getResourceById = async(resourceId) => {
+  const response = await apiClient.get(`/resources/${resourceId}`);
+  return response.data;
+}

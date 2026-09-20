@@ -1,5 +1,11 @@
 import Card from "@/components/ui/Card";
-export const LessonContent = ({ lesson }) => {
+
+export const LessonContent = ({
+  lesson,
+  resourceData,
+  resourceLoading,
+  resourceError,
+}) => {
   if (!lesson) {
     return (
       <Card className="flex min-h-[600px] items-center justify-center">
@@ -24,7 +30,6 @@ export const LessonContent = ({ lesson }) => {
 
   return (
     <Card className="!p-0 overflow-hidden">
-      {/* Lesson Header */}
       <div className="border-b border-border px-6 py-6 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
           Lesson {lesson.order}
@@ -47,7 +52,6 @@ export const LessonContent = ({ lesson }) => {
         )}
       </div>
 
-      {/* Lesson Blocks */}
       <div className="space-y-6 px-6 py-7 sm:px-8">
         {blocks.length === 0 ? (
           <p className="text-sm text-text-muted">
@@ -105,21 +109,92 @@ export const LessonContent = ({ lesson }) => {
                   </div>
                 );
 
-              case "resource":
+              case "resource": {
+                if (resourceLoading) {
+                  return (
+                    <div
+                      key={block._id}
+                      className="rounded-xl border border-border bg-surface-hover/50 p-5"
+                    >
+                      <p className="text-sm text-text-muted">
+                        Loading resource...
+                      </p>
+                    </div>
+                  );
+                }
+
+                if (resourceError || !resourceData?.data) {
+                  return (
+                    <div
+                      key={block._id}
+                      className="rounded-xl border border-error/20 bg-error/5 p-5"
+                    >
+                      <p className="text-sm font-medium text-error">
+                        Unable to load resource
+                      </p>
+                    </div>
+                  );
+                }
+
+                const resource = resourceData.data;
+
                 return (
                   <div
                     key={block._id}
-                    className="rounded-xl border border-border bg-surface-hover/50 p-5"
+                    className="rounded-xl border border-border bg-surface p-5"
                   >
-                    <p className="text-sm font-medium text-text-primary">
-                      Resource
-                    </p>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                          Resource
+                        </p>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      Resource loading will be implemented next.
-                    </p>
+                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
+                          {resource.title}
+                        </h3>
+
+                        {resource.description && (
+                          <p className="mt-2 text-sm leading-6 text-text-muted">
+                            {resource.description}
+                          </p>
+                        )}
+                      </div>
+
+                      {resource.type && (
+                        <span className="shrink-0 rounded-full bg-accent-light px-2.5 py-1 text-xs font-medium capitalize text-text-secondary">
+                          {resource.type}
+                        </span>
+                      )}
+                    </div>
+
+                    {resource.tags?.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {resource.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-md bg-surface-hover px-2.5 py-1 text-xs text-text-secondary"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {resource.url && (
+                      <div className="mt-5 border-t border-border pt-4">
+                        <a
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                        >
+                          Open Resource
+                        </a>
+                      </div>
+                    )}
                   </div>
                 );
+              }
 
               case "quiz":
                 return (
@@ -147,3 +222,4 @@ export const LessonContent = ({ lesson }) => {
   );
 };
 
+export default LessonContent;
