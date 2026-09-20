@@ -19,3 +19,13 @@ export const getResourceById = async(resourceId) => {
   const response = await apiClient.get(`/resources/${resourceId}`);
   return response.data;
 }
+
+export const getQuizById = async (quizId) => {
+  const response = await apiClient.get(`/quizzes/${quizId}`);
+  return response.data;
+};
+
+export const submitQuizAttempt = async (quizId, answers) => {
+  const response = await apiClient.post(`/quizzes/${quizId}/attempts`,{answers});
+  return response.data;
+};

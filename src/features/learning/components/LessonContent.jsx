@@ -1,4 +1,6 @@
 import Card from "@/components/ui/Card";
+import { useQuery } from "@tanstack/react-query";
+import { getQuizById } from "../api/learningApi";
 
 export const LessonContent = ({
   lesson,
@@ -27,6 +29,22 @@ export const LessonContent = ({
   const blocks = [...(lesson.blocks || [])].sort(
     (a, b) => a.order - b.order
   );
+
+  const quizBlock = blocks.find(
+    (block) => block.type === "quiz" && block.data?.quizId
+  );
+
+  const quizId = quizBlock?.data?.quizId;
+
+  const {
+    data: quizData,
+    isLoading: quizLoading,
+    isError: quizError,
+  } = useQuery({
+    queryKey: ["quiz", quizId],
+    queryFn: () => getQuizById(quizId),
+    enabled: Boolean(quizId),
+  });
 
   return (
     <Card className="!p-0 overflow-hidden">
@@ -198,6 +216,41 @@ export const LessonContent = ({
 
               case "quiz":
                 return (
+                  <div
+                    key={block._id}
+                    className="rounded-xl border border-border bg-surface-hover/50 p-5"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      Quiz
+                    </p>
+
+                    {quizLoading ? (
+                      <p className="mt-2 text-sm text-text-muted">
+                        Loading quiz...
+                      </p>
+                    ) : quizError ? (
+                      <p className="mt-2 text-sm text-error">
+                        Unable to load quiz.
+                      </p>
+                    ) : (
+                      <>
+                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
+                          {quizData?.data?.title || "Quiz"}
+                        </h3>
+
+                        {quizData?.data?.description && (
+                          <p className="mt-2 text-sm leading-6 text-text-muted">
+                            {quizData.data.description}
+                          </p>
+                        )}
+
+                        <p className="mt-3 text-xs text-text-muted">
+                          Quiz loaded successfully.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                ); return (
                   <div
                     key={block._id}
                     className="rounded-xl border border-border bg-surface-hover/50 p-5"
