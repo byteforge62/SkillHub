@@ -1,6 +1,7 @@
 import Card from "@/components/ui/Card";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getQuizById } from "../api/learningApi";
+import { getQuizById, getQuizQuestions } from "../api/learningApi";
 
 export const LessonContent = ({
   lesson,
@@ -8,25 +9,9 @@ export const LessonContent = ({
   resourceLoading,
   resourceError,
 }) => {
-  if (!lesson) {
-    return (
-      <Card className="flex min-h-[600px] items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl">📚</div>
+  const [quizStarted, setQuizStarted] = useState(false);
 
-          <h2 className="mt-4 text-xl font-semibold text-text-primary">
-            Select a lesson
-          </h2>
-
-          <p className="mt-2 text-sm text-text-muted">
-            Select a lesson from the course content to begin learning.
-          </p>
-        </div>
-      </Card>
-    );
-  }
-
-  const blocks = [...(lesson.blocks || [])].sort(
+  const blocks = [...(lesson?.blocks || [])].sort(
     (a, b) => a.order - b.order
   );
 
@@ -45,11 +30,40 @@ export const LessonContent = ({
     queryFn: () => getQuizById(quizId),
     enabled: Boolean(quizId),
   });
-  console.log("QUIZ RESPONSE:", quizData);
-  
+
+  const {
+    data: quizQuestionsData,
+    isLoading: quizQuestionsLoading,
+    isError: quizQuestionsError,
+  } = useQuery({
+    queryKey: ["quiz-questions", quizId],
+    queryFn: () => getQuizQuestions(quizId),
+    enabled: Boolean(quizId),
+  });
+
+  const questions = quizQuestionsData?.data || [];
+
+  if (!lesson) {
+    return (
+      <Card className="flex min-h-[600px] items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl">📚</div>
+
+          <h2 className="mt-4 text-xl font-semibold text-text-primary">
+            Select a lesson
+          </h2>
+
+          <p className="mt-2 text-sm text-text-muted">
+            Select a lesson from the course content to begin learning.
+          </p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="!p-0 overflow-hidden">
+      {/* Lesson Header */}
       <div className="border-b border-border px-6 py-6 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
           Lesson {lesson.order}
@@ -72,6 +86,7 @@ export const LessonContent = ({
         )}
       </div>
 
+      {/* Lesson Blocks */}
       <div className="space-y-6 px-6 py-7 sm:px-8">
         {blocks.length === 0 ? (
           <p className="text-sm text-text-muted">
@@ -220,53 +235,136 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className="rounded-xl border border-border bg-surface-hover/50 p-5"
+                    className="rounded-xl border border-border bg-surface p-5"
                   >
-                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                      Quiz
-                    </p>
-
                     {quizLoading ? (
-                      <p className="mt-2 text-sm text-text-muted">
+                      <p className="text-sm text-text-muted">
                         Loading quiz...
                       </p>
                     ) : quizError ? (
-                      <p className="mt-2 text-sm text-error">
+                      <p className="text-sm text-error">
                         Unable to load quiz.
                       </p>
                     ) : (
                       <>
-                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
-                          {quizData?.data?.title || "Quiz"}
-                        </h3>
+                        {!quizStarted ? (
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                              Quiz
+                            </p>
 
-                        {quizData?.data?.description && (
-                          <p className="mt-2 text-sm leading-6 text-text-muted">
-                            {quizData.data.description}
-                          </p>
+                            <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                              {quizData?.data?.title || "Quiz"}
+                            </h3>
+
+                            {quizData?.data?.description && (
+                              <p className="mt-2 text-sm leading-6 text-text-muted">
+                                {quizData.data.description}
+                              </p>
+                            )}
+
+                            <div className="mt-4 flex flex-wrap gap-3 text-xs text-text-muted">
+                              <span>
+                                {questions.length}{" "}
+                                {questions.length === 1
+                                  ? "question"
+                                  : "questions"}
+                              </span>
+
+                              {quizData?.data?.passingScore !== undefined && (
+                                <span>
+                                  Passing score:{" "}
+                                  {quizData.data.passingScore}%
+                                </span>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setQuizStarted(true)}
+                              disabled={
+                                quizQuestionsLoading ||
+                                questions.length === 0
+                              }
+                              className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              {quizQuestionsLoading
+                                ? "Loading Questions..."
+                                : "Start Quiz"}
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="border-b border-border pb-4">
+                              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                                Quiz
+                              </p>
+
+                              <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                                {quizData?.data?.title || "Quiz"}
+                              </h3>
+                            </div>
+
+                            {quizQuestionsLoading ? (
+                              <p className="mt-5 text-sm text-text-muted">
+                                Loading questions...
+                              </p>
+                            ) : quizQuestionsError ? (
+                              <p className="mt-5 text-sm text-error">
+                                Unable to load questions.
+                              </p>
+                            ) : questions.length === 0 ? (
+                              <p className="mt-5 text-sm text-text-muted">
+                                No questions are available for this quiz.
+                              </p>
+                            ) : (
+                              <div className="mt-5 space-y-6">
+                                {questions.map((question, index) => (
+                                  <div
+                                    key={question._id}
+                                    className="rounded-xl border border-border bg-surface-hover/50 p-5"
+                                  >
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                                      Question {index + 1}
+                                    </p>
+
+                                    <h4 className="mt-2 text-base font-semibold leading-6 text-text-primary">
+                                      {question.question}
+                                    </h4>
+
+                                    <div className="mt-4 space-y-2">
+                                      {question.options?.map(
+                                        (option, optionIndex) => (
+                                          <label
+                                            key={
+                                              option._id || optionIndex
+                                            }
+                                            className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 transition-colors hover:bg-surface-hover"
+                                          >
+                                            <input
+                                              type="radio"
+                                              name={`question-${question._id}`}
+                                              value={option._id}
+                                              className="accent-primary"
+                                            />
+
+                                            <span className="text-sm text-text-secondary">
+                                              {option.text}
+                                            </span>
+                                          </label>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         )}
-
-                        <p className="mt-3 text-xs text-text-muted">
-                          Quiz loaded successfully.
-                        </p>
                       </>
                     )}
                   </div>
-                ); return (
-                  <div
-                    key={block._id}
-                    className="rounded-xl border border-border bg-surface-hover/50 p-5"
-                  >
-                    <p className="text-sm font-medium text-text-primary">
-                      Quiz
-                    </p>
-
-                    <p className="mt-1 text-xs text-text-muted">
-                      Quiz loading will be implemented next.
-                    </p>
-                  </div>
                 );
-
               default:
                 return null;
             }
@@ -277,4 +375,3 @@ export const LessonContent = ({
   );
 };
 
-export default LessonContent;
