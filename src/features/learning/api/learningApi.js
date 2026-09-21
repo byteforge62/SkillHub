@@ -29,3 +29,8 @@ export const submitQuizAttempt = async (quizId, answers) => {
   const response = await apiClient.post(`/quizzes/${quizId}/attempts`,{answers});
   return response.data;
 };
+
+export const getQuizQuestions = async (quizId) => {
+  const response = await apiClient.get(`/quizzes/${quizId}/questions`);
+  return response.data;
+};

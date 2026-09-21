@@ -45,6 +45,8 @@ export const LessonContent = ({
     queryFn: () => getQuizById(quizId),
     enabled: Boolean(quizId),
   });
+  console.log("QUIZ RESPONSE:", quizData);
+  
 
   return (
     <Card className="!p-0 overflow-hidden">
