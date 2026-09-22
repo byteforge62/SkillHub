@@ -237,66 +237,76 @@ export const LearningPage = () => {
       </header>
 
       {/* Workspace */}
-      <main className="mx-auto grid max-w-7xl gap-6 px-5 py-6 sm:px-8 lg:grid-cols-[300px_1fr]">
+      <main
+        className={[
+          "mx-auto max-w-7xl px-5 py-6 sm:px-8 transition-all duration-300 ease-in-out",
+          selectedLesson
+            ? "block"
+            : "grid gap-6 lg:grid-cols-[300px_1fr]",
+        ].join(" ")}
+      >
         {/* Sidebar */}
-        <Card className="!p-0 overflow-hidden">
-          <div className="border-b border-border px-5 py-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-              Course Content
-            </p>
+        {!selectedLesson && (
+          <Card
+            className={[
+              "!p-0 overflow-hidden",
+              "transition-all duration-300 ease-in-out",
+            ].join(" ")}
+          >
+            <div className="border-b border-border px-5 py-5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Course Content
+              </p>
 
-            <h2 className="mt-2 text-lg">
-              {course.title}
-            </h2>
+              <h2 className="mt-2 text-lg">
+                {course.title}
+              </h2>
 
-            <div className="mt-4">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-text-muted">Progress</span>
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">
+                    Progress
+                  </span>
 
-                <span className="font-medium text-text-secondary">
-                  {progress}%
-                </span>
-              </div>
+                  <span className="font-medium text-text-secondary">
+                    {progress}%
+                  </span>
+                </div>
 
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-hover">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{
-                    width: `${Math.min(Math.max(progress, 0), 100)}%`,
-                  }}
-                />
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-hover">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500"
+                    style={{
+                      width: `${Math.min(Math.max(progress, 0), 100)}%`,
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="p-4">
-            {sections.length === 0 ? (
-              <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
-                <p className="text-sm text-text-muted">
-                  No sections are available for this course yet.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {sections.map((section) => {
-                  const isSelected =
-                    selectedSection?._id === section._id;
+            <div className="p-4">
+              {/* --------------------------------------------- */}
+              {/* SECTION LIST                                 */}
+              {/* --------------------------------------------- */}
 
-                  return (
-                    <div key={section._id}>
-                      {/* Section */}
+              {!selectedSection ? (
+                sections.length === 0 ? (
+                  <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                    <p className="text-sm text-text-muted">
+                      No sections are available for this course yet.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {sections.map((section) => (
                       <button
+                        key={section._id}
                         type="button"
                         onClick={() => {
                           setSelectedSection(section);
                           setSelectedLesson(null);
                         }}
-                        className={[
-                          "w-full rounded-xl border p-4 text-left transition-colors",
-                          isSelected
-                            ? "border-primary bg-primary/5"
-                            : "border-border bg-surface hover:bg-surface-hover",
-                        ].join(" ")}
+                        className="w-full rounded-xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/50 hover:bg-surface-hover"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
@@ -320,97 +330,185 @@ export const LearningPage = () => {
                           </span>
                         </div>
                       </button>
+                    ))}
+                  </div>
+                )
+              ) : (
+                /* --------------------------------------------- */
+                /* LESSON LIST                                  */
+                /* --------------------------------------------- */
 
-                      {/* Lessons */}
-                      {isSelected && (
-                        <div className="mt-2 space-y-1 pl-3">
-                          {lessonsLoading ? (
-                            <p className="px-3 py-2 text-xs text-text-muted">
-                              Loading lessons...
-                            </p>
-                          ) : lessonsError ? (
-                            <p className="px-3 py-2 text-xs text-error">
-                              Unable to load lessons.
-                            </p>
-                          ) : (lessonsData?.data || []).length === 0 ? (
-                            <p className="px-3 py-2 text-xs text-text-muted">
-                              No lessons available.
-                            </p>
-                          ) : (
-                            (lessonsData?.data || []).map((lesson, index) => (
-                              <button
-                                key={lesson._id}
-                                type="button"
-                                onClick={() => setSelectedLesson(lesson)}
-                                className={[
-                                  "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors",
-                                  selectedLesson?._id === lesson._id
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary",
-                                ].join(" ")}
-                              >
-                                <span className="shrink-0 text-xs text-text-muted">
-                                  {index + 1}
-                                </span>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedSection(null);
+                      setSelectedLesson(null);
+                    }}
+                    className="mb-4 inline-flex items-center gap-2 text-xs font-medium text-text-muted transition-colors hover:text-text-primary"
+                  >
+                    ← All Sections
+                  </button>
 
-                                <span className="min-w-0 truncate">
-                                  {lesson.title}
-                                </span>
-                              </button>
-                            ))
-                          )}
-                        </div>
-                      )}
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                      Section {selectedSection.order}
+                    </p>
+
+                    <h3 className="mt-1 text-lg font-semibold text-text-primary">
+                      {selectedSection.title}
+                    </h3>
+                  </div>
+
+                  {lessonsLoading ? (
+                    <p className="px-2 py-3 text-xs text-text-muted">
+                      Loading lessons...
+                    </p>
+                  ) : lessonsError ? (
+                    <p className="px-2 py-3 text-xs text-error">
+                      Unable to load lessons.
+                    </p>
+                  ) : (lessonsData?.data || []).length === 0 ? (
+                    <p className="px-2 py-3 text-xs text-text-muted">
+                      No lessons available.
+                    </p>
+                  ) : (
+                    <div className="space-y-1">
+                      {(lessonsData?.data || []).map((lesson, index) => (
+                        <button
+                          key={lesson._id}
+                          type="button"
+                          onClick={() => setSelectedLesson(lesson)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
+                        >
+                          <span className="shrink-0 text-xs text-text-muted">
+                            {index + 1}
+                          </span>
+
+                          <span className="min-w-0 truncate">
+                            {lesson.title}
+                          </span>
+                        </button>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* --------------------------------------------- */}
+        {/* LESSON WORKSPACE                             */}
+        {/* --------------------------------------------- */}
+
+        <div
+          className={[
+            selectedLesson
+              ? "w-full"
+              : "",
+            "transition-all duration-300 ease-in-out",
+          ].join(" ")}
+        >
+          {/* Learning Navigation */}
+          <div className="mb-6 flex items-center gap-3">
+            {/* Section */}
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedLesson(null);
+              }}
+              className={[
+                "group flex min-w-[110px] flex-col items-center justify-center",
+                "rounded-xl border px-5 py-3",
+                "transition-all duration-200 ease-out",
+                "hover:-translate-y-0.5 hover:shadow-sm",
+                selectedSection
+                  ? "border-primary/30 bg-primary/5"
+                  : "border-border bg-surface",
+              ].join(" ")}
+            >
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+                Section
+              </span>
+
+              <span className="mt-0.5 text-lg font-semibold text-text-primary">
+                {selectedSection ? selectedSection.order : "1"}
+              </span>
+            </button>
+
+            {/* Lesson */}
+            {selectedSection && (
+              <>
+                <span
+                  className="text-lg text-text-muted transition-opacity duration-200"
+                >
+                  ›
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLesson(null);
+                  }}
+                  className={[
+                    "flex min-w-[110px] flex-col items-center justify-center",
+                    "rounded-xl border px-5 py-3",
+                    "animate-in fade-in slide-in-from-left-2",
+                    "transition-all duration-200 ease-out",
+                    "hover:-translate-y-0.5 hover:shadow-sm",
+                    selectedLesson
+                      ? "border-primary/30 bg-primary/5"
+                      : "border-border bg-surface",
+                  ].join(" ")}
+                >
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+                    Lesson
+                  </span>
+
+                  <span className="mt-0.5 text-lg font-semibold text-text-primary">
+                    {selectedLesson ? selectedLesson.order : "1"}
+                  </span>
+                </button>
+              </>
             )}
           </div>
-        </Card>
 
-        {/* Lesson workspace */}
-        <Card className="min-h-[650px]">
-          {!selectedLesson ? (
-            <div className="flex min-h-[600px] items-center justify-center p-8 text-center">
-              <div className="max-w-md">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-3xl">
-                  📚
+          <Card className="min-h-[650px]">
+            {!selectedLesson ? (
+              <div className="flex min-h-[600px] items-center justify-center p-8 text-center">
+                <div className="max-w-md">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-3xl">
+                    📚
+                  </div>
+
+                  <h2 className="mt-6 text-2xl">
+                    {selectedSection
+                      ? "Select a Lesson"
+                      : "Select a Section"}
+                  </h2>
+
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    {selectedSection
+                      ? "Choose a lesson from the sidebar to begin learning."
+                      : "Choose a section from the course content to begin learning."}
+                  </p>
                 </div>
-
-                <h2 className="mt-6 text-2xl">
-                  Start Learning
-                </h2>
-
-                <p className="mt-3 text-sm leading-6 text-text-muted">
-                  Select a lesson from the course content to begin
-                  learning.
-                </p>
               </div>
-            </div>
-          ) : (
-            <div>
-              <div className="border-b border-border pb-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                  Lesson
-                </p>
-
-                <h2 className="mt-2 text-2xl">
-                  {selectedLesson.title}
-                </h2>
+            ) : (
+              <div>
+                <div className="pt-2">
+                  <LessonContent
+                    lesson={lessonData?.data}
+                    resourceData={resourceData}
+                    resourceLoading={resourceLoading}
+                    resourceError={resourceError}
+                  />
+                </div>
               </div>
-
-              <div className="pt-6">
-                <LessonContent
-                  lesson={lessonData?.data}
-                  resourceData={resourceData}
-                  resourceLoading={resourceLoading}
-                  resourceError={resourceError}
-                />
-              </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
+        </div>
       </main>
     </div>
   );
