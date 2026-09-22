@@ -87,12 +87,18 @@ export const LessonContent = ({
       </div>
 
       {/* Lesson Blocks */}
-      <div className="grid grid-cols-1 gap-5 px-6 py-7 sm:px-8 lg:grid-cols-12 lg:items-start">       {blocks.length === 0 ? (
+      <div
+        className={`grid grid-cols-1 gap-5 px-6 py-7 sm:px-8 lg:grid-cols-12 lg:items-start transition-all duration-300 ${quizStarted ? "lg:grid-cols-1" : ""
+          }`}
+      >        {blocks.length === 0 ? (
         <p className="text-sm text-text-muted">
           This lesson does not contain any content yet.
         </p>
       ) : (
         blocks.map((block) => {
+          if (quizStarted && block.type !== "quiz") {
+            return null;
+          }
           switch (block.type) {
             case "text":
               return (
@@ -234,7 +240,7 @@ export const LessonContent = ({
               return (
                 <div
                   key={block._id}
-className="lg:col-span-12 rounded-xl border border-border bg-surface p-5"                >
+                  className="lg:col-span-12 rounded-xl border border-border bg-surface p-5"                >
                   {quizLoading ? (
                     <p className="text-sm text-text-muted">
                       Loading quiz...
