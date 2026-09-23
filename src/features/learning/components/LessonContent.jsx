@@ -1,7 +1,7 @@
 import Card from "@/components/ui/Card";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getQuizById, getQuizQuestions } from "../api/learningApi";
+import { getQuizById, getQuizQuestions, submitQuizAttempt } from "../api/learningApi";
 
 export const LessonContent = ({
   lesson,
@@ -9,11 +9,15 @@ export const LessonContent = ({
   resourceLoading,
   resourceError,
 }) => {
+
   const [quizStarted, setQuizStarted] = useState(false);
   const [showOnlyQuiz, setShowOnlyQuiz] = useState(false);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
+
+  const [quizSubmitting, setQuizSubmitting] = useState(false);
+  const [quizResult, setQuizResult] = useState(null);
 
   const blocks = [...(lesson?.blocks || [])].sort(
     (a, b) => a.order - b.order
@@ -47,6 +51,41 @@ export const LessonContent = ({
 
   const questions = quizQuestionsData?.data || [];
   const currentQuestion = questions[currentQuestionIndex];
+
+  const handleSubmitQuiz = async () => {
+    if (!quizId || questions.length === 0) return;
+
+    const answers = Object.entries(selectedAnswers).map(
+      ([question, selectedOption]) => ({
+        question,
+        selectedOption,
+      })
+    );
+
+    if (answers.length !== questions.length) {
+      console.warn("Not all questions have been answered.");
+      return;
+    }
+
+    try {
+      setQuizSubmitting(true);
+
+      console.log("SUBMITTING QUIZ:", {
+        quizId,
+        answers,
+      });
+
+      const response = await submitQuizAttempt(quizId, answers);
+
+      console.log("QUIZ SUBMIT RESPONSE:", response);
+
+      setQuizResult(response.data);
+    } catch (error) {
+      console.error("QUIZ SUBMIT ERROR:", error);
+    } finally {
+      setQuizSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (quizStarted) {
@@ -155,11 +194,10 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-7 transition-all duration-300 ease-out ${
-                      quizStarted
-                        ? "pointer-events-none scale-[0.98] opacity-0"
-                        : "scale-100 opacity-100"
-                    }`}
+                    className={`lg:col-span-7 transition-all duration-300 ease-out ${quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                      }`}
                   >
                     <p className="whitespace-pre-line text-sm leading-7 text-text-secondary">
                       {block.data?.content}
@@ -171,11 +209,10 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${
-                      quizStarted
-                        ? "pointer-events-none scale-[0.98] opacity-0"
-                        : "scale-100 opacity-100"
-                    }`}
+                    className={`lg:col-span-5 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                      }`}
                   >
                     <div className="border-b border-border px-4 py-2">
                       <span className="font-mono text-xs text-text-muted">
@@ -195,11 +232,10 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-7 rounded-xl border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${
-                      quizStarted
-                        ? "pointer-events-none scale-[0.98] opacity-0"
-                        : "scale-100 opacity-100"
-                    }`}
+                    className={`lg:col-span-7 rounded-xl border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                      }`}
                   >
                     {block.data?.title && (
                       <h3 className="text-sm font-semibold text-primary">
@@ -220,11 +256,10 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-xl border border-border bg-surface-hover/50 p-5 transition-all duration-300 ease-out ${
-                        quizStarted
-                          ? "pointer-events-none scale-[0.98] opacity-0"
-                          : "scale-100 opacity-100"
-                      }`}
+                      className={`lg:col-span-5 rounded-xl border border-border bg-surface-hover/50 p-5 transition-all duration-300 ease-out ${quizStarted
+                        ? "pointer-events-none scale-[0.98] opacity-0"
+                        : "scale-100 opacity-100"
+                        }`}
                     >
                       <p className="text-sm text-text-muted">
                         Loading resource...
@@ -237,11 +272,10 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${
-                        quizStarted
-                          ? "pointer-events-none scale-[0.98] opacity-0"
-                          : "scale-100 opacity-100"
-                      }`}
+                      className={`lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                        ? "pointer-events-none scale-[0.98] opacity-0"
+                        : "scale-100 opacity-100"
+                        }`}
                     >
                       <p className="text-sm font-medium text-error">
                         Unable to load resource
@@ -255,11 +289,10 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 rounded-xl border border-border bg-surface p-5 transition-all duration-300 ease-out ${
-                      quizStarted
-                        ? "pointer-events-none scale-[0.98] opacity-0"
-                        : "scale-100 opacity-100"
-                    }`}
+                    className={`lg:col-span-5 rounded-xl border border-border bg-surface p-5 transition-all duration-300 ease-out ${quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
@@ -318,11 +351,10 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-12 rounded-xl border border-border bg-surface p-5 transition-all duration-500 ease-out ${
-                      quizStarted
+                    className={`lg:col-span-12 rounded-xl border border-border bg-surface p-5 transition-all duration-500 ease-out ${quizStarted
                         ? "scale-100 opacity-100"
                         : "scale-[0.98] opacity-100"
-                    }`}
+                      }`}
                   >
                     {quizLoading ? (
                       <p className="text-sm text-text-muted">
@@ -332,177 +364,335 @@ export const LessonContent = ({
                       <p className="text-sm text-error">
                         Unable to load quiz.
                       </p>
-                    ) : (
-                      <>
-                        {!quizStarted ? (
-                          /* ================= QUIZ INTRO ================= */
+                    ) : quizResult ? (
+                      /* =====================================================
+                         QUIZ RESULT
+                      ====================================================== */
+                      <div className="space-y-6">
+                        {/* Result Header */}
+                        <div className="border-b border-border pb-5">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                            Quiz Completed
+                          </p>
+
+                          <h3 className="mt-2 text-2xl font-semibold text-text-primary">
+                            {quizData?.data?.title || "Quiz"}
+                          </h3>
+
+                          <p className="mt-2 text-sm text-text-muted">
+                            Your quiz has been submitted successfully.
+                          </p>
+                        </div>
+
+                        {/* Result Summary */}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                              Score
+                            </p>
+
+                            <p className="mt-2 text-3xl font-bold text-text-primary">
+                              {quizResult.score ?? 0}
+                            </p>
+                          </div>
+
+                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                              Percentage
+                            </p>
+
+                            <p className="mt-2 text-3xl font-bold text-text-primary">
+                              {quizResult.percentage ?? 0}%
+                            </p>
+                          </div>
+
+                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                              Result
+                            </p>
+
+                            <p
+                              className={`mt-2 text-xl font-bold ${quizResult.passed
+                                  ? "text-success"
+                                  : "text-error"
+                                }`}
+                            >
+                              {quizResult.passed ? "Passed" : "Not Passed"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Passing Score */}
+                        {quizData?.data?.passingScore !== undefined && (
+                          <div className="rounded-xl border border-border bg-surface-hover/50 p-4">
+                            <p className="text-sm text-text-muted">
+                              Passing score:{" "}
+                              <span className="font-semibold text-text-primary">
+                                {quizData.data.passingScore}%
+                              </span>
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Submitted Answers */}
+                        {quizResult.answers?.length > 0 && (
                           <div>
+                            <div className="border-b border-border pb-4">
+                              <h4 className="text-lg font-semibold text-text-primary">
+                                Your Answers
+                              </h4>
+
+                              <p className="mt-1 text-sm text-text-muted">
+                                Answers submitted for this attempt.
+                              </p>
+                            </div>
+
+                            <div className="mt-5 space-y-3">
+                              {quizResult.answers.map((answer, index) => {
+                                const question = questions.find(
+                                  (item) => item._id === answer.question
+                                );
+
+                                const selectedOption = question?.options?.find(
+                                  (option) => option._id === answer.selectedOption
+                                );
+
+                                return (
+                                  <div
+                                    key={answer.question || index}
+                                    className="rounded-xl border border-border bg-surface-hover/50 p-4"
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                        {index + 1}
+                                      </div>
+
+                                      <div className="min-w-0">
+                                        <p className="text-sm font-medium text-text-primary">
+                                          {question?.question ||
+                                            `Question ${index + 1}`}
+                                        </p>
+
+                                        <p className="mt-2 text-xs text-text-muted">
+                                          Your answer
+                                        </p>
+
+                                        <p className="mt-1 text-sm font-medium text-text-secondary">
+                                          {selectedOption?.text ||
+                                            "Selected answer"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Retake */}
+                        <div className="flex justify-end border-t border-border pt-5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuizResult(null);
+                              setQuizStarted(false);
+                              setCurrentQuestionIndex(0);
+                              setSelectedAnswers({});
+                            }}
+                            className="inline-flex items-center justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-text-primary transition-all duration-200 hover:bg-surface-hover"
+                          >
+                            Retake Quiz
+                          </button>
+                        </div>
+                      </div>
+                    ) : !quizStarted ? (
+                      /* =====================================================
+                         QUIZ INTRO
+                      ====================================================== */
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                          Quiz
+                        </p>
+
+                        <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                          {quizData?.data?.title || "Quiz"}
+                        </h3>
+
+                        {quizData?.data?.description && (
+                          <p className="mt-2 text-sm leading-6 text-text-muted">
+                            {quizData.data.description}
+                          </p>
+                        )}
+
+                        <div className="mt-4 flex flex-wrap gap-3 text-xs text-text-muted">
+                          <span>
+                            {questions.length}{" "}
+                            {questions.length === 1
+                              ? "question"
+                              : "questions"}
+                          </span>
+
+                          {quizData?.data?.passingScore !== undefined && (
+                            <span>
+                              Passing score:{" "}
+                              {quizData.data.passingScore}%
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleStartQuiz}
+                          disabled={
+                            quizQuestionsLoading ||
+                            questions.length === 0
+                          }
+                          className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {quizQuestionsLoading
+                            ? "Loading Questions..."
+                            : "Start Quiz"}
+                        </button>
+                      </div>
+                    ) : (
+                      /* =====================================================
+                         QUIZ QUESTIONS
+                      ====================================================== */
+                      <div>
+                        {/* Quiz Header */}
+                        <div className="border-b border-border pb-4">
+                          <div className="flex items-center justify-between gap-4">
                             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
                               Quiz
                             </p>
 
-                            <h3 className="mt-2 text-xl font-semibold text-text-primary">
-                              {quizData?.data?.title || "Quiz"}
-                            </h3>
-
-                            {quizData?.data?.description && (
-                              <p className="mt-2 text-sm leading-6 text-text-muted">
-                                {quizData.data.description}
+                            {questions.length > 0 && (
+                              <p className="text-xs font-medium text-text-muted">
+                                {currentQuestionIndex + 1} /{" "}
+                                {questions.length}
                               </p>
                             )}
-
-                            <div className="mt-4 flex flex-wrap gap-3 text-xs text-text-muted">
-                              <span>
-                                {questions.length}{" "}
-                                {questions.length === 1
-                                  ? "question"
-                                  : "questions"}
-                              </span>
-
-                              {quizData?.data?.passingScore !== undefined && (
-                                <span>
-                                  Passing score:{" "}
-                                  {quizData.data.passingScore}%
-                                </span>
-                              )}
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={handleStartQuiz}
-                              disabled={
-                                quizQuestionsLoading ||
-                                questions.length === 0
-                              }
-                              className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              {quizQuestionsLoading
-                                ? "Loading Questions..."
-                                : "Start Quiz"}
-                            </button>
                           </div>
-                        ) : (
-                          /* ================= QUIZ QUESTIONS ================= */
-                          <div>
-                            <div className="border-b border-border pb-4">
-                              <div className="flex items-center justify-between gap-4">
-                                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                                  Quiz
-                                </p>
 
-                                {questions.length > 0 && (
-                                  <p className="text-xs font-medium text-text-muted">
-                                    {currentQuestionIndex + 1} /{" "}
-                                    {questions.length}
-                                  </p>
-                                )}
-                              </div>
+                          <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                            {quizData?.data?.title || "Quiz"}
+                          </h3>
 
-                              <h3 className="mt-2 text-xl font-semibold text-text-primary">
-                                {quizData?.data?.title || "Quiz"}
-                              </h3>
-
-                              {questions.length > 0 && (
-                                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-hover">
-                                  <div
-                                    className="h-full bg-primary transition-all duration-300 ease-out"
-                                    style={{
-                                      width: `${
-                                        ((currentQuestionIndex + 1) /
-                                          questions.length) *
-                                        100
-                                      }%`,
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
-
-                            {quizQuestionsLoading ? (
-                              <p className="mt-5 text-sm text-text-muted">
-                                Loading questions...
-                              </p>
-                            ) : quizQuestionsError ? (
-                              <p className="mt-5 text-sm text-error">
-                                Unable to load questions.
-                              </p>
-                            ) : questions.length === 0 ? (
-                              <p className="mt-5 text-sm text-text-muted">
-                                No questions are available for this quiz.
-                              </p>
-                            ) : currentQuestion ? (
+                          {questions.length > 0 && (
+                            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-hover">
                               <div
-                                key={currentQuestion._id}
-                                className="mt-5 rounded-xl border border-border bg-surface-hover/50 p-5"
+                                className="h-full bg-primary transition-all duration-300 ease-out"
+                                style={{
+                                  width: `${((currentQuestionIndex + 1) /
+                                      questions.length) *
+                                    100
+                                    }%`,
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Question */}
+                        {quizQuestionsLoading ? (
+                          <p className="mt-5 text-sm text-text-muted">
+                            Loading questions...
+                          </p>
+                        ) : quizQuestionsError ? (
+                          <p className="mt-5 text-sm text-error">
+                            Unable to load questions.
+                          </p>
+                        ) : questions.length === 0 ? (
+                          <p className="mt-5 text-sm text-text-muted">
+                            No questions are available for this quiz.
+                          </p>
+                        ) : currentQuestion ? (
+                          <div
+                            key={currentQuestion._id}
+                            className="mt-5 rounded-xl border border-border bg-surface-hover/50 p-5"
+                          >
+                            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                              Question {currentQuestionIndex + 1}
+                            </p>
+
+                            <h4 className="mt-2 text-base font-semibold leading-6 text-text-primary">
+                              {currentQuestion.question}
+                            </h4>
+
+                            {/* Options */}
+                            <div className="mt-4 space-y-2">
+                              {currentQuestion.options?.map(
+                                (option, optionIndex) => {
+                                  const isSelected =
+                                    selectedAnswers[
+                                    currentQuestion._id
+                                    ] === option._id;
+
+                                  return (
+                                    <label
+                                      key={
+                                        option._id || optionIndex
+                                      }
+                                      className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all duration-200 ${isSelected
+                                          ? "border-primary bg-primary/5"
+                                          : "border-border bg-surface hover:bg-surface-hover"
+                                        }`}
+                                    >
+                                      <input
+                                        type="radio"
+                                        name={`question-${currentQuestion._id}`}
+                                        value={option._id}
+                                        checked={isSelected}
+                                        onChange={() =>
+                                          handleAnswerSelect(
+                                            option._id
+                                          )
+                                        }
+                                        className="accent-primary"
+                                      />
+
+                                      <span className="text-sm text-text-secondary">
+                                        {option.text}
+                                      </span>
+                                    </label>
+                                  );
+                                }
+                              )}
+                            </div>
+
+                            {/* Navigation */}
+                            <div className="mt-6 flex items-center justify-between gap-4">
+                              <p className="text-xs text-text-muted">
+                                {hasSelectedAnswer
+                                  ? "Answer selected"
+                                  : "Select an answer to continue"}
+                              </p>
+
+                              <button
+                                type="button"
+                                disabled={
+                                  !hasSelectedAnswer ||
+                                  (isLastQuestion &&
+                                    quizSubmitting)
+                                }
+                                onClick={
+                                  isLastQuestion
+                                    ? handleSubmitQuiz
+                                    : handleNextQuestion
+                                }
+                                className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
                               >
-                                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                                  Question {currentQuestionIndex + 1}
-                                </p>
-
-                                <h4 className="mt-2 text-base font-semibold leading-6 text-text-primary">
-                                  {currentQuestion.question}
-                                </h4>
-
-                                <div className="mt-4 space-y-2">
-                                  {currentQuestion.options?.map(
-                                    (option, optionIndex) => {
-                                      const isSelected =
-                                        selectedAnswers[
-                                          currentQuestion._id
-                                        ] === option._id;
-
-                                      return (
-                                        <label
-                                          key={option._id || optionIndex}
-                                          className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all duration-200 ${
-                                            isSelected
-                                              ? "border-primary bg-primary/5"
-                                              : "border-border bg-surface hover:bg-surface-hover"
-                                          }`}
-                                        >
-                                          <input
-                                            type="radio"
-                                            name={`question-${currentQuestion._id}`}
-                                            value={option._id}
-                                            checked={isSelected}
-                                            onChange={() =>
-                                              handleAnswerSelect(option._id)
-                                            }
-                                            className="accent-primary"
-                                          />
-
-                                          <span className="text-sm text-text-secondary">
-                                            {option.text}
-                                          </span>
-                                        </label>
-                                      );
-                                    }
-                                  )}
-                                </div>
-
-                                <div className="mt-6 flex items-center justify-between gap-4">
-                                  <p className="text-xs text-text-muted">
-                                    {hasSelectedAnswer
-                                      ? "Answer selected"
-                                      : "Select an answer to continue"}
-                                  </p>
-
-                                  <button
-                                    type="button"
-                                    disabled={!hasSelectedAnswer}
-                                    onClick={handleNextQuestion}
-                                    className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-                                  >
-                                    {isLastQuestion
-                                      ? "Submit Quiz"
-                                      : "Next"}
-                                  </button>
-                                </div>
-                              </div>
-                            ) : null}
+                                {isLastQuestion
+                                  ? quizSubmitting
+                                    ? "Submitting..."
+                                    : "Submit Quiz"
+                                  : "Next"}
+                              </button>
+                            </div>
                           </div>
-                        )}
-                      </>
+                        ) : null}
+                      </div>
                     )}
                   </div>
                 );
@@ -512,7 +702,7 @@ export const LessonContent = ({
             }
           })
         )}
-      </div>
-    </Card>
+      </div >
+    </Card >
   );
 };
