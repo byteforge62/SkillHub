@@ -352,8 +352,8 @@ export const LessonContent = ({
                   <div
                     key={block._id}
                     className={`lg:col-span-12 rounded-xl border border-border bg-surface p-5 transition-all duration-500 ease-out ${quizStarted
-                        ? "scale-100 opacity-100"
-                        : "scale-[0.98] opacity-100"
+                      ? "scale-100 opacity-100"
+                      : "scale-[0.98] opacity-100"
                       }`}
                   >
                     {quizLoading ? (
@@ -413,8 +413,8 @@ export const LessonContent = ({
 
                             <p
                               className={`mt-2 text-xl font-bold ${quizResult.passed
-                                  ? "text-success"
-                                  : "text-error"
+                                ? "text-success"
+                                : "text-error"
                                 }`}
                             >
                               {quizResult.passed ? "Passed" : "Not Passed"}
@@ -435,60 +435,97 @@ export const LessonContent = ({
                         )}
 
                         {/* Submitted Answers */}
-                        {quizResult.answers?.length > 0 && (
-                          <div>
-                            <div className="border-b border-border pb-4">
-                              <h4 className="text-lg font-semibold text-text-primary">
-                                Your Answers
-                              </h4>
+                        {quizResult.answers.map((review, index) => {
+                          const questionId =
+                            typeof review.question === "object"
+                              ? review.question?._id
+                              : review.question;
 
-                              <p className="mt-1 text-sm text-text-muted">
-                                Answers submitted for this attempt.
+                          const selectedOptionId =
+                            typeof review.selectedOption === "object"
+                              ? review.selectedOption?._id
+                              : review.selectedOption;
+
+                          // Find the original question from the questions already loaded
+                          const question = questions.find(
+                            (q) => q._id?.toString() === questionId?.toString()
+                          );
+
+                          // Find the selected option from that question
+                          const selectedOption = question?.options?.find(
+                            (option) =>
+                              option._id?.toString() === selectedOptionId?.toString()
+                          );
+
+                          const isCorrect = Boolean(review.isCorrect);
+
+                          return (
+                            <div
+                              key={questionId || index}
+                              className={`rounded-xl border p-5 transition-all duration-300 ${isCorrect
+                                  ? "border-success/20 bg-success/5"
+                                  : "border-error/20 bg-error/5"
+                                }`}
+                            >
+                              {/* Question */}
+                              <div className="flex items-start gap-3">
+                                <div
+                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${isCorrect
+                                      ? "bg-success/10 text-success"
+                                      : "bg-error/10 text-error"
+                                    }`}
+                                >
+                                  {isCorrect ? "✓" : "✕"}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                                    Question {index + 1}
+                                  </p>
+
+                                  <p className="mt-1 text-sm font-medium leading-6 text-text-primary">
+                                    {question?.question || "Question unavailable"}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Your Answer */}
+                              <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+                                <p className="text-xs font-medium text-text-muted">
+                                  Your answer
+                                </p>
+
+                                <p
+                                  className={`mt-1 text-sm font-medium ${isCorrect ? "text-success" : "text-error"
+                                    }`}
+                                >
+                                  {selectedOption?.text || "Answer unavailable"}
+                                </p>
+                              </div>
+
+                              {/* Correct Answer */}
+                              {!isCorrect && review.correctOption && (
+                                <div className="mt-3 rounded-lg border border-success/20 bg-success/5 p-4">
+                                  <p className="text-xs font-medium text-text-muted">
+                                    Correct answer
+                                  </p>
+
+                                  <p className="mt-1 text-sm font-medium text-success">
+                                    {review.correctOption.text}
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* Status */}
+                              <p
+                                className={`mt-3 text-xs font-semibold ${isCorrect ? "text-success" : "text-error"
+                                  }`}
+                              >
+                                {isCorrect ? "Correct answer" : "Incorrect answer"}
                               </p>
                             </div>
-
-                            <div className="mt-5 space-y-3">
-                              {quizResult.answers.map((answer, index) => {
-                                const question = questions.find(
-                                  (item) => item._id === answer.question
-                                );
-
-                                const selectedOption = question?.options?.find(
-                                  (option) => option._id === answer.selectedOption
-                                );
-
-                                return (
-                                  <div
-                                    key={answer.question || index}
-                                    className="rounded-xl border border-border bg-surface-hover/50 p-4"
-                                  >
-                                    <div className="flex items-start gap-3">
-                                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                                        {index + 1}
-                                      </div>
-
-                                      <div className="min-w-0">
-                                        <p className="text-sm font-medium text-text-primary">
-                                          {question?.question ||
-                                            `Question ${index + 1}`}
-                                        </p>
-
-                                        <p className="mt-2 text-xs text-text-muted">
-                                          Your answer
-                                        </p>
-
-                                        <p className="mt-1 text-sm font-medium text-text-secondary">
-                                          {selectedOption?.text ||
-                                            "Selected answer"}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
+                          );
+                        })}
 
                         {/* Retake */}
                         <div className="flex justify-end border-t border-border pt-5">
@@ -585,7 +622,7 @@ export const LessonContent = ({
                                 className="h-full bg-primary transition-all duration-300 ease-out"
                                 style={{
                                   width: `${((currentQuestionIndex + 1) /
-                                      questions.length) *
+                                    questions.length) *
                                     100
                                     }%`,
                                 }}
@@ -635,8 +672,8 @@ export const LessonContent = ({
                                         option._id || optionIndex
                                       }
                                       className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all duration-200 ${isSelected
-                                          ? "border-primary bg-primary/5"
-                                          : "border-border bg-surface hover:bg-surface-hover"
+                                        ? "border-primary bg-primary/5"
+                                        : "border-border bg-surface hover:bg-surface-hover"
                                         }`}
                                     >
                                       <input
