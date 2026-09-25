@@ -1,7 +1,11 @@
 import Card from "@/components/ui/Card";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getQuizById, getQuizQuestions, submitQuizAttempt } from "../api/learningApi";
+import { getQuizById, getQuizQuestions, submitQuizAttempt, getQuizAttemptById, getMyQuizAttempts } from "../api/learningApi";
+
+import { QuizAttemptHistory } from "./QuizAttemptHistory";
+import { QuizAttemptDetails } from "./QuizAttemptDetails";
+import { queryClient } from "@/lib/query";
 
 export const LessonContent = ({
   lesson,
@@ -18,6 +22,10 @@ export const LessonContent = ({
 
   const [quizSubmitting, setQuizSubmitting] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
+
+  const [quizAttemptId, setQuizAttemptId] = useState(null);
+  const [selectedAttemptId, setSelectedAttemptId] = useState(null);
+
 
   const blocks = [...(lesson?.blocks || [])].sort(
     (a, b) => a.order - b.order
@@ -47,6 +55,28 @@ export const LessonContent = ({
     queryKey: ["quiz-questions", quizId],
     queryFn: () => getQuizQuestions(quizId),
     enabled: Boolean(quizId),
+  });
+
+  const attemptToFetch = selectedAttemptId || quizAttemptId;
+
+  const {
+    data: savedAttemptData,
+    isLoading: savedAttemptLoading,
+    isError: savedAttemptError,
+  } = useQuery({
+    queryKey: ["quiz-attempt", attemptToFetch],
+    queryFn: () => getQuizAttemptById(attemptToFetch),
+    enabled: Boolean(attemptToFetch),
+  });
+
+  const {
+    data: quizAttemptsData,
+    isLoading: quizAttemptsLoading,
+    isError: quizAttemptsError,
+  } = useQuery({
+    queryKey: ["quiz-attempts", quizId],
+    queryFn: () => getMyQuizAttempts(quizId),
+    enabled: Boolean(quizId && quizResult),
   });
 
   const questions = quizQuestionsData?.data || [];
@@ -79,7 +109,13 @@ export const LessonContent = ({
 
       console.log("QUIZ SUBMIT RESPONSE:", response);
 
+      const attempt = response.data;
+
+      setQuizAttemptId(attempt._id);
       setQuizResult(response.data);
+      queryClient.invalidateQueries({
+        queryKey: ["quiz-attempts", quizId]
+      })
     } catch (error) {
       console.error("QUIZ SUBMIT ERROR:", error);
     } finally {
@@ -463,16 +499,16 @@ export const LessonContent = ({
                             <div
                               key={questionId || index}
                               className={`rounded-xl border p-5 transition-all duration-300 ${isCorrect
-                                  ? "border-success/20 bg-success/5"
-                                  : "border-error/20 bg-error/5"
+                                ? "border-success/20 bg-success/5"
+                                : "border-error/20 bg-error/5"
                                 }`}
                             >
                               {/* Question */}
                               <div className="flex items-start gap-3">
                                 <div
                                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${isCorrect
-                                      ? "bg-success/10 text-success"
-                                      : "bg-error/10 text-error"
+                                    ? "bg-success/10 text-success"
+                                    : "bg-error/10 text-error"
                                     }`}
                                 >
                                   {isCorrect ? "✓" : "✕"}
@@ -542,7 +578,51 @@ export const LessonContent = ({
                             Retake Quiz
                           </button>
                         </div>
+
+                        {selectedAttemptId ? (
+                          <div className="mt-6">
+                            {savedAttemptLoading && (
+                              <div className="rounded-2xl border border-border bg-surface p-6">
+                                <p className="text-sm text-text-muted">
+                                  Loading attempt details...
+                                </p>
+                              </div>
+                            )}
+
+                            {savedAttemptError && (
+                              <div className="rounded-2xl border border-error/20 bg-error/5 p-6">
+                                <p className="text-sm text-error">
+                                  Unable to load this attempt.
+                                </p>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedAttemptId(null)}
+                                  className="mt-4 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
+                                >
+                                  Back to attempts
+                                </button>
+                              </div>
+                            )}
+
+                            {!savedAttemptLoading &&
+                              !savedAttemptError &&
+                              savedAttemptData?.data && (
+                                <QuizAttemptDetails
+                                  attempt={savedAttemptData.data}
+                                  onClose={() => setSelectedAttemptId(null)}
+                                />
+                              )}
+                          </div>
+                        ) : (
+                          <QuizAttemptHistory
+                            attempts={quizAttemptsData?.data || []}
+                            loading={quizAttemptsLoading}
+                            onSelectAttempt={setSelectedAttemptId}
+                          />
+                        )}
                       </div>
+
                     ) : !quizStarted ? (
                       /* =====================================================
                          QUIZ INTRO

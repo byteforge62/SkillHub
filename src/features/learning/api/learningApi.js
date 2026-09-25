@@ -34,3 +34,13 @@ export const getQuizQuestions = async (quizId) => {
   const response = await apiClient.get(`/quizzes/${quizId}/questions`);
   return response.data;
 };
+
+export const getQuizAttemptById = async (attemptId) => {
+  const response = await apiClient.get(`/quiz-attempts/${attemptId}`);
+  return response.data;
+};
+
+export const getMyQuizAttempts = async (quizId) => {
+  const response = await apiClient.get(`/quizzes/${quizId}/attempts/me`);
+  return response.data;
+};
