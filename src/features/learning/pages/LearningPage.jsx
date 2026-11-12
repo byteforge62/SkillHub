@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,12 +8,23 @@ import { LessonContent } from "../components/LessonContent";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
-import { getCourseSections, getSectionLessons, getLessonById, getResourceById } from "../api/learningApi";
+import useCompleteLesson from "@/features/enrollment/hooks/useCompleteLesson";
+import {
+  getCourseSections,
+  getSectionLessons,
+  getLessonById,
+} from "../api/learningApi";
 
 export const LearningPage = () => {
   const { courseId } = useParams();
+
+  return <LearningWorkspace key={courseId} courseId={courseId} />;
+};
+
+const LearningWorkspace = ({ courseId }) => {
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
+  const completeLessonMutation = useCompleteLesson();
 
   const {
     data: courseData,
@@ -47,43 +58,23 @@ export const LearningPage = () => {
   const {
     data: lessonsData,
     isLoading: lessonsLoading,
-    isError: lessonsError
+    isError: lessonsError,
+    refetch: refetchLessons,
   } = useQuery({
     queryKey: ["section-lessons", selectedSection?._id],
     queryFn: () => getSectionLessons(selectedSection._id),
-    enabled: Boolean(selectedSection?._id)
-  })
+    enabled: Boolean(selectedSection?._id),
+  });
 
   const {
     data: lessonData,
     isLoading: lessonLoading,
     isError: lessonError,
+    refetch: refetchLesson,
   } = useQuery({
     queryKey: ["lesson", selectedLesson?._id],
     queryFn: () => getLessonById(selectedLesson._id),
     enabled: Boolean(selectedLesson?._id),
-  });
-
-  const resourceBlock = useMemo(() => {
-    return (
-      lessonData?.data?.blocks?.find(
-        (block) => block.type === "resource"
-      ) || null
-    );
-  }, [lessonData]);
-
-  const {
-    data: resourceData,
-    isLoading: resourceLoading,
-    isError: resourceError,
-  } = useQuery({
-    queryKey: [
-      "resource",
-      resourceBlock?.data?.resourceId,
-    ],
-    queryFn: () =>
-      getResourceById(resourceBlock.data.resourceId),
-    enabled: Boolean(resourceBlock?.data?.resourceId),
   });
 
   const course = courseData?.data;
@@ -92,24 +83,21 @@ export const LearningPage = () => {
     ? sectionsData.data
     : [];
 
-  const enrollments = Array.isArray(enrollmentData?.data)
-    ? enrollmentData.data
-    : [];
-
-  const enrollment = useMemo(() => {
-    return enrollments.find(
+  const enrollment = Array.isArray(enrollmentData?.data)
+    ? enrollmentData.data.find(
       (item) =>
         item.courseId?._id === courseId ||
         item.courseId === courseId
-    );
-  }, [enrollments, courseId]);
-
-
-
-
-  useEffect(() => {
-    setSelectedLesson(null);
-  }, [enrollment]);
+    )
+    : null;
+  const currentLessonId = selectedLesson?._id;
+  const isLessonCompleted = enrollment?.completedLessons?.some(
+    (completedLesson) =>
+      String(completedLesson?._id ?? completedLesson) ===
+      String(currentLessonId),
+  ) ?? false;
+  const completionMutationIsCurrent =
+    completeLessonMutation.variables?.lessonId === currentLessonId;
 
   if (courseLoading || enrollmentLoading || sectionsLoading) {
     return (
@@ -365,9 +353,18 @@ export const LearningPage = () => {
                       Loading lessons...
                     </p>
                   ) : lessonsError ? (
-                    <p className="px-2 py-3 text-xs text-error">
-                      Unable to load lessons.
-                    </p>
+                    <div className="px-2 py-3">
+                      <p className="text-xs text-error">
+                        Unable to load lessons.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => refetchLessons()}
+                        className="mt-2 text-xs font-medium text-primary underline-offset-2 hover:underline"
+                      >
+                        Retry
+                      </button>
+                    </div>
                   ) : (lessonsData?.data || []).length === 0 ? (
                     <p className="px-2 py-3 text-xs text-text-muted">
                       No lessons available.
@@ -378,7 +375,10 @@ export const LearningPage = () => {
                         <button
                           key={lesson._id}
                           type="button"
-                          onClick={() => setSelectedLesson(lesson)}
+                          onClick={() => {
+                            completeLessonMutation.reset();
+                            setSelectedLesson(lesson);
+                          }}
                           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
                         >
                           <span className="shrink-0 text-xs text-text-muted">
@@ -419,7 +419,7 @@ export const LearningPage = () => {
                 setSelectedLesson(null);
               }}
               className={[
-                "group flex min-w-[110px] flex-col items-center justify-center",
+                "group flex min-w-[110px] max-w-[min(45vw,280px)] flex-col items-center justify-center",
                 "rounded-xl border px-5 py-3",
                 "transition-all duration-200 ease-out",
                 "hover:-translate-y-0.5 hover:shadow-sm",
@@ -427,13 +427,17 @@ export const LearningPage = () => {
                   ? "border-primary/30 bg-primary/5"
                   : "border-border bg-surface",
               ].join(" ")}
+              aria-label="Open section navigation"
+              aria-expanded={!selectedLesson}
             >
               <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                Section
+                {selectedSection
+                  ? `Section ${selectedSection.order}`
+                  : "Course Sections"}
               </span>
 
-              <span className="mt-0.5 text-lg font-semibold text-text-primary">
-                {selectedSection ? selectedSection.order : "1"}
+              <span className="mt-1 w-full truncate text-sm font-semibold text-text-primary">
+                {selectedSection?.title || "Choose a section"}
               </span>
             </button>
 
@@ -453,6 +457,7 @@ export const LearningPage = () => {
                   }}
                   className={[
                     "flex min-w-[110px] flex-col items-center justify-center",
+                    "max-w-[min(45vw,280px)]",
                     "rounded-xl border px-5 py-3",
                     "animate-in fade-in slide-in-from-left-2",
                     "transition-all duration-200 ease-out",
@@ -461,13 +466,17 @@ export const LearningPage = () => {
                       ? "border-primary/30 bg-primary/5"
                       : "border-border bg-surface",
                   ].join(" ")}
+                  aria-label="Open lesson navigation"
+                  aria-expanded={!selectedLesson}
                 >
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                    Lesson
+                    {selectedLesson
+                      ? `Lesson ${selectedLesson.order}`
+                      : "Section Lessons"}
                   </span>
 
-                  <span className="mt-0.5 text-lg font-semibold text-text-primary">
-                    {selectedLesson ? selectedLesson.order : "1"}
+                  <span className="mt-1 w-full truncate text-sm font-semibold text-text-primary">
+                    {selectedLesson?.title || "Choose a lesson"}
                   </span>
                 </button>
               </>
@@ -496,16 +505,88 @@ export const LearningPage = () => {
                 </div>
               </div>
             ) : (
-              <div>
+              lessonLoading ? (
+                <div
+                  className="flex min-h-[600px] items-center justify-center text-sm text-text-muted"
+                  role="status"
+                >
+                  Loading lesson...
+                </div>
+              ) : lessonError ? (
+                <div className="flex min-h-[600px] flex-col items-center justify-center gap-3 text-center">
+                  <p className="text-sm text-error">
+                    Unable to load this lesson.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => refetchLesson()}
+                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : lessonData?.data ? (
                 <div className="pt-2">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm text-text-muted">
+                      {isLessonCompleted
+                        ? "Your progress for this lesson is saved."
+                        : "Mark this lesson complete when you finish it."}
+                    </p>
+                    <Button
+                      variant={isLessonCompleted ? "secondary" : "primary"}
+                      loading={
+                        completeLessonMutation.isPending &&
+                        completionMutationIsCurrent
+                      }
+                      disabled={
+                        isLessonCompleted ||
+                        (completeLessonMutation.isPending &&
+                          completionMutationIsCurrent) ||
+                        (completeLessonMutation.isSuccess &&
+                          completionMutationIsCurrent) ||
+                        enrollment.status !== "active"
+                      }
+                      onClick={() =>
+                        completeLessonMutation.mutate({
+                          enrollmentId: enrollment._id,
+                          lessonId: currentLessonId,
+                        })
+                      }
+                    >
+                      {isLessonCompleted
+                        ? "Lesson completed"
+                        : completionMutationIsCurrent &&
+                            completeLessonMutation.isSuccess
+                          ? "Saved"
+                          : completionMutationIsCurrent &&
+                              completeLessonMutation.isError
+                            ? "Retry saving progress"
+                            : "Mark lesson complete"}
+                    </Button>
+                  </div>
+                  {completionMutationIsCurrent &&
+                    completeLessonMutation.isError && (
+                      <p className="mb-5 text-sm text-error" role="alert">
+                        Unable to save lesson progress. Please try again.
+                      </p>
+                    )}
+                  {completionMutationIsCurrent &&
+                    completeLessonMutation.isSuccess && (
+                      <p className="mb-5 text-sm text-success" role="status">
+                        Lesson progress saved.
+                      </p>
+                    )}
                   <LessonContent
+                    key={selectedLesson._id}
                     lesson={lessonData?.data}
-                    resourceData={resourceData}
-                    resourceLoading={resourceLoading}
-                    resourceError={resourceError}
                   />
                 </div>
-              </div>
+              ) : (
+                <div className="flex min-h-[600px] items-center justify-center text-sm text-text-muted">
+                  This lesson is no longer available.
+                </div>
+              )
             )}
           </Card>
         </div>

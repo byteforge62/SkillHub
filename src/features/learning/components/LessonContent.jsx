@@ -1,17 +1,23 @@
 import Card from "@/components/ui/Card";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getQuizById, getQuizQuestions, submitQuizAttempt, getQuizAttemptById, getMyQuizAttempts } from "../api/learningApi";
+import { Link } from "react-router-dom";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  getQuizById,
+  getQuizQuestions,
+  submitQuizAttempt,
+  getQuizAttemptById,
+  getMyQuizAttempts,
+  getResourceById,
+} from "../api/learningApi";
 
-import { QuizAttemptHistory } from "./QuizAttemptHistory";
-import { QuizAttemptDetails } from "./QuizAttemptDetails";
+import { QuizResult } from "./quiz/QuizResult";
+import { getSafeExternalUrl } from "./lessonBlockUtils";
 import { queryClient } from "@/lib/query";
+import toolRegistry from "@/features/tools/toolRegistry";
 
 export const LessonContent = ({
   lesson,
-  resourceData,
-  resourceLoading,
-  resourceError,
 }) => {
 
   const [quizStarted, setQuizStarted] = useState(false);
@@ -21,14 +27,26 @@ export const LessonContent = ({
   const [selectedAnswers, setSelectedAnswers] = useState({});
 
   const [quizSubmitting, setQuizSubmitting] = useState(false);
+  const [quizSubmitError, setQuizSubmitError] = useState("");
   const [quizResult, setQuizResult] = useState(null);
 
-  const [quizAttemptId, setQuizAttemptId] = useState(null);
   const [selectedAttemptId, setSelectedAttemptId] = useState(null);
 
 
   const blocks = [...(lesson?.blocks || [])].sort(
     (a, b) => a.order - b.order
+  );
+
+  const resourceBlocks = blocks.filter((block) => block.type === "resource");
+  const resourceQueries = useQueries({
+    queries: resourceBlocks.map((block) => ({
+      queryKey: ["resource", block.data?.resourceId],
+      queryFn: () => getResourceById(block.data.resourceId),
+      enabled: Boolean(block.data?.resourceId),
+    })),
+  });
+  const resourceQueriesByBlockId = new Map(
+    resourceBlocks.map((block, index) => [block._id, resourceQueries[index]])
   );
 
   const quizBlock = blocks.find(
@@ -57,22 +75,21 @@ export const LessonContent = ({
     enabled: Boolean(quizId),
   });
 
-  const attemptToFetch = selectedAttemptId || quizAttemptId;
-
   const {
     data: savedAttemptData,
     isLoading: savedAttemptLoading,
     isError: savedAttemptError,
   } = useQuery({
-    queryKey: ["quiz-attempt", attemptToFetch],
-    queryFn: () => getQuizAttemptById(attemptToFetch),
-    enabled: Boolean(attemptToFetch),
+    queryKey: ["quiz-attempt", selectedAttemptId],
+    queryFn: () => getQuizAttemptById(selectedAttemptId),
+    enabled: Boolean(selectedAttemptId),
   });
 
   const {
     data: quizAttemptsData,
     isLoading: quizAttemptsLoading,
     isError: quizAttemptsError,
+    refetch: refetchQuizAttempts,
   } = useQuery({
     queryKey: ["quiz-attempts", quizId],
     queryFn: () => getMyQuizAttempts(quizId),
@@ -93,46 +110,43 @@ export const LessonContent = ({
     );
 
     if (answers.length !== questions.length) {
-      console.warn("Not all questions have been answered.");
+      setQuizSubmitError("Please answer every question before submitting.");
       return;
     }
 
     try {
       setQuizSubmitting(true);
-
-      console.log("SUBMITTING QUIZ:", {
-        quizId,
-        answers,
-      });
-
+      setQuizSubmitError("");
       const response = await submitQuizAttempt(quizId, answers);
-
-      console.log("QUIZ SUBMIT RESPONSE:", response);
-
       const attempt = response.data;
 
-      setQuizAttemptId(attempt._id);
-      setQuizResult(response.data);
+      if (!attempt?._id || !Array.isArray(attempt.answers)) {
+        throw new Error("The quiz submission response was incomplete.");
+      }
+
+      setQuizResult(attempt);
       queryClient.invalidateQueries({
-        queryKey: ["quiz-attempts", quizId]
-      })
+        queryKey: ["quiz-attempts", quizId],
+      });
     } catch (error) {
-      console.error("QUIZ SUBMIT ERROR:", error);
+      setQuizSubmitError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Unable to submit your quiz. Please try again."
+      );
     } finally {
       setQuizSubmitting(false);
     }
   };
 
   useEffect(() => {
-    if (quizStarted) {
-      const timer = setTimeout(() => {
-        setShowOnlyQuiz(true);
-      }, 300);
+    if (!quizStarted) return;
 
-      return () => clearTimeout(timer);
-    }
+    const timer = setTimeout(() => {
+      setShowOnlyQuiz(true);
+    }, 300);
 
-    setShowOnlyQuiz(false);
+    return () => clearTimeout(timer);
   }, [quizStarted]);
 
   if (!lesson) {
@@ -164,12 +178,15 @@ export const LessonContent = ({
   const handleStartQuiz = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
+    setQuizSubmitError("");
+    setShowOnlyQuiz(false);
     setQuizStarted(true);
   };
 
   const handleAnswerSelect = (optionId) => {
     if (!currentQuestion) return;
 
+    setQuizSubmitError("");
     setSelectedAnswers((prev) => ({
       ...prev,
       [currentQuestion._id]: optionId,
@@ -264,6 +281,80 @@ export const LessonContent = ({
                   </div>
                 );
 
+              case "image": {
+                const imageUrl = getSafeExternalUrl(block.data?.url);
+
+                return (
+                <figure
+                  key={block._id}
+                  className={`lg:col-span-12 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                    quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                  }`}
+                >
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={block.data?.alt || ""}
+                      loading="lazy"
+                      decoding="async"
+                      className="max-h-[70vh] w-full object-contain"
+                    />
+                  ) : (
+                    <p className="p-5 text-sm text-text-muted" role="status">
+                      This image is unavailable.
+                    </p>
+                  )}
+                  {block.data?.caption && (
+                    <figcaption className="border-t border-border px-4 py-3 text-sm text-text-muted">
+                      {block.data.caption}
+                    </figcaption>
+                  )}
+                </figure>
+                );
+              }
+
+              case "video": {
+                const videoUrl = getSafeExternalUrl(block.data?.url);
+
+                return (
+                <div
+                  key={block._id}
+                  className={`lg:col-span-12 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                    quizStarted
+                      ? "pointer-events-none scale-[0.98] opacity-0"
+                      : "scale-100 opacity-100"
+                  }`}
+                >
+                  {videoUrl ? (
+                    <>
+                      <video
+                        controls
+                        preload="metadata"
+                        className="max-h-[70vh] w-full bg-black"
+                      >
+                        <source src={videoUrl} />
+                        Your browser does not support video playback.
+                      </video>
+                      <a
+                        href={videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex px-4 py-3 text-sm font-medium text-primary hover:underline"
+                      >
+                        Open video in a new tab
+                      </a>
+                    </>
+                  ) : (
+                    <p className="p-5 text-sm text-text-muted" role="status">
+                      This video is unavailable.
+                    </p>
+                  )}
+                </div>
+                );
+              }
+
               case "callout":
                 return (
                   <div
@@ -288,7 +379,21 @@ export const LessonContent = ({
                 );
 
               case "resource": {
-                if (resourceLoading) {
+                const resourceQuery = resourceQueriesByBlockId.get(block._id);
+
+                if (!block.data?.resourceId) {
+                  return (
+                    <p
+                      key={block._id}
+                      className="lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      role="status"
+                    >
+                      This resource is unavailable.
+                    </p>
+                  );
+                }
+
+                if (resourceQuery?.isLoading) {
                   return (
                     <div
                       key={block._id}
@@ -304,7 +409,7 @@ export const LessonContent = ({
                   );
                 }
 
-                if (resourceError || !resourceData?.data) {
+                if (resourceQuery?.isError) {
                   return (
                     <div
                       key={block._id}
@@ -313,14 +418,34 @@ export const LessonContent = ({
                         : "scale-100 opacity-100"
                         }`}
                     >
-                      <p className="text-sm font-medium text-error">
-                        Unable to load resource
+                      <p className="text-sm font-medium text-error" role="alert">
+                        Unable to load this resource.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => resourceQuery.refetch()}
+                        className="mt-3 text-sm font-medium text-primary underline-offset-2 hover:underline"
+                      >
+                        Retry
+                      </button>
                     </div>
                   );
                 }
 
-                const resource = resourceData.data;
+                if (!resourceQuery?.data?.data) {
+                  return (
+                    <p
+                      key={block._id}
+                      className="lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      role="status"
+                    >
+                      This resource is no longer available.
+                    </p>
+                  );
+                }
+
+                const resource = resourceQuery.data.data;
+                const resourceUrl = getSafeExternalUrl(resource.url);
 
                 return (
                   <div
@@ -367,10 +492,10 @@ export const LessonContent = ({
                       </div>
                     )}
 
-                    {resource.url && (
+                    {resourceUrl ? (
                       <div className="mt-5 border-t border-border pt-4">
                         <a
-                          href={resource.url}
+                          href={resourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
@@ -378,6 +503,10 @@ export const LessonContent = ({
                           Open Resource
                         </a>
                       </div>
+                    ) : (
+                      <p className="mt-5 border-t border-border pt-4 text-sm text-error" role="status">
+                        This resource link is unavailable.
+                      </p>
                     )}
                   </div>
                 );
@@ -404,224 +533,30 @@ export const LessonContent = ({
                       /* =====================================================
                          QUIZ RESULT
                       ====================================================== */
-                      <div className="space-y-6">
-                        {/* Result Header */}
-                        <div className="border-b border-border pb-5">
-                          <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                            Quiz Completed
-                          </p>
-
-                          <h3 className="mt-2 text-2xl font-semibold text-text-primary">
-                            {quizData?.data?.title || "Quiz"}
-                          </h3>
-
-                          <p className="mt-2 text-sm text-text-muted">
-                            Your quiz has been submitted successfully.
-                          </p>
-                        </div>
-
-                        {/* Result Summary */}
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                              Score
-                            </p>
-
-                            <p className="mt-2 text-3xl font-bold text-text-primary">
-                              {quizResult.score ?? 0}
-                            </p>
-                          </div>
-
-                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                              Percentage
-                            </p>
-
-                            <p className="mt-2 text-3xl font-bold text-text-primary">
-                              {quizResult.percentage ?? 0}%
-                            </p>
-                          </div>
-
-                          <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                              Result
-                            </p>
-
-                            <p
-                              className={`mt-2 text-xl font-bold ${quizResult.passed
-                                ? "text-success"
-                                : "text-error"
-                                }`}
-                            >
-                              {quizResult.passed ? "Passed" : "Not Passed"}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Passing Score */}
-                        {quizData?.data?.passingScore !== undefined && (
-                          <div className="rounded-xl border border-border bg-surface-hover/50 p-4">
-                            <p className="text-sm text-text-muted">
-                              Passing score:{" "}
-                              <span className="font-semibold text-text-primary">
-                                {quizData.data.passingScore}%
-                              </span>
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Submitted Answers */}
-                        {quizResult.answers.map((review, index) => {
-                          const questionId =
-                            typeof review.question === "object"
-                              ? review.question?._id
-                              : review.question;
-
-                          const selectedOptionId =
-                            typeof review.selectedOption === "object"
-                              ? review.selectedOption?._id
-                              : review.selectedOption;
-
-                          // Find the original question from the questions already loaded
-                          const question = questions.find(
-                            (q) => q._id?.toString() === questionId?.toString()
-                          );
-
-                          // Find the selected option from that question
-                          const selectedOption = question?.options?.find(
-                            (option) =>
-                              option._id?.toString() === selectedOptionId?.toString()
-                          );
-
-                          const isCorrect = Boolean(review.isCorrect);
-
-                          return (
-                            <div
-                              key={questionId || index}
-                              className={`rounded-xl border p-5 transition-all duration-300 ${isCorrect
-                                ? "border-success/20 bg-success/5"
-                                : "border-error/20 bg-error/5"
-                                }`}
-                            >
-                              {/* Question */}
-                              <div className="flex items-start gap-3">
-                                <div
-                                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${isCorrect
-                                    ? "bg-success/10 text-success"
-                                    : "bg-error/10 text-error"
-                                    }`}
-                                >
-                                  {isCorrect ? "✓" : "✕"}
-                                </div>
-
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                                    Question {index + 1}
-                                  </p>
-
-                                  <p className="mt-1 text-sm font-medium leading-6 text-text-primary">
-                                    {question?.question || "Question unavailable"}
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Your Answer */}
-                              <div className="mt-4 rounded-lg border border-border bg-surface p-4">
-                                <p className="text-xs font-medium text-text-muted">
-                                  Your answer
-                                </p>
-
-                                <p
-                                  className={`mt-1 text-sm font-medium ${isCorrect ? "text-success" : "text-error"
-                                    }`}
-                                >
-                                  {selectedOption?.text || "Answer unavailable"}
-                                </p>
-                              </div>
-
-                              {/* Correct Answer */}
-                              {!isCorrect && review.correctOption && (
-                                <div className="mt-3 rounded-lg border border-success/20 bg-success/5 p-4">
-                                  <p className="text-xs font-medium text-text-muted">
-                                    Correct answer
-                                  </p>
-
-                                  <p className="mt-1 text-sm font-medium text-success">
-                                    {review.correctOption.text}
-                                  </p>
-                                </div>
-                              )}
-
-                              {/* Status */}
-                              <p
-                                className={`mt-3 text-xs font-semibold ${isCorrect ? "text-success" : "text-error"
-                                  }`}
-                              >
-                                {isCorrect ? "Correct answer" : "Incorrect answer"}
-                              </p>
-                            </div>
-                          );
-                        })}
-
-                        {/* Retake */}
-                        <div className="flex justify-end border-t border-border pt-5">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setQuizResult(null);
-                              setQuizStarted(false);
-                              setCurrentQuestionIndex(0);
-                              setSelectedAnswers({});
-                            }}
-                            className="inline-flex items-center justify-center rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-text-primary transition-all duration-200 hover:bg-surface-hover"
-                          >
-                            Retake Quiz
-                          </button>
-                        </div>
-
-                        {selectedAttemptId ? (
-                          <div className="mt-6">
-                            {savedAttemptLoading && (
-                              <div className="rounded-2xl border border-border bg-surface p-6">
-                                <p className="text-sm text-text-muted">
-                                  Loading attempt details...
-                                </p>
-                              </div>
-                            )}
-
-                            {savedAttemptError && (
-                              <div className="rounded-2xl border border-error/20 bg-error/5 p-6">
-                                <p className="text-sm text-error">
-                                  Unable to load this attempt.
-                                </p>
-
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedAttemptId(null)}
-                                  className="mt-4 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
-                                >
-                                  Back to attempts
-                                </button>
-                              </div>
-                            )}
-
-                            {!savedAttemptLoading &&
-                              !savedAttemptError &&
-                              savedAttemptData?.data && (
-                                <QuizAttemptDetails
-                                  attempt={savedAttemptData.data}
-                                  onClose={() => setSelectedAttemptId(null)}
-                                />
-                              )}
-                          </div>
-                        ) : (
-                          <QuizAttemptHistory
-                            attempts={quizAttemptsData?.data || []}
-                            loading={quizAttemptsLoading}
-                            onSelectAttempt={setSelectedAttemptId}
-                          />
-                        )}
-                      </div>
+                      <QuizResult
+                        quizResult={quizResult}
+                        quiz={quizData?.data}
+                        questions={questions}
+                        quizAttempts={quizAttemptsData?.data || []}
+                        quizAttemptsLoading={quizAttemptsLoading}
+                        quizAttemptsError={quizAttemptsError}
+                        onRetryAttempts={refetchQuizAttempts}
+                        selectedAttemptId={selectedAttemptId}
+                        onSelectAttempt={setSelectedAttemptId}
+                        savedAttemptData={savedAttemptData}
+                        savedAttemptLoading={savedAttemptLoading}
+                        savedAttemptError={savedAttemptError}
+                        onCloseAttempt={() => setSelectedAttemptId(null)}
+                        onRetake={() => {
+                          setQuizResult(null);
+                          setQuizStarted(false);
+                          setShowOnlyQuiz(false);
+                          setCurrentQuestionIndex(0);
+                          setSelectedAnswers({});
+                          setSelectedAttemptId(null);
+                          setQuizSubmitError("");
+                        }}
+                      />
 
                     ) : !quizStarted ? (
                       /* =====================================================
@@ -790,8 +725,7 @@ export const LessonContent = ({
                                 type="button"
                                 disabled={
                                   !hasSelectedAnswer ||
-                                  (isLastQuestion &&
-                                    quizSubmitting)
+                                  quizSubmitting
                                 }
                                 onClick={
                                   isLastQuestion
@@ -807,6 +741,11 @@ export const LessonContent = ({
                                   : "Next"}
                               </button>
                             </div>
+                            {quizSubmitError && (
+                              <p className="mt-3 text-sm text-error" role="alert">
+                                {quizSubmitError}
+                              </p>
+                            )}
                           </div>
                         ) : null}
                       </div>
@@ -814,8 +753,53 @@ export const LessonContent = ({
                   </div>
                 );
 
+              case "tool": {
+                const tool = toolRegistry.find(
+                  (item) => item.id === block.data?.toolId
+                );
+
+                return (
+                  <div
+                    key={block._id}
+                    className="lg:col-span-5 rounded-xl border border-border bg-surface p-5"
+                  >
+                    {tool ? (
+                      <>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                          Learning tool
+                        </p>
+                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
+                          {tool.name}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-text-muted">
+                          {tool.description}
+                        </p>
+                        <Link
+                          to={`/tools/${tool.id}`}
+                          className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                        >
+                          Open tool
+                        </Link>
+                      </>
+                    ) : (
+                      <p className="text-sm text-text-muted" role="status">
+                        This learning tool is unavailable.
+                      </p>
+                    )}
+                  </div>
+                );
+              }
+
               default:
-                return null;
+                return (
+                  <p
+                    key={block._id}
+                    className="lg:col-span-12 rounded-lg border border-border p-4 text-sm text-text-muted"
+                    role="status"
+                  >
+                    This lesson contains an unsupported content block.
+                  </p>
+                );
             }
           })
         )}

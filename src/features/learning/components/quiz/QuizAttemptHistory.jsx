@@ -2,6 +2,8 @@
 export const QuizAttemptHistory = ({ 
     attempts = [],
     loading = false, 
+    error = false,
+    onRetry,
     onSelectAttempt,
 }) => {
 
@@ -11,6 +13,26 @@ export const QuizAttemptHistory = ({
                 <p className="text-sm text-text-muted">
                     Loading previous attempts...
                 </p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="rounded-2xl border border-error/20 bg-error/5 p-6" role="alert">
+                <h3 className="text-lg font-semibold text-error">
+                    Unable to load previous attempts
+                </h3>
+                <p className="mt-2 text-sm text-text-muted">
+                    Your quiz result is saved. Please try loading your attempt history again.
+                </p>
+                <button
+                    type="button"
+                    onClick={onRetry}
+                    className="mt-4 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
+                >
+                    Retry
+                </button>
             </div>
         );
     }
@@ -85,5 +107,4 @@ export const QuizAttemptHistory = ({
         </div>
     );
 };
-
 

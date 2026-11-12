@@ -6,10 +6,18 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { AdminLayout } from "@/layouts/AdminLayout";
 
 import { LandingPage } from "@/features/home/pages/LandingPage";
+import { EventsPage } from "@/features/events/pages/EventsPage";
+import { EventDetailsPage } from "@/features/events/pages/EventDetailsPage";
+import { EventManagementPage } from "@/features/events/pages/EventManagementPage";
+import { CommunitiesPage } from "@/features/community/pages/CommunitiesPage";
+import { CommunityDetailPage } from "@/features/community/pages/CommunityDetailPage";
+import { ProfilePage } from "@/features/profile/pages/ProfilePage";
+import { MyLearningPage } from "@/features/enrollment/pages/MyLearningPage";
 import { RegisterPage } from "@/features/auth/pages/RegisterPage";
 import { UnauthorizedPage } from "@/features/auth/pages/UnauthorizedPage";
 import { DashboardPage } from "@/features/dashboard/pages/DashboardPage";
 import { AdminDashboardPage } from "@/features/admin/pages/AdminDashboardPage";
+import { AdminReportsPage } from "@/features/admin/pages/AdminReportsPage";
 import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
 import { ToolsPage } from "@/features/tools/pages/ToolsPage";
@@ -39,6 +47,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <LandingPage />,
+      },
+      {
+        path: "/events",
+        element: <EventsPage />,
+      },
+      {
+        path: "/events/:eventId",
+        element: <EventDetailsPage />,
       },
     ],
   },
@@ -102,6 +118,22 @@ const router = createBrowserRouter([
           path: "/learning/:courseId",
           element: <LearningPage />,
         },
+        {
+          path: "/learning",
+          element: <MyLearningPage />,
+        },
+        {
+          path: "/profile",
+          element: <ProfilePage />,
+        },
+        {
+          path: "/communities",
+          element: <CommunitiesPage />,
+        },
+        {
+          path: "/communities/:communityId",
+          element: <CommunityDetailPage />,
+        },
       ],
     },
 
@@ -109,6 +141,10 @@ const router = createBrowserRouter([
     {
       path: "/tools",
       element: <ToolsPage />,
+    },
+    {
+      path: "/events/manage",
+      element: <EventManagementPage />,
     },
 
     {
@@ -157,6 +193,10 @@ const router = createBrowserRouter([
             {
               index: true,
               element: <AdminDashboardPage />,
+            },
+            {
+              path: "reports",
+              element: <AdminReportsPage />,
             },
           ],
         },

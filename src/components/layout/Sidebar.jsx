@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   BookOpen,
   GraduationCap,
+  UsersRound,
   User,
   X,
 } from "lucide-react";
@@ -24,6 +25,11 @@ const navigation = [
     label: "My Learning",
     path: "/learning",
     icon: BookOpen,
+  },
+  {
+    label: "Communities",
+    path: "/communities",
+    icon: UsersRound,
   },
   {
     label: "Profile",
@@ -120,4 +126,3 @@ export const Sidebar = ({open = false,onClose,}) => {
     </>
   );
 };
-

@@ -1,7 +1,7 @@
+import { QuizAnswerReview } from "./QuizAnswerReview";
+
 export const QuizAttemptDetails = ({ attempt, onClose }) => {
   if (!attempt) return null;
-
-  const answers = attempt.answers || [];
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-surface p-6">
@@ -61,64 +61,14 @@ export const QuizAttemptDetails = ({ attempt, onClose }) => {
         </div>
       </div>
 
-      {/* Answers */}
       <div className="mt-7">
         <h4 className="text-base font-semibold text-text-primary">
           Answer Review
         </h4>
-
-        <div className="mt-4 space-y-3">
-          {answers.map((answer, index) => (
-            <div
-              key={answer.question?._id || answer.question || index}
-              className="rounded-xl border border-border bg-surface-hover p-4"
-            >
-              <div className="flex items-start gap-3">
-                <span
-                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                    answer.isCorrect
-                      ? "bg-success/10 text-success"
-                      : "bg-error/10 text-error"
-                  }`}
-                >
-                  {answer.isCorrect ? "✓" : "✕"}
-                </span>
-
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-text-primary">
-                    Question {index + 1}
-                  </p>
-
-                  {answer.question?.question && (
-                    <p className="mt-1 text-sm text-text-secondary">
-                      {answer.question.question}
-                    </p>
-                  )}
-
-                  {answer.selectedOption?.text && (
-                    <p className="mt-3 text-sm text-text-muted">
-                      Your answer:{" "}
-                      <span className="font-medium text-text-primary">
-                        {answer.selectedOption.text}
-                      </span>
-                    </p>
-                  )}
-
-                  {answer.correctOption?.text && (
-                    <p className="mt-1 text-sm text-text-muted">
-                      Correct answer:{" "}
-                      <span className="font-medium text-success">
-                        {answer.correctOption.text}
-                      </span>
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="mt-4">
+          <QuizAnswerReview answers={attempt.answers} />
         </div>
       </div>
     </div>
   );
 };
-
