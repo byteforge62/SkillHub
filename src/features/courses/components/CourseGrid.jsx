@@ -3,7 +3,7 @@ import { CourseCard } from "./CourseCard";
 export const CourseGrid = ({ courses = [] }) => {
   if (courses.length === 0) {
     return (
-      <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center shadow-card">
+      <div className="rounded-lg border border-border bg-surface px-6 py-16 text-center shadow-card">
         <div className="text-4xl">📚</div>
 
         <h3 className="mt-4 text-lg font-semibold text-text-primary">

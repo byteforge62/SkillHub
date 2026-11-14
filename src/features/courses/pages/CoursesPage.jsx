@@ -31,7 +31,7 @@ export const CoursesPage = () => {
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
-                className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+                className="overflow-hidden rounded-lg border border-border bg-surface shadow-card"
               >
                 <div className="aspect-video animate-pulse bg-surface-hover" />
 
@@ -48,7 +48,7 @@ export const CoursesPage = () => {
 
         {/* Error */}
         {isError && (
-          <div className="rounded-2xl border border-error/20 bg-surface p-6 shadow-card">
+          <div className="rounded-lg border border-error/20 bg-surface p-6 shadow-card">
             <h2 className="text-lg font-semibold text-error">
               Unable to load courses
             </h2>
@@ -66,7 +66,7 @@ export const CoursesPage = () => {
 
         {/* Empty state */}
         {!isLoading && !isError && courses.length === 0 && (
-          <div className="rounded-2xl border border-border bg-surface p-10 text-center shadow-card">
+          <div className="rounded-lg border border-border bg-surface p-10 text-center shadow-card">
             <h2 className="text-xl font-semibold">
               No courses available
             </h2>

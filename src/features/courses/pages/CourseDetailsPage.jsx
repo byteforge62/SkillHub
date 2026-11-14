@@ -54,7 +54,8 @@ export const CourseDetailsPage = () => {
               <div className="h-20 w-full rounded bg-border" />
             </div>
 
-            <div className="h-96 rounded-2xl bg-surface shadow-card" />
+            <div className="h-96 rounded-lg bg-surface shadow-card" />
+            <div className="h-96 rounded-lg bg-surface shadow-card" />
           </div>
         </div>
       </div>
@@ -165,7 +166,7 @@ export const CourseDetailsPage = () => {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center bg-accent-light">
+            <div className="flex h-full items-center justify-center bg-surface-embedded">
                   <span className="text-5xl">📚</span>
                 </div>
               )}
