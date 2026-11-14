@@ -13,7 +13,7 @@ const Button = ({
 }) => {
   const baseStyles = [
     "inline-flex items-center justify-center",
-    "rounded-xl",
+    "rounded-md",
     "font-semibold",
     "transition-colors duration-200",
     "focus:outline-none",
@@ -25,14 +25,16 @@ const Button = ({
 
   const variantStyles = {
     primary: [
-      "bg-primary text-white",
+      "bg-primary text-white shadow-sm",
       "hover:bg-primary-hover",
+      "active:bg-primary-hover",
     ],
 
     secondary: [
       "border border-border",
       "bg-surface text-text-primary",
       "hover:bg-surface-hover",
+      "shadow-sm",
     ],
 
     danger: [
@@ -43,8 +45,8 @@ const Button = ({
 
   const sizeStyles = {
     sm: "h-9 px-4 text-sm",
-    md: "h-11 px-5 text-sm",
-    lg: "h-12 px-6 text-base",
+    md: "h-10 px-5 text-sm",
+    lg: "h-11 px-6 text-base",
   };
 
   return (

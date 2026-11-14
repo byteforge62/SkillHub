@@ -26,7 +26,7 @@ export const Header = ({title = "Dashboard",onMenuClick}) => {
           type="button"
           aria-label="Open navigation"
           onClick={onMenuClick}
-          className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden focus-visible:ring-2 focus-visible:ring-primary/40"
         >
           <Menu
             size={20}

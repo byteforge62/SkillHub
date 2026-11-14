@@ -71,7 +71,7 @@ export const Sidebar = ({open = false,onClose,}) => {
               type="button"
               aria-label="Close navigation"
               onClick={onClose}
-              className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden focus-visible:ring-2 focus-visible:ring-primary/40"
             >
               <X
                 size={18}
@@ -96,7 +96,7 @@ export const Sidebar = ({open = false,onClose,}) => {
                   onClick={onClose}
                   className={({ isActive }) =>
                     [
-                      "flex items-center gap-3 rounded-lg px-4 py-3",
+                      "flex items-center gap-3 rounded-md px-4 py-3",
                       "text-sm font-medium transition-colors",
                       "focus:outline-none focus-visible:ring-2",
                       "focus-visible:ring-primary/40",

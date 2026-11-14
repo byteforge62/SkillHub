@@ -15,12 +15,12 @@ const Input = forwardRef(
     ref
   ) => {
     const inputClassName = clsx(
-      "h-11 w-full rounded-xl border bg-surface px-4",
+      "h-11 w-full rounded-md border bg-surface px-4",
       "text-text-primary outline-none",
       "placeholder:text-text-muted",
       "transition-colors duration-200",
       "focus:border-primary",
-      "focus:ring-2 focus:ring-primary/20",
+      "focus:ring-2 focus:ring-primary/20 focus:ring-offset-1",
       "disabled:cursor-not-allowed",
       "disabled:opacity-60",
       error ? "border-error" : "border-border",

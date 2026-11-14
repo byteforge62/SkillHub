@@ -8,7 +8,7 @@ const Card = ({
   return (
     <div
       className={clsx(
-        "rounded-2xl border border-border bg-surface p-8 shadow-lg",
+        "rounded-lg border border-border bg-surface p-6 shadow-card",
         className
       )}
       {...props}

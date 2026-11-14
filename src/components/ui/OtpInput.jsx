@@ -93,7 +93,7 @@ const OtpInput = ({
             h-12
             w-full
             min-w-0
-            rounded-xl
+            rounded-md
             border
             border-border
             bg-surface
@@ -104,7 +104,7 @@ const OtpInput = ({
             transition-all
             focus:border-primary
             focus:ring-2
-            focus:ring-primary/20
+            focus:ring-primary/20 focus:ring-offset-1
             sm:h-14
             sm:text-xl
           "
