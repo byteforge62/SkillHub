@@ -13,19 +13,11 @@ const useLogin = () => {
         mutationFn: loginRequest,
 
         onSuccess: ({ data, message }) => {
-            console.log("LOGIN RESPONSE DATA:", data);
-            console.log("LOGIN USER:", data.user);
-
             setAccessToken(data.accessToken);
 
             queryClient.setQueryData(
                 ["current-user"],
                 data.user
-            );
-
-            console.log(
-                "CACHE AFTER LOGIN:",
-                queryClient.getQueryData(["current-user"])
             );
 
             toast.success(message);

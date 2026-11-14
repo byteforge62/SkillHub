@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/client";
+import apiClient from "@/lib/axios";
 
 export const enrollInCourse = async (courseId) => {
   const response = await apiClient.post("/enrollments", {courseId});

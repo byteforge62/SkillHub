@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/client";
+import apiClient from "@/lib/axios";
 
 export const getEvents = async (params = {}) => {
   const response = await apiClient.get("/events", { params });

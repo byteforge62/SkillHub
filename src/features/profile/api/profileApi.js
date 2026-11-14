@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/client";
+import apiClient from "@/lib/axios";
 
 export const updateProfile = async ({ userId, profile }) => {
   const response = await apiClient.put(`/user/${userId}`, profile);
