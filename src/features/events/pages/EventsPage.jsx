@@ -67,7 +67,7 @@ export const EventsPage = () => {
           </label>
           <input
             id="event-search"
-            className="min-h-11 flex-1 rounded-lg border border-border bg-surface px-4 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="min-h-11 flex-1 rounded-md border border-border bg-surface px-4 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             placeholder="Search events"
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
@@ -84,7 +84,7 @@ export const EventsPage = () => {
               {[0, 1, 2, 3, 4, 5].map((item) => (
                 <div
                   key={item}
-                  className="h-56 animate-pulse rounded-xl bg-surface-hover"
+                  className="h-56 animate-pulse rounded-lg bg-surface-hover"
                 />
               ))}
               <span className="sr-only">Loading upcoming events...</span>

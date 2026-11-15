@@ -23,7 +23,7 @@ const emptyForm = {
 };
 
 const inputClassName =
-  "mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+  "mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
 
 export const EventManagementPage = () => {
   const [editingEvent, setEditingEvent] = useState(null);

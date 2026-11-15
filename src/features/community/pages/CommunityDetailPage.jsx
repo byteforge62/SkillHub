@@ -92,7 +92,7 @@ export const CommunityDetailPage = () => {
   if (communityQuery.isLoading) {
     return (
       <div className="mx-auto max-w-5xl" role="status">
-        <div className="h-48 animate-pulse rounded-2xl bg-surface-hover" />
+        <div className="h-48 animate-pulse rounded-lg bg-surface-hover" />
         <span className="sr-only">Loading community...</span>
       </div>
     );
@@ -196,7 +196,7 @@ export const CommunityDetailPage = () => {
             </label>
             <textarea
               id="community-post-content"
-              className="block min-h-28 w-full rounded-lg border border-border bg-background px-3 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="block min-h-28 w-full rounded-md border border-border bg-surface px-3 py-3 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Share a question, idea, or learning milestone..."
               value={postContent}
               onChange={(event) => setPostContent(event.target.value)}
@@ -336,7 +336,7 @@ export const CommunityDetailPage = () => {
                     </label>
                     <input
                       id={`comment-${post._id}`}
-                      className="min-h-10 flex-1 rounded-lg border border-border bg-background px-3 text-sm"
+                      className="min-h-10 flex-1 rounded-md border border-border bg-surface px-3 text-sm text-text-primary"
                       placeholder="Add a comment"
                       value={commentDrafts[post._id] || ""}
                       onChange={(event) =>

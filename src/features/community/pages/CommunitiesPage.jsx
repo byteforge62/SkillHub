@@ -57,7 +57,7 @@ export const CommunitiesPage = () => {
           <label className="text-sm font-medium">
             Name
             <input
-              className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               value={form.name}
               onChange={(event) =>
                 setForm((current) => ({ ...current, name: event.target.value }))
@@ -70,7 +70,7 @@ export const CommunitiesPage = () => {
           <label className="text-sm font-medium sm:row-span-2">
             Description
             <textarea
-              className="mt-1 block min-h-24 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mt-1 block min-h-24 w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               value={form.description}
               onChange={(event) =>
                 setForm((current) => ({
@@ -103,7 +103,7 @@ export const CommunitiesPage = () => {
             {[0, 1, 2].map((item) => (
               <div
                 key={item}
-                className="h-40 animate-pulse rounded-xl bg-surface-hover"
+                className="h-40 animate-pulse rounded-lg bg-surface-hover"
               />
             ))}
             <span className="sr-only">Loading communities...</span>

@@ -21,7 +21,7 @@ export const EventDetailsPage = () => {
   if (isLoading) {
     return (
       <main className="min-h-[60vh] px-5 py-12 sm:px-8" role="status">
-        <div className="mx-auto h-64 max-w-3xl animate-pulse rounded-2xl bg-surface-hover" />
+        <div className="mx-auto h-64 max-w-3xl animate-pulse rounded-lg bg-surface-hover" />
         <span className="sr-only">Loading event...</span>
       </main>
     );
