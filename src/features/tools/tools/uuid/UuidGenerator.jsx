@@ -68,7 +68,7 @@ export const UuidGenerator = () => {
             UUID Generator
           </h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-text-muted">
             Generate unique UUID v4 identifiers instantly in your browser.
           </p>
         </div>
@@ -77,7 +77,7 @@ export const UuidGenerator = () => {
           <button
             type="button"
             onClick={handleGenerate}
-            className="rounded-lg bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-80"
+            className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-hover"
           >
             Generate UUIDs
           </button>
@@ -86,7 +86,7 @@ export const UuidGenerator = () => {
             type="button"
             onClick={handleCopyAll}
             disabled={!uuids.length}
-            className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-md border border-border px-5 py-2.5 text-sm font-semibold transition hover:bg-surface-embedded disabled:cursor-not-allowed disabled:opacity-50"
           >
             {copiedIndex === "all" ? "Copied!" : "Copy All"}
           </button>
@@ -95,23 +95,23 @@ export const UuidGenerator = () => {
             type="button"
             onClick={handleClear}
             disabled={!uuids.length}
-            className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-md border border-border px-5 py-2.5 text-sm font-semibold transition hover:bg-surface-embedded disabled:cursor-not-allowed disabled:opacity-50"
           >
             Clear
           </button>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+        <div className="rounded-lg border border-border bg-surface p-5">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold">Generated UUIDs</h2>
 
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-text-muted">
               {uuids.length} generated
             </span>
           </div>
 
           {uuids.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-400">
+            <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-text-muted">
               Click "Generate UUIDs" to create unique identifiers.
             </div>
           ) : (
@@ -119,9 +119,9 @@ export const UuidGenerator = () => {
               {uuids.map((uuid, index) => (
                 <div
                   key={uuid}
-                  className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3"
+                  className="flex items-center gap-3 rounded-lg border border-border bg-surface-embedded p-3"
                 >
-                  <span className="w-8 text-sm text-gray-400">
+                  <span className="w-8 text-sm text-text-muted">
                     {index + 1}.
                   </span>
 
@@ -132,7 +132,7 @@ export const UuidGenerator = () => {
                   <button
                     type="button"
                     onClick={() => handleCopy(uuid, index)}
-                    className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold transition hover:bg-white"
+                    className="shrink-0 rounded-md border border-border px-3 py-2 text-xs font-semibold transition hover:bg-surface"
                   >
                     {copiedIndex === index ? "Copied!" : "Copy"}
                   </button>
@@ -142,16 +142,16 @@ export const UuidGenerator = () => {
           )}
         </div>
 
-        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
+        <div className="mt-6 rounded-lg border border-border bg-surface-embedded p-5">
           <h2 className="font-semibold">About UUIDs</h2>
 
-          <p className="mt-2 text-sm leading-6 text-gray-600">
+          <p className="mt-2 text-sm leading-6 text-text-secondary">
             UUIDs are commonly used to identify records, resources, sessions,
             files, and other entities where a highly unique identifier is
             useful.
           </p>
 
-          <div className="mt-4 rounded-lg bg-white p-3 font-mono text-sm">
+          <div className="mt-4 rounded-md bg-surface p-3 font-mono text-sm">
             Example: 550e8400-e29b-41d4-a716-446655440000
           </div>
         </div>
@@ -159,4 +159,5 @@ export const UuidGenerator = () => {
     </ToolPageLayout>
   );
 };
+
 
