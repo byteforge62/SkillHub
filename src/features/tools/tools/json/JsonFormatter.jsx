@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import { Button } from "@/components/ui/Button";
 
 const SAMPLE_JSON = {
   name: "SkillHub",
@@ -113,7 +114,7 @@ export const JsonFormatter = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold">JSON Formatter</h1>
 
-          <p className="mt-2 max-w-2xl text-gray-500">
+          <p className="mt-2 max-w-2xl text-text-muted">
             Format, validate, and minify JSON directly in your browser.
           </p>
         </div>
