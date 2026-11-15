@@ -58,7 +58,7 @@ export const ToolsPage = () => {
             </section>
 
             {/* Tool Categories */}
-            <section className="mt-12">
+            <section className="mt-12 pb-16">
                 <div className="mx-auto max-w-6xl space-y-14">
                     {Object.entries(groupedTools).map(
                         ([category, tools]) => {
