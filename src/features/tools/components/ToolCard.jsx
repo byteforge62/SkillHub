@@ -7,12 +7,14 @@ import {
   KeyRound,
   Regex,
   ArrowRight,
+  Link,
 } from "lucide-react";
 
 const iconMap = {
   "json-formatter": Braces,
   "jwt-decoder": KeyRound,
   base64: Binary,
+  "url-encoder": Link,
   "uuid-generator": Fingerprint,
   "regex-tester": Regex,
   "markdown-preview": FileText,
@@ -28,23 +30,23 @@ export const ToolCard = ({ tool }) => {
   };
 
   return (
-    <article className="group rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <article className="group rounded-lg border border-border bg-surface p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-hover">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-embedded">
           <Icon size={24} />
         </div>
 
-        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+        <span className="rounded-full bg-surface-embedded px-3 py-1 text-xs font-medium text-text-secondary">
           {tool.category}
         </span>
       </div>
 
       <div className="mt-5">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-text-primary">
           {tool.name}
         </h2>
 
-        <p className="mt-2 min-h-[48px] text-sm leading-6 text-gray-500">
+        <p className="mt-2 min-h-[48px] text-sm leading-6 text-text-muted">
           {tool.description}
         </p>
       </div>
@@ -52,7 +54,7 @@ export const ToolCard = ({ tool }) => {
       <button
         type="button"
         onClick={handleOpen}
-        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gray-900 transition-colors hover:text-gray-600"
+        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-text-primary transition-colors hover:text-text-secondary"
       >
         Open Tool
         <ArrowRight

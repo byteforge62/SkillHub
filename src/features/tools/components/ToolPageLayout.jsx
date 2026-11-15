@@ -9,12 +9,12 @@ export const ToolPageLayout = ({
     children,
 }) => {
     return (
-        <main className="min-h-screen px-6 py-8">
+        <main className="min-h-screen bg-background px-6 py-8 text-text-primary">
             <div className="mx-auto max-w-6xl">
                 {/* Back */}
                 <Link
                     to="/tools"
-                    className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
+                    className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-text-muted transition-colors hover:text-text-primary"
                 >
                     <ArrowLeft size={16} />
                     Back to Tools
@@ -22,7 +22,7 @@ export const ToolPageLayout = ({
 
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-600">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface-embedded px-3 py-1.5 text-xs font-semibold text-text-secondary">
                         <Wrench size={14} />
                         {category}
                     </div>
@@ -31,13 +31,13 @@ export const ToolPageLayout = ({
                         {title}
                     </h1>
 
-                    <p className="mt-3 max-w-2xl text-base leading-7 text-gray-500">
+                    <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted">
                         {description}
                     </p>
 
                     {usefulFor.length > 0 && (
                         <div className="mt-5">
-                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
                                 Useful for
                             </p>
 
@@ -45,7 +45,7 @@ export const ToolPageLayout = ({
                                 {usefulFor.map((item) => (
                                     <span
                                         key={item}
-                                        className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                                        className="rounded-full bg-surface-embedded px-3 py-1.5 text-xs font-medium text-text-secondary"
                                     >
                                         {item}
                                     </span>
