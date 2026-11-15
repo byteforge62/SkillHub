@@ -106,8 +106,8 @@ const LearningWorkspace = ({ courseId }) => {
           <div className="h-6 w-32 animate-pulse rounded-md bg-surface-hover" />
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[300px_1fr]">
-            <div className="h-[650px] animate-pulse rounded-2xl bg-surface shadow-card" />
-            <div className="h-[650px] animate-pulse rounded-2xl bg-surface shadow-card" />
+            <div className="h-[650px] animate-pulse rounded-lg bg-surface shadow-card" />
+            <div className="h-[650px] animate-pulse rounded-lg bg-surface shadow-card" />
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@ const LearningWorkspace = ({ courseId }) => {
         <div className="mx-auto max-w-3xl">
           <Card>
             <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-2xl">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-surface-embedded text-2xl">
                 📚
               </div>
 
@@ -279,7 +279,7 @@ const LearningWorkspace = ({ courseId }) => {
 
               {!selectedSection ? (
                 sections.length === 0 ? (
-                  <div className="rounded-xl border border-border bg-surface-hover/50 p-5 text-center">
+                  <div className="rounded-lg border border-border bg-surface-embedded p-5 text-center">
                     <p className="text-sm text-text-muted">
                       No sections are available for this course yet.
                     </p>
@@ -294,7 +294,7 @@ const LearningWorkspace = ({ courseId }) => {
                           setSelectedSection(section);
                           setSelectedLesson(null);
                         }}
-                        className="w-full rounded-xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/50 hover:bg-surface-hover"
+                        className="w-full rounded-lg border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/50 hover:bg-surface-hover"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
@@ -420,7 +420,7 @@ const LearningWorkspace = ({ courseId }) => {
               }}
               className={[
                 "group flex min-w-[110px] max-w-[min(45vw,280px)] flex-col items-center justify-center",
-                "rounded-xl border px-5 py-3",
+                "rounded-lg border px-5 py-3",
                 "transition-all duration-200 ease-out",
                 "hover:-translate-y-0.5 hover:shadow-sm",
                 selectedSection
@@ -458,7 +458,7 @@ const LearningWorkspace = ({ courseId }) => {
                   className={[
                     "flex min-w-[110px] flex-col items-center justify-center",
                     "max-w-[min(45vw,280px)]",
-                    "rounded-xl border px-5 py-3",
+                    "rounded-lg border px-5 py-3",
                     "animate-in fade-in slide-in-from-left-2",
                     "transition-all duration-200 ease-out",
                     "hover:-translate-y-0.5 hover:shadow-sm",
@@ -487,7 +487,7 @@ const LearningWorkspace = ({ courseId }) => {
             {!selectedLesson ? (
               <div className="flex min-h-[600px] items-center justify-center p-8 text-center">
                 <div className="max-w-md">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-light text-3xl">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-surface-embedded text-3xl">
                     📚
                   </div>
 

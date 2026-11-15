@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button";
 import { QuizAnswerReview } from "./QuizAnswerReview";
 
 export const QuizAttemptDetails = ({ attempt, onClose }) => {
@@ -24,32 +25,32 @@ export const QuizAttemptDetails = ({ attempt, onClose }) => {
           )}
         </div>
 
-        <button
-          type="button"
+        <Button
+          variant="secondary"
           onClick={onClose}
-          className="rounded-lg px-3 py-2 text-sm text-text-muted transition-colors hover:bg-surface-hover hover:text-text-primary"
+          className="px-3 py-2 text-sm"
         >
           Close
-        </button>
+        </Button>
       </div>
 
       {/* Summary */}
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-border bg-surface-hover p-4">
+        <div className="rounded-lg border border-border bg-surface-embedded p-4">
           <p className="text-xs text-text-muted">Score</p>
           <p className="mt-1 text-lg font-semibold text-text-primary">
             {attempt.score}
           </p>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-hover p-4">
+        <div className="rounded-lg border border-border bg-surface-embedded p-4">
           <p className="text-xs text-text-muted">Percentage</p>
           <p className="mt-1 text-lg font-semibold text-text-primary">
             {attempt.percentage}%
           </p>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-hover p-4">
+        <div className="rounded-lg border border-border bg-surface-embedded p-4">
           <p className="text-xs text-text-muted">Status</p>
           <p
             className={`mt-1 text-lg font-semibold ${

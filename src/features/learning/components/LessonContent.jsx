@@ -1,3 +1,4 @@
+import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -262,7 +263,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-5 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
@@ -287,7 +288,7 @@ export const LessonContent = ({
                 return (
                 <figure
                   key={block._id}
-                  className={`lg:col-span-12 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                  className={`lg:col-span-12 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${
                     quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
@@ -321,7 +322,7 @@ export const LessonContent = ({
                 return (
                 <div
                   key={block._id}
-                  className={`lg:col-span-12 overflow-hidden rounded-xl border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                  className={`lg:col-span-12 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${
                     quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
@@ -359,7 +360,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-7 rounded-xl border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-7 rounded-lg border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
@@ -385,7 +386,7 @@ export const LessonContent = ({
                   return (
                     <p
                       key={block._id}
-                      className="lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      className="lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 text-sm text-error"
                       role="status"
                     >
                       This resource is unavailable.
@@ -397,7 +398,7 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-xl border border-border bg-surface-hover/50 p-5 transition-all duration-300 ease-out ${quizStarted
+                      className={`lg:col-span-5 rounded-lg border border-border bg-surface-embedded p-5 transition-all duration-300 ease-out ${quizStarted
                         ? "pointer-events-none scale-[0.98] opacity-0"
                         : "scale-100 opacity-100"
                         }`}
@@ -413,7 +414,7 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                      className={`lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${quizStarted
                         ? "pointer-events-none scale-[0.98] opacity-0"
                         : "scale-100 opacity-100"
                         }`}
@@ -436,7 +437,7 @@ export const LessonContent = ({
                   return (
                     <p
                       key={block._id}
-                      className="lg:col-span-5 rounded-xl border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      className="lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 text-sm text-error"
                       role="status"
                     >
                       This resource is no longer available.
@@ -450,7 +451,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 rounded-xl border border-border bg-surface p-5 transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-5 rounded-lg border border-border bg-surface p-5 transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
@@ -473,7 +474,7 @@ export const LessonContent = ({
                       </div>
 
                       {resource.type && (
-                        <span className="shrink-0 rounded-full bg-accent-light px-2.5 py-1 text-xs font-medium capitalize text-text-secondary">
+                        <span className="shrink-0 rounded-full bg-surface-embedded px-2.5 py-1 text-xs font-medium capitalize text-text-secondary">
                           {resource.type}
                         </span>
                       )}
@@ -498,7 +499,7 @@ export const LessonContent = ({
                           href={resourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
                         >
                           Open Resource
                         </a>
@@ -516,7 +517,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-12 rounded-xl border border-border bg-surface p-5 transition-all duration-500 ease-out ${quizStarted
+                    className={`lg:col-span-12 rounded-lg border border-border bg-surface p-5 transition-all duration-500 ease-out ${quizStarted
                       ? "scale-100 opacity-100"
                       : "scale-[0.98] opacity-100"
                       }`}
@@ -593,19 +594,19 @@ export const LessonContent = ({
                           )}
                         </div>
 
-                        <button
-                          type="button"
+                        <Button
+                          variant="primary"
                           onClick={handleStartQuiz}
                           disabled={
                             quizQuestionsLoading ||
                             questions.length === 0
                           }
-                          className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                          className="mt-5"
                         >
                           {quizQuestionsLoading
                             ? "Loading Questions..."
                             : "Start Quiz"}
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       /* =====================================================
@@ -662,7 +663,7 @@ export const LessonContent = ({
                         ) : currentQuestion ? (
                           <div
                             key={currentQuestion._id}
-                            className="mt-5 rounded-xl border border-border bg-surface-hover/50 p-5"
+                            className="mt-5 rounded-lg border border-border bg-surface-embedded p-5"
                           >
                             <p className="text-xs font-semibold uppercase tracking-wider text-primary">
                               Question {currentQuestionIndex + 1}
@@ -721,8 +722,7 @@ export const LessonContent = ({
                                   : "Select an answer to continue"}
                               </p>
 
-                              <button
-                                type="button"
+                              <Button
                                 disabled={
                                   !hasSelectedAnswer ||
                                   quizSubmitting
@@ -732,14 +732,14 @@ export const LessonContent = ({
                                     ? handleSubmitQuiz
                                     : handleNextQuestion
                                 }
-                                className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                                className="px-5"
                               >
                                 {isLastQuestion
                                   ? quizSubmitting
                                     ? "Submitting..."
                                     : "Submit Quiz"
                                   : "Next"}
-                              </button>
+                              </Button>
                             </div>
                             {quizSubmitError && (
                               <p className="mt-3 text-sm text-error" role="alert">
@@ -761,7 +761,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className="lg:col-span-5 rounded-xl border border-border bg-surface p-5"
+                    className="lg:col-span-5 rounded-lg border border-border bg-surface p-5"
                   >
                     {tool ? (
                       <>
@@ -776,7 +776,7 @@ export const LessonContent = ({
                         </p>
                         <Link
                           to={`/tools/${tool.id}`}
-                          className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                          className="mt-4 inline-flex rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
                         >
                           Open tool
                         </Link>

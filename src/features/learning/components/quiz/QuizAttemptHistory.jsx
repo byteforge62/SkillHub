@@ -1,12 +1,4 @@
 
-export const QuizAttemptHistory = ({ 
-    attempts = [],
-    loading = false, 
-    error = false,
-    onRetry,
-    onSelectAttempt,
-}) => {
-
 import Button from "@/components/ui/Button";
 
 export const QuizAttemptHistory = ({ 
