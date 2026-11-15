@@ -7,9 +7,19 @@ export const QuizAttemptHistory = ({
     onSelectAttempt,
 }) => {
 
+import Button from "@/components/ui/Button";
+
+export const QuizAttemptHistory = ({ 
+    attempts = [],
+    loading = false, 
+    error = false,
+    onRetry,
+    onSelectAttempt,
+}) => {
+
     if (loading) {
         return (
-            <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="rounded-lg border border-border bg-surface p-6">
                 <p className="text-sm text-text-muted">
                     Loading previous attempts...
                 </p>
@@ -19,27 +29,27 @@ export const QuizAttemptHistory = ({
 
     if (error) {
         return (
-            <div className="rounded-2xl border border-error/20 bg-error/5 p-6" role="alert">
+            <div className="rounded-lg border border-error/20 bg-error/5 p-6" role="alert">
                 <h3 className="text-lg font-semibold text-error">
                     Unable to load previous attempts
                 </h3>
                 <p className="mt-2 text-sm text-text-muted">
                     Your quiz result is saved. Please try loading your attempt history again.
                 </p>
-                <button
-                    type="button"
+                <Button
+                    variant="secondary"
                     onClick={onRetry}
-                    className="mt-4 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
+                    className="mt-4"
                 >
                     Retry
-                </button>
+                </Button>
             </div>
         );
     }
 
     if (attempts.length === 0) {
         return (
-            <div className="rounded-2xl border border-border bg-surface p-6">
+            <div className="rounded-lg border border-border bg-surface p-6">
                 <h3 className="text-lg font-semibold text-text-primary">
                     Previous Attempts
                 </h3>
@@ -52,7 +62,7 @@ export const QuizAttemptHistory = ({
     }
 
     return (
-        <div className="rounded-2xl border border-border bg-surface p-6">
+        <div className="rounded-lg border border-border bg-surface p-6">
             <div>
                 <h3 className="text-lg font-semibold text-text-primary">
                     Previous Attempts
@@ -69,7 +79,7 @@ export const QuizAttemptHistory = ({
                         type="button"
                         key={attempt._id}
                         onClick={() => onSelectAttempt(attempt._id)}
-                        className="group w-full rounded-xl border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover"
+                        className="group w-full rounded-lg border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover"
                     >
                         <div className="flex items-center justify-between gap-4">
                             <div>

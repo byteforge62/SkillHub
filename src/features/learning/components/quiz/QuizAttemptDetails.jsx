@@ -4,7 +4,7 @@ export const QuizAttemptDetails = ({ attempt, onClose }) => {
   if (!attempt) return null;
 
   return (
-    <div className="mt-6 rounded-2xl border border-border bg-surface p-6">
+    <div className="mt-6 rounded-lg border border-border bg-surface p-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
         <div>

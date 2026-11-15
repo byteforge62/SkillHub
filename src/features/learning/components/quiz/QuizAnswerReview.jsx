@@ -25,7 +25,7 @@ export const QuizAnswerReview = ({ answers = [], questions = [] }) => {
         return (
           <div
             key={questionId?.toString() || index}
-            className={`rounded-xl border p-5 ${
+            className={`rounded-lg border p-5 ${
               isCorrect
                 ? "border-success/20 bg-success/5"
                 : "border-error/20 bg-error/5"
