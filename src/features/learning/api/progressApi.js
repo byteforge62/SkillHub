@@ -1,0 +1,1 @@
+export { completeLesson as markLessonComplete } from "@/features/enrollment/api/enrollmentApi";

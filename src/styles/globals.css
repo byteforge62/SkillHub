@@ -1,0 +1,111 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark theme support via data-theme attribute */
+[data-theme="dark"] {
+  --color-background: #1A1F1E;
+  --color-surface: #232927;
+  --color-surface-hover: #2D3532;
+  --color-surface-embedded: #1A1F1E;
+  --color-border: #3A403D;
+  --color-border-strong: #4A5552;
+  --color-text-primary: #FBF8F3;
+  --color-text-secondary: #C8D0CB;
+  --color-text-muted: #8A9390;
+  --color-primary: #4ADE80;
+  --color-primary-hover: #34D369;
+  --color-primary-light: #6EE797;
+  --color-primary-soft: #1A3A2A;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+h1 {
+  line-height: 0.95;
+}
+
+h2 {
+  line-height: 1.05;
+}
+
+h3 {
+  line-height: 1.15;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Animations disabled preference */
+[data-animations="false"] *,
+[data-animations="false"] *::before,
+[data-animations="false"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Compact mode */
+[data-compact="true"] {
+  --space-unit: 0.5rem;
+}
+
+[data-compact="true"] .p-6 { padding: 1rem; }
+[data-compact="true"] .px-6 { padding-left: 1rem; padding-right: 1rem; }
+[data-compact="true"] .py-6 { padding-top: 1rem; padding-bottom: 1rem; }
+[data-compact="true"] .gap-6 { gap: 1rem; }
+[data-compact="true"] .gap-4 { gap: 0.75rem; }
+[data-compact="true"] .space-y-6 > * + * { margin-top: 1rem; }
+[data-compact="true"] .space-y-4 > * + * { margin-top: 0.75rem; }
+[data-compact="true"] .mb-6 { margin-bottom: 1rem; }
+[data-compact="true"] .mt-6 { margin-top: 1rem; }
+[data-compact="true"] .h-16 { height: 3rem; }
+[data-compact="true"] .h-12 { height: 2.5rem; }
+[data-compact="true"] .py-3 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+[data-compact="true"] .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
