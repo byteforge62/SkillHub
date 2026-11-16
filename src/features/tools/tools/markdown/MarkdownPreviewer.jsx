@@ -1,6 +1,6 @@
 import { useState } from "react";
-
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import Button from "@/components/ui/Button";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -83,13 +83,13 @@ export const MarkdownPreviewer = () => {
             usefulFor={["Markdown", "README Files", "Documentation"]}
         >
             <div className="mx-auto max-w-7xl px-6 py-8">
-                {/* Header */}
+{/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold">
                         Markdown Previewer
                     </h1>
 
-                    <p className="mt-2 max-w-2xl text-gray-500">
+                    <p className="mt-2 max-w-2xl text-text-secondary">
                         Write Markdown and see the rendered result instantly in
                         your browser.
                     </p>
@@ -97,31 +97,25 @@ export const MarkdownPreviewer = () => {
 
                 {/* Controls */}
                 <div className="mb-6 flex flex-wrap gap-3">
-                    <button
-                        type="button"
-                        onClick={handleSample}
-                        className="rounded-lg bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-80"
-                    >
+                    <Button variant="secondary" onClick={handleSample}>
                         Sample
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="primary"
                         onClick={handleCopy}
                         disabled={!markdown}
-                        className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {copied ? "Copied!" : "Copy Markdown"}
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="secondary"
                         onClick={handleClear}
                         disabled={!markdown}
-                        className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         Clear
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Editor + Preview */}
@@ -136,7 +130,7 @@ export const MarkdownPreviewer = () => {
                                 Markdown
                             </label>
 
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-text-muted">
                                 {markdown.length} characters
                             </span>
                         </div>
@@ -149,7 +143,7 @@ export const MarkdownPreviewer = () => {
                                 setCopied(false);
                             }}
                             placeholder="Write your Markdown here..."
-                            className="min-h-[600px] w-full resize-y rounded-xl border border-gray-200 bg-white p-4 font-mono text-sm leading-6 outline-none focus:border-gray-400"
+                            className="min-h-[600px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm leading-6 text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                             spellCheck={false}
                         />
                     </div>
@@ -157,12 +151,10 @@ export const MarkdownPreviewer = () => {
                     {/* Preview */}
                     <div>
                         <div className="mb-2">
-                            <span className="text-sm font-semibold">
-                                Preview
-                            </span>
+                            <span className="text-sm font-semibold">Preview</span>
                         </div>
 
-                        <div className="min-h-[600px] rounded-xl border border-gray-200 bg-white p-6">
+                        <div className="min-h-[600px] rounded-lg border border-border bg-white p-6">
                             {markdown ? (
                                 <div className="prose max-w-none prose-headings:font-bold prose-pre:overflow-x-auto prose-pre:rounded-lg prose-code:break-words">
                                     <ReactMarkdown
@@ -172,7 +164,7 @@ export const MarkdownPreviewer = () => {
                                     </ReactMarkdown>
                                 </div>
                             ) : (
-                                <div className="flex min-h-[540px] items-center justify-center text-center text-sm text-gray-400">
+                                <div className="flex min-h-[540px] items-center justify-center text-center text-sm text-text-muted">
                                     Your Markdown preview will appear here.
                                 </div>
                             )}
@@ -181,34 +173,32 @@ export const MarkdownPreviewer = () => {
                 </div>
 
                 {/* Information */}
-                <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
-                    <h2 className="font-semibold">
-                        Markdown Quick Reference
-                    </h2>
+                <div className="mt-6 rounded-lg border border-border bg-surface-embedded p-5">
+                    <h2 className="font-semibold">Markdown Quick Reference</h2>
 
                     <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
                         <div>
-                            <code># Heading</code>
+                            <code className="font-mono text-text-secondary"># Heading</code>
                         </div>
 
                         <div>
-                            <code>**Bold text**</code>
+                            <code className="font-mono text-text-secondary">**Bold text**</code>
                         </div>
 
                         <div>
-                            <code>*Italic text*</code>
+                            <code className="font-mono text-text-secondary">*Italic text*</code>
                         </div>
 
                         <div>
-                            <code>[Link](https://example.com)</code>
+                            <code className="font-mono text-text-secondary">[Link](https://example.com)</code>
                         </div>
 
                         <div>
-                            <code>- List item</code>
+                            <code className="font-mono text-text-secondary">- List item</code>
                         </div>
 
                         <div>
-                            <code>`inline code`</code>
+                            <code className="font-mono text-text-secondary">\`inline code\`</code>
                         </div>
                     </div>
                 </div>
@@ -216,4 +206,3 @@ export const MarkdownPreviewer = () => {
         </ToolPageLayout>
     );
 };
-

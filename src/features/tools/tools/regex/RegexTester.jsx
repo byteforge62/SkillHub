@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 
 const SAMPLE_PATTERN = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
@@ -113,65 +115,49 @@ export const RegexTester = () => {
                         Regex Tester
                     </h1>
 
-                    <p className="mt-2 max-w-2xl text-gray-500">
-                        Test regular expressions against text and inspect matches
-                        instantly in your browser.
+                    <p className="mt-2 max-w-2xl text-text-secondary">
+                        Test regular expressions against text and inspect
+                        matches instantly in your browser.
                     </p>
                 </div>
 
                 {/* Pattern + Flags */}
-                <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-5">
+                <div className="mb-6 rounded-lg border border-border bg-surface p-5">
                     <div className="grid gap-5 md:grid-cols-[1fr_180px]">
-                        <div>
-                            <label
-                                htmlFor="regex-pattern"
-                                className="mb-2 block text-sm font-semibold"
-                            >
-                                Regular Expression
-                            </label>
+                        <Input
+                            id="regex-pattern"
+                            label="Regular Expression"
+                            type="text"
+                            value={pattern}
+                            onChange={(event) => {
+                                setPattern(event.target.value);
+                                setCopied(false);
+                            }}
+                            placeholder="Example: \d+"
+                            spellCheck={false}
+                            className="font-mono"
+                        />
 
-                            <input
-                                id="regex-pattern"
-                                type="text"
-                                value={pattern}
-                                onChange={(event) => {
-                                    setPattern(event.target.value);
-                                    setCopied(false);
-                                }}
-                                placeholder="Example: \\d+"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 font-mono text-sm outline-none focus:border-gray-400"
-                                spellCheck={false}
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                htmlFor="regex-flags"
-                                className="mb-2 block text-sm font-semibold"
-                            >
-                                Flags
-                            </label>
-
-                            <input
-                                id="regex-flags"
-                                type="text"
-                                value={flags}
-                                onChange={(event) => {
-                                    setFlags(event.target.value);
-                                    setCopied(false);
-                                }}
-                                placeholder="gim"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 font-mono text-sm outline-none focus:border-gray-400"
-                                spellCheck={false}
-                            />
-                        </div>
+                        <Input
+                            id="regex-flags"
+                            label="Flags"
+                            type="text"
+                            value={flags}
+                            onChange={(event) => {
+                                setFlags(event.target.value);
+                                setCopied(false);
+                            }}
+                            placeholder="gim"
+                            spellCheck={false}
+                            className="font-mono"
+                        />
                     </div>
 
-                    <div className="mt-4 text-xs text-gray-500">
-                        Common flags: <code>g</code> global, <code>i</code>{" "}
-                        case-insensitive, <code>m</code> multiline,{" "}
-                        <code>s</code> dotAll, <code>u</code> Unicode,{" "}
-                        <code>y</code> sticky.
+                    <div className="mt-4 text-xs text-text-secondary">
+                        Common flags: <code>g</code> global,{" "}
+                        <code>i</code> case-insensitive, <code>m</code>{" "}
+                        multiline, <code>s</code> dotAll, <code>u</code>{" "}
+                        Unicode, <code>y</code> sticky.
                     </div>
                 </div>
 
@@ -185,7 +171,7 @@ export const RegexTester = () => {
                             Test Text
                         </label>
 
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-text-muted">
                             {testText.length} characters
                         </span>
                     </div>
@@ -198,61 +184,50 @@ export const RegexTester = () => {
                             setCopied(false);
                         }}
                         placeholder="Enter text to test against your regular expression..."
-                        className="min-h-[240px] w-full resize-y rounded-xl border border-gray-200 bg-white p-4 font-mono text-sm outline-none focus:border-gray-400"
+                        className="min-h-[240px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                         spellCheck={false}
                     />
                 </div>
 
                 {/* Controls */}
                 <div className="mb-6 flex flex-wrap gap-3">
-                    <button
-                        type="button"
-                        onClick={handleSample}
-                        className="rounded-lg bg-black px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-80"
-                    >
+                    <Button variant="secondary" onClick={handleSample}>
                         Sample
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        onClick={handleClear}
-                        className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50"
-                    >
+                    <Button variant="secondary" onClick={handleClear}>
                         Clear
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
+                    <Button
+                        variant="secondary"
                         onClick={handleCopyMatches}
                         disabled={!result.matches.length}
-                        className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {copied ? "Copied!" : "Copy Matches"}
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Error */}
                 {result.error && (
-                    <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-                        <p className="text-sm font-semibold text-red-700">
+                    <div className="mb-6 rounded-lg border border-error/20 bg-error/5 p-4">
+                        <p className="text-sm font-semibold text-error">
                             Invalid Regular Expression
                         </p>
 
-                        <p className="mt-1 text-sm text-red-600">
+                        <p className="mt-1 text-sm text-error">
                             {result.error}
                         </p>
                     </div>
                 )}
 
-                {/* Results */}
+{/* Results */}
                 <div className="grid gap-6 lg:grid-cols-2">
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                    <div className="rounded-lg border border-border bg-surface p-5">
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="font-semibold">
-                                Match Results
-                            </h2>
+                            <h2 className="font-semibold">Match Results</h2>
 
-                            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold">
+                            <span className="rounded-md bg-surface-embedded px-3 py-1 text-xs font-semibold text-text-secondary">
                                 {result.matches.length}{" "}
                                 {result.matches.length === 1
                                     ? "match"
@@ -261,7 +236,7 @@ export const RegexTester = () => {
                         </div>
 
                         {result.matches.length === 0 ? (
-                            <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-400">
+                            <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-text-muted">
                                 {pattern && testText
                                     ? "No matches found."
                                     : "Enter a pattern and test text to see matches."}
@@ -271,19 +246,19 @@ export const RegexTester = () => {
                                 {result.matches.map((match, index) => (
                                     <div
                                         key={`${match.index}-${index}`}
-                                        className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                                        className="rounded-lg border border-border bg-surface-embedded p-4"
                                     >
                                         <div className="mb-2 flex items-center justify-between">
-                                            <span className="text-xs font-semibold text-gray-500">
+                                            <span className="text-xs font-semibold text-text-secondary">
                                                 Match {index + 1}
                                             </span>
 
-                                            <span className="text-xs text-gray-400">
+                                            <span className="text-xs text-text-muted">
                                                 Position {match.index}
                                             </span>
                                         </div>
 
-                                        <code className="block break-all font-mono text-sm">
+                                        <code className="block break-all font-mono text-sm text-text-primary">
                                             {match.value}
                                         </code>
                                     </div>
@@ -293,34 +268,34 @@ export const RegexTester = () => {
                     </div>
 
                     {/* Regex Info */}
-                    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+                    <div className="rounded-lg border border-border bg-surface p-5">
                         <h2 className="mb-4 font-semibold">
                             Regex Information
                         </h2>
 
                         <div className="space-y-4 text-sm">
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                                     Pattern
                                 </p>
 
-                                <code className="mt-1 block break-all rounded-lg bg-gray-50 p-3 font-mono">
+                                <code className="mt-1 block break-all rounded-md bg-surface-embedded p-3 font-mono">
                                     {pattern || "—"}
                                 </code>
                             </div>
 
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                                     Flags
                                 </p>
 
-                                <code className="mt-1 block rounded-lg bg-gray-50 p-3 font-mono">
+                                <code className="mt-1 block rounded-md bg-surface-embedded p-3 font-mono">
                                     {flags || "—"}
                                 </code>
                             </div>
 
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
                                     Status
                                 </p>
 
@@ -339,15 +314,14 @@ export const RegexTester = () => {
                 </div>
 
                 {/* Information */}
-                <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-5">
-                    <h2 className="font-semibold">
-                        About Regex
-                    </h2>
+                <div className="mt-6 rounded-lg border border-border bg-surface-embedded p-5">
+                    <h2 className="font-semibold">About Regex</h2>
 
-                    <p className="mt-2 text-sm leading-6 text-gray-600">
-                        Regular expressions are patterns used to search, validate,
-                        extract, and transform text. This tester runs entirely in
-                        your browser using JavaScript's native RegExp engine.
+                    <p className="mt-2 text-sm leading-6 text-text-secondary">
+                        Regular expressions are patterns used to search,
+                        validate, extract, and transform text. This tester
+                        runs entirely in your browser using JavaScript's
+                        native RegExp engine.
                     </p>
                 </div>
             </div>
