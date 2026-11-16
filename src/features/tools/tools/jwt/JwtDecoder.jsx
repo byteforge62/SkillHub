@@ -139,29 +139,17 @@ export const JwtDecoder = () => {
           />
 
           <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleDecode}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover"
-            >
-              Decode JWT
-            </button>
+            <Button variant="primary" onClick={handleDecode}>
+  Decode JWT
+</Button>
 
-            <button
-              type="button"
-              onClick={handleSample}
-              className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-embedded"
-            >
-              Load Sample
-            </button>
+            <Button variant="secondary" onClick={handleSample}>
+  Load Sample
+</Button>
 
-            <button
-              type="button"
-              onClick={handleClear}
-              className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-embedded"
-            >
-              Clear
-            </button>
+            <Button variant="secondary" onClick={handleClear}>
+  Clear
+</Button>
           </div>
         </div>
 

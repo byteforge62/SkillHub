@@ -148,37 +148,21 @@ export const JsonFormatter = () => {
             />
 
             <div className="mt-4 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={handleFormat}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80"
-              >
-                Format
-              </button>
+              <Button variant="primary" onClick={handleFormat}>
+  Format
+</Button>
 
-              <button
-                type="button"
-                onClick={handleMinify}
-                className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-hover"
-              >
-                Minify
-              </button>
+              <Button variant="secondary" onClick={handleMinify}>
+  Minify
+</Button>
 
-              <button
-                type="button"
-                onClick={handleSample}
-                className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-hover"
-              >
-                Sample
-              </button>
+              <Button variant="secondary" onClick={handleSample}>
+  Sample
+</Button>
 
-              <button
-                type="button"
-                onClick={handleClear}
-                className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-hover"
-              >
-                Clear
-              </button>
+              <Button variant="secondary" onClick={handleClear}>
+  Clear
+</Button>
             </div>
           </div>
 
@@ -206,23 +190,13 @@ export const JsonFormatter = () => {
             />
 
             <div className="mt-4 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={handleCopy}
-                disabled={!output}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {copied ? "Copied!" : "Copy Output"}
-              </button>
+              <Button variant="primary" onClick={handleCopy}>
+  {copied ? "Copied!" : "Copy Output"}
+</Button>
 
-              <button
-                type="button"
-                onClick={handleSwap}
-                disabled={!output}
-                className="rounded-md border border-border px-4 py-2 text-sm font-semibold transition hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Use Output as Input
-              </button>
+              <Button variant="secondary" onClick={handleSwap}>
+  Use Output as Input
+</Button>
             </div>
 
             {error && (
