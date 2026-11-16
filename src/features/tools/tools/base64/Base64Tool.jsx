@@ -112,7 +112,7 @@ export const Base64Tool = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Base64 Encoder / Decoder</h1>
 
-          <p className="mt-2 max-w-2xl text-gray-500">
+          <p className="mt-2 max-w-2xl text-text-muted">
             Encode text to Base64 or decode Base64 values directly in your
             browser.
           </p>
@@ -157,7 +157,7 @@ export const Base64Tool = () => {
                 {mode === "encode" ? "Text Input" : "Base64 Input"}
               </label>
 
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-text-muted">
                 {input.length} characters
               </span>
             </div>
@@ -176,7 +176,7 @@ export const Base64Tool = () => {
                   ? "Enter text to encode..."
                   : "Enter Base64 value to decode..."
               }
-              className="min-h-[360px] w-full resize-y rounded-xl border border-gray-200 bg-white p-4 font-mono text-sm outline-none focus:border-gray-400"
+              className="min-h-[360px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
               spellCheck={false}
             />
 
@@ -214,7 +214,7 @@ export const Base64Tool = () => {
                 {mode === "encode" ? "Base64 Output" : "Decoded Text"}
               </label>
 
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-text-muted">
                 {output.length} characters
               </span>
             </div>
@@ -228,29 +228,28 @@ export const Base64Tool = () => {
                   ? "Encoded Base64 will appear here..."
                   : "Decoded text will appear here..."
               }
-              className="min-h-[360px] w-full resize-y rounded-xl border border-gray-200 bg-gray-50 p-4 font-mono text-sm outline-none"
+              className="min-h-[360px] w-full resize-y rounded-lg border border-border bg-surface-embedded p-4 font-mono text-sm outline-none"
               spellCheck={false}
             />
 
             <div className="mt-4">
-              <button
-                type="button"
+              <Button
+                variant="primary"
                 onClick={handleCopy}
                 disabled={!output}
-                className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {copied ? "Copied!" : "Copy Output"}
-              </button>
+              </Button>
             </div>
 
             {error && (
-              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <div className="mt-4 rounded-lg border border-error/20 bg-error/5 p-4 text-sm text-error">
                 {error}
               </div>
             )}
 
             {!error && output && (
-              <div className="mt-4 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+              <div className="mt-4 rounded-lg border border-success/20 bg-success/5 p-4 text-sm text-success">
                 {mode === "encode"
                   ? "Text successfully encoded."
                   : "Base64 successfully decoded."}
@@ -260,10 +259,10 @@ export const Base64Tool = () => {
         </div>
 
         {/* INFO */}
-        <div className="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-5">
+        <div className="mt-8 rounded-lg border border-border bg-surface-embedded p-5">
           <h2 className="font-semibold">About Base64</h2>
 
-          <p className="mt-2 text-sm leading-6 text-gray-600">
+          <p className="mt-2 text-sm leading-6 text-text-secondary">
             Base64 is an encoding format that represents binary data using
             ASCII characters. Encoding is not encryption and does not provide
             security or confidentiality.
