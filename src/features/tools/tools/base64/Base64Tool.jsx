@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import Button from "@/components/ui/Button";
 
 const SAMPLE_TEXT = "Hello SkillHub 👋";
 
@@ -122,9 +123,10 @@ export const Base64Tool = () => {
           <button
             type="button"
             onClick={() => handleModeChange("encode")}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${mode === "encode"
-                ? "bg-black text-white"
-                : "border border-gray-300 hover:bg-gray-50"
+            aria-pressed={mode === "encode"}
+            className={`rounded-md px-4 py-2 text-sm font-semibold transition ${mode === "encode"
+                ? "bg-primary text-white"
+                : "border border-border hover:bg-surface-hover"
               }`}
           >
             Encode
@@ -133,9 +135,10 @@ export const Base64Tool = () => {
           <button
             type="button"
             onClick={() => handleModeChange("decode")}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${mode === "decode"
-                ? "bg-black text-white"
-                : "border border-gray-300 hover:bg-gray-50"
+            aria-pressed={mode === "decode"}
+            className={`rounded-md px-4 py-2 text-sm font-semibold transition ${mode === "decode"
+                ? "bg-primary text-white"
+                : "border border-border hover:bg-surface-hover"
               }`}
           >
             Decode
@@ -178,29 +181,26 @@ export const Base64Tool = () => {
             />
 
             <div className="mt-4 flex flex-wrap gap-3">
-              <button
-                type="button"
+              <Button
+                variant="primary"
                 onClick={handleProcess}
-                className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80"
               >
                 {mode === "encode" ? "Encode" : "Decode"}
-              </button>
+              </Button>
 
-              <button
-                type="button"
+              <Button
+                variant="secondary"
                 onClick={handleSample}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-50"
               >
                 Sample
-              </button>
+              </Button>
 
-              <button
-                type="button"
+              <Button
+                variant="secondary"
                 onClick={handleClear}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold transition hover:bg-gray-50"
               >
                 Clear
-              </button>
+              </Button>
             </div>
           </div>
 
