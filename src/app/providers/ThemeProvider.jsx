@@ -2,14 +2,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const ThemeContext = createContext(null);
 
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
-};
-
 const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined") {
@@ -17,8 +9,6 @@ const ThemeProvider = ({ children }) => {
     }
     return "system";
   });
-
-  const [resolvedTheme, setResolvedTheme] = useState("dark");
 
   useEffect(() => {
     const root = document.documentElement;
@@ -29,7 +19,6 @@ const ThemeProvider = ({ children }) => {
       resolved = systemDark ? "dark" : "light";
     }
 
-    setResolvedTheme(resolved);
     root.setAttribute("data-theme", resolved);
     localStorage.setItem("theme", theme);
   }, [theme]);
@@ -40,7 +29,6 @@ const ThemeProvider = ({ children }) => {
     const handleChange = (e) => {
       if (theme === "system") {
         const resolved = e.matches ? "dark" : "light";
-        setResolvedTheme(resolved);
         document.documentElement.setAttribute("data-theme", resolved);
       }
     };
@@ -49,11 +37,19 @@ const ThemeProvider = ({ children }) => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme]);
 
+  const resolvedTheme = theme === "system"
+    ? (() => {
+        const root = document.documentElement;
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        return systemDark ? "dark" : "light";
+      })()
+    : theme;
+
   const value = useMemo(() => ({
     theme,
     resolvedTheme,
     setTheme,
-  }), [theme, resolvedTheme]);
+  }), [theme]);
 
   return (
     <ThemeContext.Provider value={value}>
