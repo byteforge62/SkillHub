@@ -5,6 +5,7 @@ import {
   GraduationCap,
   UsersRound,
   User,
+  Settings,
   X,
 } from "lucide-react";
 
@@ -18,8 +19,8 @@ const navigation = [
   },
   {
     label: "Courses",
-    path:"/courses",
-    icon: GraduationCap
+    path: "/courses",
+    icon: GraduationCap,
   },
   {
     label: "My Learning",
@@ -35,6 +36,11 @@ const navigation = [
     label: "Profile",
     path: "/profile",
     icon: User,
+  },
+  {
+    label: "Settings",
+    path: "/profile/settings",
+    icon: Settings,
   },
 ];
 
