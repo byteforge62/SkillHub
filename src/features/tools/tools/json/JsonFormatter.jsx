@@ -143,7 +143,7 @@ export const JsonFormatter = () => {
                 setCopied(false);
               }}
               placeholder='{"name":"SkillHub","type":"learning-platform"}'
-              className="min-h-[420px] w-full resize-y rounded-xl border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
+              className="min-h-[420px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
               spellCheck={false}
             />
 
@@ -185,7 +185,7 @@ export const JsonFormatter = () => {
               value={output}
               readOnly
               placeholder="Formatted JSON will appear here..."
-              className="min-h-[420px] w-full resize-y rounded-xl border border-border bg-surface-embedded p-4 font-mono text-sm outline-none"
+              className="min-h-[420px] w-full resize-y rounded-lg border border-border bg-surface-embedded p-4 font-mono text-sm outline-none"
               spellCheck={false}
             />
 

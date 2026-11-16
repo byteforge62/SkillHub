@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import Button from "@/components/ui/Button";
 
 const SAMPLE_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +

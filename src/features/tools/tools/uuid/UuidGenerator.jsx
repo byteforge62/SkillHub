@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ToolPageLayout } from "../../components/ToolPageLayout";
+import Button from "@/components/ui/Button";
 
 const UUID_COUNT = 5;
 
@@ -74,31 +75,17 @@ export const UuidGenerator = () => {
         </div>
 
         <div className="mb-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={handleGenerate}
-            className="rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-hover"
-          >
-            Generate UUIDs
-          </button>
+          <Button variant="primary" onClick={handleGenerate}>
+  Generate UUIDs
+</Button>
 
-          <button
-            type="button"
-            onClick={handleCopyAll}
-            disabled={!uuids.length}
-            className="rounded-md border border-border px-5 py-2.5 text-sm font-semibold transition hover:bg-surface-embedded disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {copiedIndex === "all" ? "Copied!" : "Copy All"}
-          </button>
+          <Button variant="secondary" onClick={handleCopyAll} disabled={!uuids.length}>
+  {copiedIndex === "all" ? "Copied!" : "Copy All"}
+</Button>
 
-          <button
-            type="button"
-            onClick={handleClear}
-            disabled={!uuids.length}
-            className="rounded-md border border-border px-5 py-2.5 text-sm font-semibold transition hover:bg-surface-embedded disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Clear
-          </button>
+          <Button variant="secondary" onClick={handleClear} disabled={!uuids.length}>
+  Clear
+</Button>
         </div>
 
         <div className="rounded-lg border border-border bg-surface p-5">
@@ -129,13 +116,9 @@ export const UuidGenerator = () => {
                     {uuid}
                   </code>
 
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(uuid, index)}
-                    className="shrink-0 rounded-md border border-border px-3 py-2 text-xs font-semibold transition hover:bg-surface"
-                  >
-                    {copiedIndex === index ? "Copied!" : "Copy"}
-                  </button>
+                  <Button variant="secondary" size="sm" onClick={() => handleCopy(uuid, index)}>
+  {copiedIndex === index ? "Copied!" : "Copy"}
+</Button>
                 </div>
               ))}
             </div>
@@ -159,5 +142,6 @@ export const UuidGenerator = () => {
     </ToolPageLayout>
   );
 };
+
 
 
