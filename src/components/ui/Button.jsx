@@ -13,9 +13,9 @@ const Button = ({
 }) => {
   const baseStyles = [
     "inline-flex items-center justify-center",
-    "rounded-md",
-    "font-semibold",
-    "transition-colors duration-200",
+    "rounded-lg",
+    "font-medium",
+    "transition-all duration-200",
     "focus:outline-none",
     "focus-visible:ring-2",
     "focus-visible:ring-primary/40",
@@ -35,6 +35,12 @@ const Button = ({
       "bg-surface text-text-primary",
       "hover:bg-surface-hover",
       "shadow-sm",
+    ],
+
+    tertiary: [
+      "text-text-secondary",
+      "hover:text-text-primary",
+      "hover:bg-surface-hover",
     ],
 
     danger: [

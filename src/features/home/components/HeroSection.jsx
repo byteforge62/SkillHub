@@ -1,93 +1,84 @@
 import { Link } from "react-router-dom";
-import { SkillHubLearningScene } from "./SkillHubLearningScene";
+import { AnimatedReveal } from "@/components/animation/AnimatedReveal";
+import { AnimatedButton } from "@/components/animation/AnimatedButton";
+import { LearningExperiencePreview } from "./LearningExperiencePreview";
+import { SectionBackground } from "./SectionBackground";
+
 export const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-[1440px] items-center gap-16 px-6 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12 lg:py-24 xl:px-16">
-        {/* Copy */}
-        <div className="relative z-20 max-w-[620px]">
-          <div className="flex items-center gap-3">
-            <span className="h-2 w-2 bg-primary" />
-
-            <span className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-text-muted">
-              SkillHub / Learning Platform
+    <SectionBackground variant="background" showDepth depthPosition="top-center">
+      <div className="container-wide grid min-h-[calc(100vh-5.5rem)] items-center gap-10 lg:gap-16 py-16 lg:py-24 xl:py-32 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* Copy Column */}
+        <div className="relative z-20 max-w-[720px]">
+          <AnimatedReveal delay={0.1} distance={16}>
+            <span className="text-eyebrow text-primary">
+              Technical learning platform
             </span>
-          </div>
+          </AnimatedReveal>
 
-          <h1 className="mt-8 max-w-[600px] text-[clamp(3.4rem,6vw,6.2rem)] font-semibold leading-[0.9] tracking-[-0.055em] text-text-primary">
-            For people who
-            <br />
-            <span className="text-primary">build</span> with
-            <br />
-            technology.
-          </h1>
+          <AnimatedReveal delay={0.2} distance={20}>
+            <h1 className="mt-4 max-w-[780px] leading-[1.05]">
+              Learn what matters.
+              <br />
+              Build what you imagine.
+            </h1>
+          </AnimatedReveal>
 
-          <p className="mt-8 max-w-[500px] text-[17px] leading-8 text-text-secondary">
-            A place to discover what to learn, practise what you know,
-            and keep moving toward the things you want to build.
-          </p>
+          <AnimatedReveal delay={0.3} distance={16}>
+            <p className="mt-6 max-w-[640px] text-lead">
+              SkillHub connects structured courses, hands-on practice, and community learning
+              so you can progress from tutorial to production with confidence.
+            </p>
+          </AnimatedReveal>
 
-          <div className="mt-10 grid max-w-[470px] grid-cols-2 border-y border-border">
-            <div className="border-r border-border py-4 pr-5">
-              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
-                Discover
-              </p>
-
-              <p className="mt-2 text-sm font-medium text-text-primary">
-                Courses · Resources
-              </p>
+          <AnimatedReveal delay={0.4} distance={16}>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <AnimatedButton
+                variant="primary"
+                size="lg"
+                asChild
+              >
+                <Link to="/register">
+                  Start learning free
+                </Link>
+              </AnimatedButton>
+              <AnimatedButton
+                variant="secondary"
+                size="lg"
+                asChild
+              >
+                <Link to="/login">
+                  Sign in
+                </Link>
+              </AnimatedButton>
             </div>
+          </AnimatedReveal>
 
-            <div className="py-4 pl-5">
-              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
-                Practice
-              </p>
-
-              <p className="mt-2 text-sm font-medium text-text-primary">
-                Quizzes · Tools
-              </p>
+          <AnimatedReveal delay={0.5} distance={16}>
+            <div className="mt-10 flex flex-wrap items-center gap-6 text-caption text-text-muted">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-success" />
+                <span>Free to start</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                <span>No card required</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-accent" />
+                <span>Cancel anytime</span>
+              </div>
             </div>
-
-            <div className="border-r border-t border-border py-4 pr-5">
-              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
-                Connect
-              </p>
-
-              <p className="mt-2 text-sm font-medium text-text-primary">
-                Events · Community
-              </p>
-            </div>
-
-            <div className="border-t border-border py-4 pl-5">
-              <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">
-                Build
-              </p>
-
-              <p className="mt-2 text-sm font-medium text-text-primary">
-                Projects · Skills
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-3 text-sm font-semibold text-text-primary"
-            >
-              Enter SkillHub
-
-              <span className="flex h-8 w-8 items-center justify-center border border-border transition-all duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
-                →
-              </span>
-            </Link>
-          </div>
+          </AnimatedReveal>
         </div>
 
-        {/* Visual world */}
-        <div className="relative h-[620px] w-full lg:h-[680px]">
-          <SkillHubLearningScene />
+        {/* Product Visual Column */}
+        <div className="relative">
+          <AnimatedReveal delay={0.3} distance={20} duration={0.8}>
+            <LearningExperiencePreview />
+          </AnimatedReveal>
         </div>
       </div>
-    </section>
-  )
-}
+    </SectionBackground>
+  );
+};

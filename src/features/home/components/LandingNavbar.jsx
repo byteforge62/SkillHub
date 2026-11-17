@@ -1,54 +1,48 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { AnimatedButton } from "@/components/animation/AnimatedButton";
 
 import Logo from "@/components/ui/Logo";
 
 const navigation = [
-  {
-    label: "Resources",
-    href: "#resources",
-  },
-  {
-    label: "Learning",
-    href: "#learning",
-  },
-  {
-    label: "Workspace",
-    href: "#workspace",
-  },
+  { label: "Resources", href: "#resources" },
+  { label: "Learning", href: "#learning" },
+  { label: "Workspace", href: "#workspace" },
+  { label: "Events", href: "#events" },
+  { label: "Tools", href: "#tools" },
 ];
 
 export const LandingNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const closeMenu = () => {
-    setIsOpen(false);
-  };
+  const closeMenu = () => setIsOpen(false);
 
   return (
-    <header className="relative z-50 border-b border-border bg-background">
-      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center px-6 sm:px-8 lg:px-12 xl:px-16">
-
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border">
+      {/* Full-width background bar */}
+      <div className="absolute inset-0 bg-background/95" aria-hidden="true" />
+      
+      <div className="relative container-narrow flex h-22 items-center">
         {/* Brand */}
-
         <Link
           to="/"
-          className="flex shrink-0 items-center"
+          className="flex shrink-0 items-center gap-2"
           aria-label="SkillHub home"
           onClick={closeMenu}
         >
-          <Logo />
+          <Logo className="text-2xl sm:text-3xl" />
         </Link>
 
         {/* Desktop Navigation */}
-
-        <nav className="ml-12 hidden items-center gap-7 md:flex lg:ml-16">
+        <nav className="ml-8 hidden items-center gap-1 sm:flex lg:ml-12" role="navigation" aria-label="Main navigation">
           {navigation.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text-secondary transition-colors duration-150 hover:text-text-primary"
+              className="px-3 py-2 text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary hover:bg-surface-hover rounded-lg"
+              onClick={closeMenu}
             >
               {item.label}
             </a>
@@ -56,80 +50,84 @@ export const LandingNavbar = () => {
         </nav>
 
         {/* Desktop Actions */}
-
-        <div className="ml-auto hidden items-center gap-5 md:flex">
+        <div className="ml-auto hidden items-center gap-3 md:flex">
           <Link
             to="/login"
-            className="text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary"
+            className="px-4 py-2 text-sm font-medium text-text-secondary transition-colors duration-150 hover:text-text-primary hover:bg-surface-hover rounded-lg"
           >
             Sign in
           </Link>
 
-          <Link
-            to="/register"
-            className="inline-flex h-10 items-center gap-2 border border-primary bg-primary px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-primary-hover"
+          <AnimatedButton
+            variant="primary"
+            size="md"
+            asChild
           >
-            Enter SkillHub
-            <span aria-hidden="true">→</span>
-          </Link>
+            <Link to="/register" onClick={closeMenu}>
+              Enter SkillHub
+              <span aria-hidden="true">→</span>
+            </Link>
+          </AnimatedButton>
         </div>
 
         {/* Mobile Menu Button */}
-
         <button
           type="button"
           aria-label={isOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={isOpen}
-          onClick={() => setIsOpen((previous) => !previous)}
-          className="ml-auto flex h-10 w-10 items-center justify-center border border-border text-text-primary transition-colors hover:border-primary md:hidden"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="ml-auto flex h-10 w-10 items-center justify-center border border-border text-text-primary transition-colors hover:border-primary hover:bg-surface-hover rounded-lg md:hidden"
         >
-          {isOpen ? (
-            <X size={19} aria-hidden="true" />
-          ) : (
-            <Menu size={19} aria-hidden="true" />
-          )}
+          {isOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
         </button>
       </div>
 
       {/* Mobile Navigation */}
-
       {isOpen && (
-        <div className="border-t border-border bg-background md:hidden">
-          <nav className="mx-auto flex w-full max-w-[1440px] flex-col px-6 py-5 sm:px-8">
-
+        <motion.div
+          className="border-t border-border bg-background md:hidden"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <nav className="container-narrow flex flex-col py-6" role="navigation" aria-label="Mobile navigation">
             {navigation.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
-                className="border-b border-border py-4 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+                className="px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary hover:bg-surface-hover rounded-lg"
               >
                 {item.label}
               </a>
             ))}
 
-            <div className="flex flex-col gap-3 pt-5">
-
-              <Link
-                to="/login"
-                onClick={closeMenu}
-                className="flex h-11 items-center justify-center border border-border text-sm font-medium text-text-primary transition-colors hover:border-primary"
+            <div className="flex flex-col gap-3 pt-4 border-t border-border">
+              <AnimatedButton
+                variant="tertiary"
+                size="md"
+                fullWidth
+                asChild
               >
-                Sign in
-              </Link>
-
-              <Link
-                to="/register"
-                onClick={closeMenu}
-                className="flex h-11 items-center justify-center gap-2 border border-primary bg-primary text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+                <Link to="/login" onClick={closeMenu}>
+                  Sign in
+                </Link>
+              </AnimatedButton>
+              <AnimatedButton
+                variant="primary"
+                size="md"
+                fullWidth
+                asChild
               >
-                Enter SkillHub
-                <span aria-hidden="true">→</span>
-              </Link>
-
+                <Link to="/register" onClick={closeMenu}>
+                  Enter SkillHub
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </AnimatedButton>
             </div>
           </nav>
-        </div>
+        </motion.div>
       )}
     </header>
   );
