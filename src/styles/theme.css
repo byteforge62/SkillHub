@@ -1,51 +1,110 @@
 @theme {
   /* ---------- Brand (Forest) ---------- */
 
-  --color-primary: #2D5A3D;
-  --color-primary-hover: #234830;
-  --color-primary-light: #3A7A55;
+  --color-primary: #1E3A2F;
+  --color-primary-hover: #162D24;
+  --color-primary-light: #2D5A3D;
   --color-primary-soft: #E8F0EC;
+  --color-primary-muted: #2D5A3D;
 
   /* ---------- Background ---------- */
 
-  --color-background: #FBF8F3;
+  --color-background: #FAF7F2;
 
   /* ---------- Surfaces ---------- */
 
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F3F0EB;
+  --color-surface-hover: #F4F1EB;
   --color-surface-embedded: #EFEAE3;
+  --color-surface-raised: #FFFFFF;
 
   /* ---------- Accent (Warm Terracotta) ---------- */
 
   --color-accent: #C1734A;
+  --color-accent-hover: #A65E3D;
   --color-accent-light: #E8D5CB;
+  --color-accent-soft: #F7EDE8;
 
   /* ---------- Borders ---------- */
 
   --color-border: #E5E1DA;
   --color-border-strong: #D1CCC3;
+  --color-border-subtle: #EEE8E2;
 
   /* ---------- Text ---------- */
 
   --color-text-primary: #1A1F1E;
   --color-text-secondary: #4A5552;
-  --color-text-muted: #5A6360;
+  --color-text-muted: #6B7570;
+  --color-text-on-dark: #FBF8F3;
+  --color-text-on-dark-muted: #C8D0CB;
 
   /* ---------- Semantic ---------- */
 
   --color-success: #287A55;
+  --color-success-soft: #E8F5ED;
   --color-warning: #B7791F;
+  --color-warning-soft: #FEF3E2;
   --color-error: #C94A4A;
+  --color-error-soft: #FDEEEE;
+
+  /* ---------- Section Backgrounds (Editorial Forest) ---------- */
+
+  /* Deep forest-green for hero */
+  --color-forest-deep: #0D1A14;
+  --color-forest-deep-soft: #14231F;
+  --color-forest-mid: #1E3A2F;
+  --color-forest-soft: #243B32;
+
+  /* Warm off-white editorial */
+  --color-editorial: #FAF7F2;
+  --color-editorial-soft: #F4F1EB;
+  --color-editorial-muted: #EEE8E2;
+
+  /* Soft sage backgrounds */
+  --color-sage: #EEF5F1;
+  --color-sage-soft: #E5F0EA;
+  --color-sage-muted: #D8E8E0;
+
+  /* Subtle terracotta accent area */
+  --color-terracotta-soft: #F7EDE8;
+  --color-terracotta-muted: #EEDDD3;
+
+  /* Warm neutral */
+  --color-warm-neutral: #F8F5F0;
+  --color-warm-neutral-soft: #F1EEE8;
 
   /* ---------- Radius ---------- */
 
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
 
   /* ---------- Shadows ---------- */
 
-  --shadow-card: 0 1px 3px rgba(26, 31, 30, 0.06), 0 1px 2px rgba(26, 31, 30, 0.04);
-  --shadow-hover: 0 4px 12px rgba(26, 31, 30, 0.08), 0 2px 4px rgba(26, 31, 30, 0.05);
+  --shadow-xs: 0 1px 2px rgba(26, 31, 30, 0.04);
+  --shadow-sm: 0 1px 3px rgba(26, 31, 30, 0.06), 0 1px 2px rgba(26, 31, 30, 0.04);
+  --shadow-md: 0 4px 12px rgba(26, 31, 30, 0.06), 0 2px 4px rgba(26, 31, 30, 0.04);
+  --shadow-lg: 0 12px 24px rgba(20, 35, 31, 0.08), 0 4px 8px rgba(20, 35, 31, 0.05);
+  --shadow-xl: 0 20px 40px rgba(20, 35, 31, 0.1), 0 8px 16px rgba(20, 35, 31, 0.06);
+  --shadow-forest: 0 24px 60px rgba(13, 26, 20, 0.4), 0 8px 24px rgba(13, 26, 20, 0.25);
+
+  /* ---------- Transitions ---------- */
+
+  --transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-base: 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-slow: 300ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---------- Z-index ---------- */
+
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
 }

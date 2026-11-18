@@ -10,11 +10,8 @@ const learningPaths = [
     courses: ["JavaScript Essentials", "React Fundamentals", "Advanced React Patterns", "Next.js Applications"],
     current: 2,
     total: 4,
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    ),
+    color: "#2D5A3D",
+    icon: "code",
   },
   {
     title: "Full-Stack Engineering",
@@ -22,11 +19,8 @@ const learningPaths = [
     courses: ["Node.js Foundations", "Database Design", "API Development", "Deployment & DevOps"],
     current: 1,
     total: 4,
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-      </svg>
-    ),
+    color: "#3A7A55",
+    icon: "server",
   },
   {
     title: "TypeScript Mastery",
@@ -34,11 +28,8 @@ const learningPaths = [
     courses: ["TypeScript Basics", "Advanced Types", "Generics & Utility Types", "Real-World Patterns"],
     current: 0,
     total: 4,
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg>
-    ),
+    color: "#4ADE80",
+    icon: "typescript",
   },
 ];
 
@@ -49,9 +40,27 @@ const pathCourses = [
   { name: "Next.js Applications", status: "locked", progress: 0 },
 ];
 
+const icons = {
+  code: (
+    <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </svg>
+  ),
+  server: (
+    <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+    </svg>
+  ),
+  typescript: (
+    <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+  ),
+};
+
 export const LearningPathSection = () => {
   return (
-    <SectionBackground variant="background" showDepth depthPosition="top-left">
+    <SectionBackground variant="green-tint" showDepth depthPosition="top-left">
       <div className="container-narrow py-16 lg:py-24 xl:py-32">
         {/* Intro */}
         <AnimatedReveal delay={0.1} distance={16}>
@@ -66,6 +75,11 @@ export const LearningPathSection = () => {
             projects, and assessments into a clear progression. Track your progress,
             unlock new content, and build a portfolio as you go.
           </p>
+        </AnimatedReveal>
+
+        {/* Progression Illustration */}
+        <AnimatedReveal delay={0.35} distance={20}>
+          <LearningPathIllustration />
         </AnimatedReveal>
 
         {/* Learning Path Cards */}
@@ -241,3 +255,144 @@ const FeaturedPathDetail = ({ courses }) => (
 );
 
 export default LearningPathSection;
+
+// Inline Learning Path Illustration
+const LearningPathIllustration = () => (
+  <div className="relative w-full max-w-4xl mx-auto" aria-hidden="true">
+    <svg viewBox="0 0 520 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto" role="img" aria-label="Learning path progression diagram">
+      <defs>
+        <linearGradient id="pathGradLP" x1="0" y1="280" x2="520" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#2D5A3D" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#3A7A55" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#4ADE80" stopOpacity="0.6" />
+        </linearGradient>
+        <filter id="nodeGlowLP" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Connecting path */}
+      <motion.path
+        d="M60,200 C100,160 150,100 180,80 C210,60 280,90 340,120 C400,150 440,200 460,220"
+        stroke="url(#pathGradLP)"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      />
+
+      {/* Stage nodes */}
+      <StageNode cx={60} cy={200} r={28} color="#2D5A3D" progress={100} label="Foundations" icon={<BookIcon />} />
+      <StageNode cx={180} cy={80} r={24} color="#3A7A55" progress={75} label="Core Skills" icon={<CodeIcon />} />
+      <StageNode cx={340} cy={120} r={26} color="#4ADE80" progress={30} label="Advanced" icon={<ArrowIcon />} />
+      <StageNode cx={460} cy={220} r={22} color="#C1734A" progress={0} label="Mastery" icon={<StarIcon />} />
+    </svg>
+  </div>
+);
+
+const StageNode = ({ cx, cy, r, color, progress, label, icon }) => (
+  <g className="stage-node">
+    <motion.circle
+      cx={cx}
+      cy={cy}
+      r={r + 4}
+      fill="none"
+      stroke={color}
+      strokeWidth="3"
+      strokeDasharray={`${progress * 2.01}, 201`}
+      strokeDashoffset="0"
+      strokeLinecap="round"
+      filter="url(#nodeGlowLP)"
+      initial={{ strokeDashoffset: 201, opacity: 0 }}
+      animate={{ strokeDashoffset: 0, opacity: 1 }}
+      transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    />
+    <motion.circle
+      cx={cx}
+      cy={cy}
+      r={r}
+      fill="#FBF8F3"
+      stroke={color}
+      strokeWidth="2"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+    />
+    <motion.circle
+      cx={cx}
+      cy={cy}
+      r={r * 0.5}
+      fill={progress > 0 ? color : "transparent"}
+      stroke={progress > 0 ? "none" : color}
+      strokeWidth={progress > 0 ? 0 : 2}
+      strokeDasharray={progress > 0 ? "0" : `${progress * 0.75}, 75`}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    />
+    <g transform={"translate(" + (cx - 10) + ", " + (cy - 10) + ")"}>{icon}</g>
+    <motion.text
+      x={cx}
+      y={cy + r + 24}
+      textAnchor="middle"
+      fontFamily="Space Grotesk, sans-serif"
+      fontSize="11"
+      fontWeight="600"
+      fill="#1A1F1E"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {label}
+    </motion.text>
+    <motion.text
+      x={cx}
+      y={cy + r + 38}
+      textAnchor="middle"
+      fontFamily="JetBrains Mono, monospace"
+      fontSize="9"
+      fill={color}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: 0.6 }}
+    >
+      {progress > 0 ? `${progress}%` : "Locked"}
+    </motion.text>
+  </g>
+);
+
+const BookIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D5A3D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 17H20" />
+    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20" />
+  </svg>
+);
+
+const CodeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3A7A55" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 16l4 4 6-6" />
+    <path d="M16 16l-4 4-6-6" />
+  </svg>
+);
+
+const ArrowIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 15l-6-6-6 6" />
+    <path d="M12 3v18" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="#C1734A" stroke="#C1734A" strokeWidth="1">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
