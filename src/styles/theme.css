@@ -1,59 +1,51 @@
 @theme {
   /* ==========================================================================
-     SKILLHUB DESIGN TOKENS — Editorial Maximalist
-     A rich, atmospheric palette with deep forest greens, warm terracotta accents,
-     and layered neutrals. Built for depth, texture, and memorable hierarchy.
+     SKILLHUB DESIGN TOKENS — Professional SaaS
+     Clean, functional, typography-led. Subtle depth. No glows, no orbs.
      ========================================================================== */
 
   /* ---------- Typography Scale ---------- */
-  --font-display: "Space Grotesk", "Syne", sans-serif;
-  --font-body: "DM Sans", "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
   --font-ui: "Space Grotesk", sans-serif;
 
-  /* ---------- Brand: Deep Forest ---------- */
+  /* ---------- Brand: Deep Forest (professional, not neon) ---------- */
   --color-primary: #0D3B2D;
   --color-primary-hover: #092D22;
   --color-primary-light: #1A5C46;
   --color-primary-soft: #E6F3ED;
   --color-primary-muted: #1A5C46;
-  --color-primary-glow: #22C55E;
 
-  /* ---------- Accent: Burnt Terracotta ---------- */
-  --color-accent: #C45A3A;
-  --color-accent-hover: #A84A30;
-  --color-accent-light: #E8C4B8;
+  /* ---------- Accent: Muted Terracotta (restrained) ---------- */
+  --color-accent: #B86B4A;
+  --color-accent-hover: #9D5A3D;
+  --color-accent-light: #E8D4C9;
   --color-accent-soft: #FDF3F0;
-  --color-accent-glow: #F97316;
 
-  /* ---------- Accent 2: Warm Gold (for highlights) ---------- */
-  --color-gold: #D4A843;
-  --color-gold-soft: #FEF9E7;
-  --color-gold-glow: #FBBF24;
-
-  /* ---------- Background: Layered Cream ---------- */
-  --color-background: #FAF8F5;
-  --color-background-deep: #F5F2ED;
-  --color-background-subtle: #EDE9E4;
+  /* ---------- Background: Clean White / Subtle Gray ---------- */
+  --color-background: #FFFFFF;
+  --color-background-deep: #F8F7F5;
+  --color-background-subtle: #F0EEE9;
 
   /* ---------- Surfaces ---------- */
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F7F5F2;
-  --color-surface-embedded: #EFEBE6;
+  --color-surface-hover: #F8F7F5;
+  --color-surface-embedded: #F0EEE9;
   --color-surface-raised: #FFFFFF;
-  --color-surface-card: #FAF8F5;
+  --color-surface-card: #FFFFFF;
   --color-surface-elevated: #FFFFFF;
 
-  /* ---------- Dark Surfaces (for hero/immersive sections) ---------- */
+  /* ---------- Dark Surfaces (hero only) ---------- */
   --color-surface-dark: #0A1410;
   --color-surface-dark-hover: #0F1F18;
   --color-surface-dark-raised: #14281F;
   --color-surface-dark-card: #0F1F18;
 
   /* ---------- Borders ---------- */
-  --color-border: #E8E4DE;
+  --color-border: #E5E2DC;
   --color-border-strong: #D4D0C8;
-  --color-border-subtle: #F0ECE7;
+  --color-border-subtle: #EDEAE5;
   --color-border-dark: #1E3A2F;
   --color-border-dark-strong: #2D5A3D;
   --color-border-dark-subtle: #14281F;
@@ -62,11 +54,11 @@
   --color-text-primary: #0F1A14;
   --color-text-secondary: #3D4A44;
   --color-text-tertiary: #6B7A74;
-  --color-text-muted: #8A9A93;
+  --color-text-muted: #9A9A93;
   --color-text-inverse: #FAF8F5;
   --color-text-inverse-muted: #C8D4CE;
 
-  /* ---------- On Dark (for dark sections) ---------- */
+  /* ---------- On Dark ---------- */
   --color-text-on-dark: #FAF8F5;
   --color-text-on-dark-secondary: #D4E4DB;
   --color-text-on-dark-muted: #94A89F;
@@ -75,35 +67,32 @@
   /* ---------- Semantic ---------- */
   --color-success: #1E7A4A;
   --color-success-soft: #E6F4EB;
-  --color-success-glow: #22C55E;
   --color-warning: #B87C1F;
   --color-warning-soft: #FEF7E0;
   --color-error: #C0392B;
   --color-error-soft: #FDEDE9;
 
-  /* ---------- Section Backgrounds (Editorial Forest) ---------- */
+  /* ---------- Section Backgrounds ---------- */
 
-  /* Deep forest - hero immersive */
+  /* Dark hero */
   --color-forest-deep: #05120C;
   --color-forest-deep-soft: #0A1F15;
   --color-forest-mid: #0D3B2D;
   --color-forest-soft: #144D3A;
 
-  /* Editorial warm cream */
+  /* Light sections */
   --color-editorial: #FAF8F5;
   --color-editorial-soft: #F5F2ED;
   --color-editorial-muted: #EDE9E4;
 
-  /* Sage - subtle green tint */
+  /* Subtle tinted bands */
   --color-sage: #EFF7F3;
   --color-sage-soft: #E5F0E8;
   --color-sage-muted: #D8E8DE;
 
-  /* Terracotta accent band */
   --color-terracotta-soft: #FDF3F0;
   --color-terracotta-muted: #F5E4DF;
 
-  /* Warm neutral */
   --color-warm-neutral: #F8F5F0;
   --color-warm-neutral-soft: #F1EDE8;
 
@@ -113,29 +102,23 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-  --radius-2xl: 28px;
-  --radius-3xl: 36px;
+  --radius-2xl: 24px;
   --radius-full: 9999px;
 
-  /* ---------- Shadows (layered depth) ---------- */
-  --shadow-xs: 0 1px 2px rgba(15, 26, 20, 0.04);
-  --shadow-sm: 0 1px 3px rgba(15, 26, 20, 0.06), 0 1px 2px rgba(15, 26, 20, 0.04);
-  --shadow-md: 0 4px 12px rgba(15, 26, 20, 0.07), 0 2px 4px rgba(15, 26, 20, 0.05);
-  --shadow-lg: 0 16px 32px rgba(15, 26, 20, 0.09), 0 4px 12px rgba(15, 26, 20, 0.06);
-  --shadow-xl: 0 24px 48px rgba(15, 26, 20, 0.11), 0 8px 20px rgba(15, 26, 20, 0.07);
-  --shadow-2xl: 0 32px 64px rgba(15, 26, 20, 0.13), 0 12px 28px rgba(15, 26, 20, 0.08);
-  --shadow-forest: 0 32px 80px rgba(5, 18, 12, 0.5), 0 12px 32px rgba(5, 18, 12, 0.35);
-  --shadow-glow-primary: 0 0 40px rgba(34, 197, 94, 0.25), 0 0 80px rgba(34, 197, 94, 0.1);
-  --shadow-glow-accent: 0 0 40px rgba(249, 115, 22, 0.2), 0 0 80px rgba(249, 115, 22, 0.08);
+  /* ---------- Shadows (restrained, layered) ---------- */
+  --shadow-xs: 0 1px 2px rgba(15, 26, 20, 0.03);
+  --shadow-sm: 0 1px 3px rgba(15, 26, 20, 0.04), 0 1px 2px rgba(15, 26, 20, 0.02);
+  --shadow-md: 0 4px 12px rgba(15, 26, 20, 0.05), 0 2px 4px rgba(15, 26, 20, 0.03);
+  --shadow-lg: 0 12px 24px rgba(15, 26, 20, 0.06), 0 4px 8px rgba(15, 26, 20, 0.04);
+  --shadow-xl: 0 20px 40px rgba(15, 26, 20, 0.07), 0 8px 16px rgba(15, 26, 20, 0.05);
+  --shadow-2xl: 0 24px 48px rgba(15, 26, 20, 0.08), 0 12px 24px rgba(15, 26, 20, 0.05);
 
   /* ---------- Transitions ---------- */
   --transition-instant: 80ms cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1);
   --transition-base: 200ms cubic-bezier(0.22, 1, 0.36, 1);
   --transition-slow: 300ms cubic-bezier(0.22, 1, 0.36, 1);
-  --transition-slower: 500ms cubic-bezier(0.22, 1, 0.36, 1);
-  --transition-spring: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-slower: 400ms cubic-bezier(0.22, 1, 0.36, 1);
 
   /* ---------- Z-index ---------- */
   --z-dropdown: 100;
@@ -146,12 +129,4 @@
   --z-popover: 600;
   --z-tooltip: 700;
   --z-toast: 800;
-
-  /* ---------- Blur ---------- */
-  --blur-sm: 4px;
-  --blur-md: 8px;
-  --blur-lg: 16px;
-  --blur-xl: 24px;
-  --blur-2xl: 40px;
-  --blur-3xl: 64px;
 }
