@@ -2,12 +2,18 @@ import { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  BookOpen,
+  CalendarDays,
   ChevronDown,
+  GraduationCap,
   LogOut,
   Menu,
   Search,
   Settings,
+  Sparkles,
   User,
+  Users,
+  Wrench,
 } from "lucide-react";
 
 import Avatar from "@/components/ui/Avatar";
@@ -50,18 +56,19 @@ export const Header = ({ onMenuClick }) => {
 
   const searchItems = useMemo(
     () => [
-      { label: "Dashboard", to: "/dashboard", group: "Pages", description: "Your learning overview" },
-      { label: "My learning", to: "/learning", group: "Pages", description: "Enrolled courses" },
-      { label: "Course catalog", to: "/courses", group: "Pages", description: "Browse all courses" },
-      { label: "Communities", to: "/communities", group: "Pages", description: "Discussion rooms" },
-      { label: "Events", to: "/events", group: "Pages", description: "Upcoming workshops" },
-      { label: "Profile", to: "/profile", group: "Pages", description: "Your public profile" },
-      { label: "Settings", to: "/profile/settings", group: "Pages", description: "Preferences" },
+      { label: "Dashboard", to: "/dashboard", group: "Pages", description: "Your learning overview", icon: BookOpen },
+      { label: "My learning", to: "/learning", group: "Pages", description: "Enrolled courses", icon: GraduationCap },
+      { label: "Course catalog", to: "/courses", group: "Pages", description: "Browse all courses", icon: Sparkles },
+      { label: "Communities", to: "/communities", group: "Pages", description: "Discussion rooms", icon: Users },
+      { label: "Events", to: "/events", group: "Pages", description: "Upcoming workshops", icon: CalendarDays },
+      { label: "Profile", to: "/profile", group: "Pages", description: "Your public profile", icon: User },
+      { label: "Settings", to: "/profile/settings", group: "Pages", description: "Preferences", icon: Settings },
       ...toolRegistry.map((tool) => ({
         label: tool.name,
         to: `/tools/${tool.id}`,
         group: "Tools",
         description: tool.description,
+        icon: Wrench,
       })),
     ],
     [],
@@ -185,3 +192,6 @@ export const Header = ({ onMenuClick }) => {
 };
 
 export default Header;
+
+
+
