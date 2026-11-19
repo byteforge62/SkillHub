@@ -87,19 +87,9 @@ export const JwtDecoder = () => {
       category="Authentication & Security"
       usefulFor={["JWT", "Authentication", "Authorization"]}
     >
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        {/* HEADER */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">JWT Decoder</h1>
-
-          <p className="mt-2 max-w-2xl text-text-muted">
-            Decode and inspect the header and payload of a JSON Web Token
-            directly in your browser.
-          </p>
-        </div>
-
-        {/* SECURITY NOTICE */}
-        <div className="mb-6 rounded-lg border border-warning/20 bg-warning/5 p-4">
+      <div className="space-y-6">
+{/* SECURITY NOTICE */}
+        <div className="mb-6 rounded-2xl border border-warning/20 bg-warning/5 p-4">
           <p className="text-sm font-semibold text-warning">
             Security Notice
           </p>
@@ -115,12 +105,12 @@ export const JwtDecoder = () => {
           <div className="mb-2 flex items-center justify-between">
             <label
               htmlFor="jwt-token"
-              className="text-sm font-semibold"
+              className="code-field-label"
             >
               JWT Token
             </label>
 
-            <span className="text-xs text-text-muted">
+            <span className="code-field-meta">
               {token.length} characters
             </span>
           </div>
@@ -135,7 +125,7 @@ export const JwtDecoder = () => {
               setPayload(null);
             }}
             placeholder="Paste your JWT token here..."
-            className="min-h-[180px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
+            className="code-field min-h-[180px]"
             spellCheck={false}
           />
 
@@ -156,7 +146,7 @@ export const JwtDecoder = () => {
 
         {/* ERROR */}
         {error && (
-          <div className="mb-6 rounded-lg border border-error/20 bg-error/5 p-4 text-sm text-error">
+          <div className="mb-6 rounded-2xl border border-error/20 bg-error/5 p-4 text-sm text-error">
             {error}
           </div>
         )}
@@ -167,14 +157,14 @@ export const JwtDecoder = () => {
             {/* HEADER */}
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <h2 className="text-sm font-semibold">Header</h2>
+                <h2 className="code-field-label">Header</h2>
 
-                <span className="rounded-md bg-surface-embedded px-2 py-1 text-xs text-text-muted">
+                <span className="rounded-full bg-sage px-2 py-1 text-xs text-text-muted">
                   JSON
                 </span>
               </div>
 
-              <pre className="min-h-[300px] overflow-auto rounded-lg border border-border bg-surface-embedded p-5 font-mono text-sm">
+              <pre className="code-field min-h-[300px] overflow-auto">
                 {JSON.stringify(header, null, 2)}
               </pre>
             </div>
@@ -182,14 +172,14 @@ export const JwtDecoder = () => {
             {/* PAYLOAD */}
             <div>
               <div className="mb-2 flex items-center justify-between">
-                <h2 className="text-sm font-semibold">Payload</h2>
+                <h2 className="code-field-label">Payload</h2>
 
-                <span className="rounded-md bg-surface-embedded px-2 py-1 text-xs text-text-muted">
+                <span className="rounded-full bg-sage px-2 py-1 text-xs text-text-muted">
                   JSON
                 </span>
               </div>
 
-              <pre className="min-h-[300px] overflow-auto rounded-lg border border-border bg-surface-embedded p-5 font-mono text-sm">
+              <pre className="code-field min-h-[300px] overflow-auto">
                 {JSON.stringify(payload, null, 2)}
               </pre>
             </div>
@@ -198,7 +188,7 @@ export const JwtDecoder = () => {
 
         {/* EMPTY STATE */}
         {!header && !payload && !error && (
-          <div className="rounded-lg border border-dashed border-border p-10 text-center">
+          <div className="rounded-2xl border border-dashed border-[color:var(--color-line)] p-10 text-center">
             <p className="font-medium text-text-secondary">
               Decoded JWT data will appear here.
             </p>

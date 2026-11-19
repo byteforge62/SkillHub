@@ -156,11 +156,11 @@ export const LessonContent = ({
         <div className="text-center">
           <div className="text-4xl">📚</div>
 
-          <h2 className="mt-4 text-xl font-semibold text-text-primary">
+          <h2 className="mt-4 text-[18px] font-bold tracking-[-0.025em] text-text-primary">
             Select a lesson
           </h2>
 
-          <p className="mt-2 text-sm text-text-muted">
+          <p className="mt-2 text-[13px] leading-6 text-text-muted">
             Select a lesson from the course content to begin learning.
           </p>
         </div>
@@ -205,12 +205,12 @@ export const LessonContent = ({
   return (
     <Card className="!p-0 overflow-hidden">
       {/* Lesson Header */}
-      <div className="border-b border-border px-6 py-6 sm:px-8">
-        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+      <div className="border-b border-[color:var(--color-line)] px-6 py-6 sm:px-8">
+        <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
           Lesson {lesson.order}
         </p>
 
-        <h2 className="mt-2 text-2xl font-semibold text-text-primary sm:text-3xl">
+        <h2 className="mt-2 text-[22px] font-bold tracking-[-0.03em] text-text-primary sm:text-3xl">
           {lesson.title}
         </h2>
 
@@ -230,7 +230,7 @@ export const LessonContent = ({
       {/* Lesson Blocks */}
       <div className="grid grid-cols-1 gap-5 px-6 py-7 sm:px-8 lg:grid-cols-12 lg:items-start">
         {blocks.length === 0 ? (
-          <p className="text-sm text-text-muted">
+          <p className="text-[13px] leading-6 text-text-muted">
             This lesson does not contain any content yet.
           </p>
         ) : (
@@ -263,12 +263,12 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-5 overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-white transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
                   >
-                    <div className="border-b border-border px-4 py-2">
+                    <div className="border-b border-[color:var(--color-line)] px-4 py-2">
                       <span className="font-mono text-xs text-text-muted">
                         {block.data?.language || "code"}
                       </span>
@@ -288,7 +288,7 @@ export const LessonContent = ({
                 return (
                 <figure
                   key={block._id}
-                  className={`lg:col-span-12 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                  className={`lg:col-span-12 overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-white transition-all duration-300 ease-out ${
                     quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
@@ -303,12 +303,12 @@ export const LessonContent = ({
                       className="max-h-[70vh] w-full object-contain"
                     />
                   ) : (
-                    <p className="p-5 text-sm text-text-muted" role="status">
+                    <p className="p-5 text-[13px] leading-6 text-text-muted" role="status">
                       This image is unavailable.
                     </p>
                   )}
                   {block.data?.caption && (
-                    <figcaption className="border-t border-border px-4 py-3 text-sm text-text-muted">
+                    <figcaption className="border-t border-[color:var(--color-line)] px-4 py-3 text-[13px] leading-6 text-text-muted">
                       {block.data.caption}
                     </figcaption>
                   )}
@@ -322,7 +322,7 @@ export const LessonContent = ({
                 return (
                 <div
                   key={block._id}
-                  className={`lg:col-span-12 overflow-hidden rounded-lg border border-border bg-surface-hover transition-all duration-300 ease-out ${
+                  className={`lg:col-span-12 overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-white transition-all duration-300 ease-out ${
                     quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
@@ -348,7 +348,7 @@ export const LessonContent = ({
                       </a>
                     </>
                   ) : (
-                    <p className="p-5 text-sm text-text-muted" role="status">
+                    <p className="p-5 text-[13px] leading-6 text-text-muted" role="status">
                       This video is unavailable.
                     </p>
                   )}
@@ -360,7 +360,7 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-7 rounded-lg border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-7 rounded-2xl border border-primary/20 bg-primary/5 p-5 transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
@@ -386,7 +386,7 @@ export const LessonContent = ({
                   return (
                     <p
                       key={block._id}
-                      className="lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      className="lg:col-span-5 rounded-2xl border border-error/20 bg-error/5 p-5 text-sm text-error"
                       role="status"
                     >
                       This resource is unavailable.
@@ -398,12 +398,12 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-lg border border-border bg-surface-embedded p-5 transition-all duration-300 ease-out ${quizStarted
+                      className={`lg:col-span-5 rounded-2xl border border-[color:var(--color-line)] bg-sage p-5 transition-all duration-300 ease-out ${quizStarted
                         ? "pointer-events-none scale-[0.98] opacity-0"
                         : "scale-100 opacity-100"
                         }`}
                     >
-                      <p className="text-sm text-text-muted">
+                      <p className="text-[13px] leading-6 text-text-muted">
                         Loading resource...
                       </p>
                     </div>
@@ -414,7 +414,7 @@ export const LessonContent = ({
                   return (
                     <div
                       key={block._id}
-                      className={`lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${quizStarted
+                      className={`lg:col-span-5 rounded-2xl border border-error/20 bg-error/5 p-5 transition-all duration-300 ease-out ${quizStarted
                         ? "pointer-events-none scale-[0.98] opacity-0"
                         : "scale-100 opacity-100"
                         }`}
@@ -437,7 +437,7 @@ export const LessonContent = ({
                   return (
                     <p
                       key={block._id}
-                      className="lg:col-span-5 rounded-lg border border-error/20 bg-error/5 p-5 text-sm text-error"
+                      className="lg:col-span-5 rounded-2xl border border-error/20 bg-error/5 p-5 text-sm text-error"
                       role="status"
                     >
                       This resource is no longer available.
@@ -451,18 +451,18 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-5 rounded-lg border border-border bg-surface p-5 transition-all duration-300 ease-out ${quizStarted
+                    className={`lg:col-span-5 rounded-2xl border border-[color:var(--color-line)] bg-white p-5 transition-all duration-300 ease-out ${quizStarted
                       ? "pointer-events-none scale-[0.98] opacity-0"
                       : "scale-100 opacity-100"
                       }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                           Resource
                         </p>
 
-                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
+                        <h3 className="mt-2 text-[15px] font-bold tracking-[-0.02em] text-text-primary">
                           {resource.title}
                         </h3>
 
@@ -474,7 +474,7 @@ export const LessonContent = ({
                       </div>
 
                       {resource.type && (
-                        <span className="shrink-0 rounded-full bg-surface-embedded px-2.5 py-1 text-xs font-medium capitalize text-text-secondary">
+                        <span className="shrink-0 rounded-full bg-sage px-2.5 py-1 text-xs font-medium capitalize text-text-secondary">
                           {resource.type}
                         </span>
                       )}
@@ -485,7 +485,7 @@ export const LessonContent = ({
                         {resource.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-md bg-surface-hover px-2.5 py-1 text-xs text-text-secondary"
+                            className="rounded-full bg-surface-hover px-2.5 py-1 text-xs text-text-secondary"
                           >
                             {tag}
                           </span>
@@ -494,18 +494,18 @@ export const LessonContent = ({
                     )}
 
                     {resourceUrl ? (
-                      <div className="mt-5 border-t border-border pt-4">
+                      <div className="mt-5 border-t border-[color:var(--color-line)] pt-4">
                         <a
                           href={resourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                          className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
                         >
                           Open Resource
                         </a>
                       </div>
                     ) : (
-                      <p className="mt-5 border-t border-border pt-4 text-sm text-error" role="status">
+                      <p className="mt-5 border-t border-[color:var(--color-line)] pt-4 text-sm text-error" role="status">
                         This resource link is unavailable.
                       </p>
                     )}
@@ -517,13 +517,13 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className={`lg:col-span-12 rounded-lg border border-border bg-surface p-5 transition-all duration-500 ease-out ${quizStarted
+                    className={`lg:col-span-12 rounded-2xl border border-[color:var(--color-line)] bg-white p-5 transition-all duration-500 ease-out ${quizStarted
                       ? "scale-100 opacity-100"
                       : "scale-[0.98] opacity-100"
                       }`}
                   >
                     {quizLoading ? (
-                      <p className="text-sm text-text-muted">
+                      <p className="text-[13px] leading-6 text-text-muted">
                         Loading quiz...
                       </p>
                     ) : quizError ? (
@@ -564,11 +564,11 @@ export const LessonContent = ({
                          QUIZ INTRO
                       ====================================================== */
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                           Quiz
                         </p>
 
-                        <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                        <h3 className="mt-2 text-[18px] font-bold tracking-[-0.025em] text-text-primary">
                           {quizData?.data?.title || "Quiz"}
                         </h3>
 
@@ -614,9 +614,9 @@ export const LessonContent = ({
                       ====================================================== */
                       <div>
                         {/* Quiz Header */}
-                        <div className="border-b border-border pb-4">
+                        <div className="border-b border-[color:var(--color-line)] pb-4">
                           <div className="flex items-center justify-between gap-4">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                            <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                               Quiz
                             </p>
 
@@ -628,7 +628,7 @@ export const LessonContent = ({
                             )}
                           </div>
 
-                          <h3 className="mt-2 text-xl font-semibold text-text-primary">
+                          <h3 className="mt-2 text-[18px] font-bold tracking-[-0.025em] text-text-primary">
                             {quizData?.data?.title || "Quiz"}
                           </h3>
 
@@ -649,7 +649,7 @@ export const LessonContent = ({
 
                         {/* Question */}
                         {quizQuestionsLoading ? (
-                          <p className="mt-5 text-sm text-text-muted">
+                          <p className="mt-5 text-[13px] leading-6 text-text-muted">
                             Loading questions...
                           </p>
                         ) : quizQuestionsError ? (
@@ -657,15 +657,15 @@ export const LessonContent = ({
                             Unable to load questions.
                           </p>
                         ) : questions.length === 0 ? (
-                          <p className="mt-5 text-sm text-text-muted">
+                          <p className="mt-5 text-[13px] leading-6 text-text-muted">
                             No questions are available for this quiz.
                           </p>
                         ) : currentQuestion ? (
                           <div
                             key={currentQuestion._id}
-                            className="mt-5 rounded-lg border border-border bg-surface-embedded p-5"
+                            className="mt-5 rounded-2xl border border-[color:var(--color-line)] bg-sage p-5"
                           >
-                            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                            <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                               Question {currentQuestionIndex + 1}
                             </p>
 
@@ -687,9 +687,9 @@ export const LessonContent = ({
                                       key={
                                         option._id || optionIndex
                                       }
-                                      className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition-all duration-200 ${isSelected
+                                      className={`flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200 ${isSelected
                                         ? "border-primary bg-primary/5"
-                                        : "border-border bg-surface hover:bg-surface-hover"
+                                        : "border-[color:var(--color-line)] bg-white hover:bg-surface-hover"
                                         }`}
                                     >
                                       <input
@@ -761,14 +761,14 @@ export const LessonContent = ({
                 return (
                   <div
                     key={block._id}
-                    className="lg:col-span-5 rounded-lg border border-border bg-surface p-5"
+                    className="lg:col-span-5 rounded-2xl border border-[color:var(--color-line)] bg-white p-5"
                   >
                     {tool ? (
                       <>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                           Learning tool
                         </p>
-                        <h3 className="mt-2 text-lg font-semibold text-text-primary">
+                        <h3 className="mt-2 text-[15px] font-bold tracking-[-0.02em] text-text-primary">
                           {tool.name}
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-text-muted">
@@ -776,13 +776,13 @@ export const LessonContent = ({
                         </p>
                         <Link
                           to={`/tools/${tool.id}`}
-                          className="mt-4 inline-flex rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+                          className="mt-4 inline-flex rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
                         >
                           Open tool
                         </Link>
                       </>
                     ) : (
-                      <p className="text-sm text-text-muted" role="status">
+                      <p className="text-[13px] leading-6 text-text-muted" role="status">
                         This learning tool is unavailable.
                       </p>
                     )}
@@ -794,7 +794,7 @@ export const LessonContent = ({
                 return (
                   <p
                     key={block._id}
-                    className="lg:col-span-12 rounded-lg border border-border p-4 text-sm text-text-muted"
+                    className="lg:col-span-12 rounded-2xl border border-[color:var(--color-line)] p-4 text-[13px] leading-6 text-text-muted"
                     role="status"
                   >
                     This lesson contains an unsupported content block.

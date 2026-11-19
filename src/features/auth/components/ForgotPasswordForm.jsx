@@ -1,23 +1,27 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import Card from "@/components/ui/Card";
-import Input from "@/components/ui/Input";
+import AuthFormShell from "@/components/auth/AuthFormShell";
 import Button from "@/components/ui/Button";
-import AuthHeader from "@/components/auth/AuthHeader";
+import Input from "@/components/ui/Input";
 
 import forgotPasswordFormSchema from "../validation/forgotPasswordFormSchema";
 import useForgotPassword from "../hooks/useForgotPassword";
 
-
 export const ForgotPasswordForm = () => {
   const forgotPasswordMutation = useForgotPassword();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
       email: "",
-    }
+    },
   });
 
   const onSubmit = (values) => {
@@ -25,34 +29,49 @@ export const ForgotPasswordForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <AuthHeader
-        title="Forgot Password"
-        subtitle="Enter your email address and we'll send you a verification code."
-      />
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
-      >
+    <AuthFormShell
+      title="Reset your password"
+      subtitle="Enter the email on your account. We'll send a six-digit code to confirm it's you."
+      footer={
+        <p className="text-center text-[12.5px] text-text-secondary">
+          Remembered it?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-primary transition-colors hover:text-primary-hover"
+          >
+            Back to sign in
+          </Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <Input
           id="email"
-          label="Email"
+          label="Email address"
           type="email"
-          placeholder="Enter your email"
+          placeholder="you@example.com"
           autoComplete="email"
+          icon={Mail}
           error={errors.email?.message}
           {...register("email")}
         />
 
         <Button
           type="submit"
-          loading={forgotPasswordMutation.isPending}
           fullWidth
+          size="lg"
+          loading={forgotPasswordMutation.isPending}
+          disabled={forgotPasswordMutation.isPending}
+          iconRight={ArrowRight}
+          className="!mt-6"
         >
-          Send Verification Code
+          {forgotPasswordMutation.isPending
+            ? "Sending code"
+            : "Send verification code"}
         </Button>
       </form>
-    </Card>
-  )
-}
+    </AuthFormShell>
+  );
+};
+
+export default ForgotPasswordForm;

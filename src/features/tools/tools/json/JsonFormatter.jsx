@@ -110,26 +110,18 @@ export const JsonFormatter = () => {
       category="Developer Tools"
       usefulFor={["REST APIs", "JSON", "API Responses"]}
     >
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">JSON Formatter</h1>
-
-          <p className="mt-2 max-w-2xl text-text-muted">
-            Format, validate, and minify JSON directly in your browser.
-          </p>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
+      <div className="space-y-6">
+<div className="grid gap-6 lg:grid-cols-2">
           <div>
             <div className="mb-2 flex items-center justify-between">
               <label
                 htmlFor="json-input"
-                className="text-sm font-semibold"
+                className="code-field-label"
               >
                 Input JSON
               </label>
 
-              <span className="text-xs text-text-muted">
+              <span className="code-field-meta">
                 {input.length} characters
               </span>
             </div>
@@ -143,7 +135,7 @@ export const JsonFormatter = () => {
                 setCopied(false);
               }}
               placeholder='{"name":"SkillHub","type":"learning-platform"}'
-              className="min-h-[420px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
+              className="code-field min-h-[420px]"
               spellCheck={false}
             />
 
@@ -170,12 +162,12 @@ export const JsonFormatter = () => {
             <div className="mb-2 flex items-center justify-between">
               <label
                 htmlFor="json-output"
-                className="text-sm font-semibold"
+                className="code-field-label"
               >
                 Output
               </label>
 
-              <span className="text-xs text-text-muted">
+              <span className="code-field-meta">
                 {output.length} characters
               </span>
             </div>
@@ -185,7 +177,7 @@ export const JsonFormatter = () => {
               value={output}
               readOnly
               placeholder="Formatted JSON will appear here..."
-              className="min-h-[420px] w-full resize-y rounded-lg border border-border bg-surface-embedded p-4 font-mono text-sm outline-none"
+              className="code-field min-h-[420px]"
               spellCheck={false}
             />
 
@@ -200,13 +192,13 @@ export const JsonFormatter = () => {
             </div>
 
             {error && (
-              <div className="mt-4 rounded-md border border-error/20 bg-error/5 p-3 text-sm text-error">
+              <div className="mt-4 rounded-full border border-error/20 bg-error/5 p-3 text-sm text-error">
                 {error}
               </div>
             )}
 
             {!error && output && (
-              <div className="mt-4 rounded-md border border-success/20 bg-success/5 p-3 text-sm text-success">
+              <div className="mt-4 rounded-full border border-success/20 bg-success/5 p-3 text-sm text-success">
                 Valid JSON
               </div>
             )}

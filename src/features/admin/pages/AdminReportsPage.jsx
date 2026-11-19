@@ -38,7 +38,7 @@ export const AdminReportsPage = () => {
           <p className="text-xs font-semibold uppercase tracking-wider text-primary">
             Administration
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-2 text-[26px] font-bold tracking-[-0.03em]">
             Content reports
           </h1>
           <p className="mt-3 text-sm leading-6 text-text-muted">
@@ -48,7 +48,7 @@ export const AdminReportsPage = () => {
         <label className="text-sm font-medium">
           Filter by status
           <select
-            className="mt-1 block min-h-10 rounded-lg border border-border bg-background px-3 text-sm"
+            className="mt-1 block min-h-10 rounded-2xl border border-[color:var(--color-line)] bg-background px-3 text-sm"
             value={statusFilter}
             onChange={(event) => {
               setStatusFilter(event.target.value);
@@ -89,7 +89,7 @@ export const AdminReportsPage = () => {
         </Card>
       ) : reports.length === 0 ? (
         <Card className="mt-6">
-          <p className="text-sm text-text-muted">
+          <p className="text-[13px] leading-6 text-text-muted">
             No reports match this filter.
           </p>
         </Card>
@@ -115,7 +115,7 @@ export const AdminReportsPage = () => {
                         {report.status}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm text-text-muted">
+                    <p className="mt-2 text-[13px] leading-6 text-text-muted">
                       {report.reporter?.fullname || "Member"} reported{" "}
                       {report.targetType}: {targetLabel}
                     </p>
@@ -186,7 +186,7 @@ export const AdminReportsPage = () => {
           >
             Previous
           </Button>
-          <span className="text-sm text-text-muted">
+          <span className="text-[13px] leading-6 text-text-muted">
             Page {result.page} of {result.pages}
           </span>
           <Button

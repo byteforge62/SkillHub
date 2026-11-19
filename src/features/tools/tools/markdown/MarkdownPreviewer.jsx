@@ -82,20 +82,8 @@ export const MarkdownPreviewer = () => {
             category="Documentation"
             usefulFor={["Markdown", "README Files", "Documentation"]}
         >
-            <div className="mx-auto max-w-7xl px-6 py-8">
-{/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold">
-                        Markdown Previewer
-                    </h1>
-
-                    <p className="mt-2 max-w-2xl text-text-secondary">
-                        Write Markdown and see the rendered result instantly in
-                        your browser.
-                    </p>
-                </div>
-
-                {/* Controls */}
+            <div className="space-y-6">
+{/* Controls */}
                 <div className="mb-6 flex flex-wrap gap-3">
                     <Button variant="secondary" onClick={handleSample}>
                         Sample
@@ -125,12 +113,12 @@ export const MarkdownPreviewer = () => {
                         <div className="mb-2 flex items-center justify-between">
                             <label
                                 htmlFor="markdown-editor"
-                                className="text-sm font-semibold"
+                                className="code-field-label"
                             >
                                 Markdown
                             </label>
 
-                            <span className="text-xs text-text-muted">
+                            <span className="code-field-meta">
                                 {markdown.length} characters
                             </span>
                         </div>
@@ -143,7 +131,7 @@ export const MarkdownPreviewer = () => {
                                 setCopied(false);
                             }}
                             placeholder="Write your Markdown here..."
-                            className="min-h-[600px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm leading-6 text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                            className="code-field min-h-[600px]"
                             spellCheck={false}
                         />
                     </div>
@@ -151,12 +139,12 @@ export const MarkdownPreviewer = () => {
                     {/* Preview */}
                     <div>
                         <div className="mb-2">
-                            <span className="text-sm font-semibold">Preview</span>
+                            <span className="code-field-label">Preview</span>
                         </div>
 
-                        <div className="min-h-[600px] rounded-lg border border-border bg-white p-6">
+                        <div className="min-h-[600px] rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
                             {markdown ? (
-                                <div className="prose max-w-none prose-headings:font-bold prose-pre:overflow-x-auto prose-pre:rounded-lg prose-code:break-words">
+                                <div className="prose max-w-none prose-headings:font-bold prose-pre:overflow-x-auto prose-pre:rounded-2xl prose-code:break-words">
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                     >
@@ -173,7 +161,7 @@ export const MarkdownPreviewer = () => {
                 </div>
 
                 {/* Information */}
-                <div className="mt-6 rounded-lg border border-border bg-surface-embedded p-5">
+                <div className="mt-6 rounded-2xl border border-[color:var(--color-line)] bg-sage p-5">
                     <h2 className="font-semibold">Markdown Quick Reference</h2>
 
                     <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">

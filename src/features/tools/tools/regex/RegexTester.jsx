@@ -108,21 +108,9 @@ export const RegexTester = () => {
             category="Programming & Validation"
             usefulFor={["Regular Expressions", "Validation", "JavaScript"]}
         >
-            <div className="mx-auto max-w-7xl px-6 py-8">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold">
-                        Regex Tester
-                    </h1>
-
-                    <p className="mt-2 max-w-2xl text-text-secondary">
-                        Test regular expressions against text and inspect
-                        matches instantly in your browser.
-                    </p>
-                </div>
-
-                {/* Pattern + Flags */}
-                <div className="mb-6 rounded-lg border border-border bg-surface p-5">
+            <div className="space-y-6">
+{/* Pattern + Flags */}
+                <div className="mb-6 rounded-2xl border border-[color:var(--color-line)] bg-white p-5">
                     <div className="grid gap-5 md:grid-cols-[1fr_180px]">
                         <Input
                             id="regex-pattern"
@@ -166,12 +154,12 @@ export const RegexTester = () => {
                     <div className="mb-2 flex items-center justify-between">
                         <label
                             htmlFor="regex-test-text"
-                            className="text-sm font-semibold"
+                            className="code-field-label"
                         >
                             Test Text
                         </label>
 
-                        <span className="text-xs text-text-muted">
+                        <span className="code-field-meta">
                             {testText.length} characters
                         </span>
                     </div>
@@ -184,7 +172,7 @@ export const RegexTester = () => {
                             setCopied(false);
                         }}
                         placeholder="Enter text to test against your regular expression..."
-                        className="min-h-[240px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        className="code-field min-h-[240px]"
                         spellCheck={false}
                     />
                 </div>
@@ -210,7 +198,7 @@ export const RegexTester = () => {
 
                 {/* Error */}
                 {result.error && (
-                    <div className="mb-6 rounded-lg border border-error/20 bg-error/5 p-4">
+                    <div className="mb-6 rounded-2xl border border-error/20 bg-error/5 p-4">
                         <p className="text-sm font-semibold text-error">
                             Invalid Regular Expression
                         </p>
@@ -223,11 +211,11 @@ export const RegexTester = () => {
 
 {/* Results */}
                 <div className="grid gap-6 lg:grid-cols-2">
-                    <div className="rounded-lg border border-border bg-surface p-5">
+                    <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-5">
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="font-semibold">Match Results</h2>
 
-                            <span className="rounded-md bg-surface-embedded px-3 py-1 text-xs font-semibold text-text-secondary">
+                            <span className="rounded-full bg-sage px-3 py-1 text-xs font-semibold text-text-secondary">
                                 {result.matches.length}{" "}
                                 {result.matches.length === 1
                                     ? "match"
@@ -236,7 +224,7 @@ export const RegexTester = () => {
                         </div>
 
                         {result.matches.length === 0 ? (
-                            <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-text-muted">
+                            <div className="rounded-2xl border border-dashed border-[color:var(--color-line)] p-8 text-center text-sm text-text-muted">
                                 {pattern && testText
                                     ? "No matches found."
                                     : "Enter a pattern and test text to see matches."}
@@ -246,14 +234,14 @@ export const RegexTester = () => {
                                 {result.matches.map((match, index) => (
                                     <div
                                         key={`${match.index}-${index}`}
-                                        className="rounded-lg border border-border bg-surface-embedded p-4"
+                                        className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-4"
                                     >
                                         <div className="mb-2 flex items-center justify-between">
                                             <span className="text-xs font-semibold text-text-secondary">
                                                 Match {index + 1}
                                             </span>
 
-                                            <span className="text-xs text-text-muted">
+                                            <span className="code-field-meta">
                                                 Position {match.index}
                                             </span>
                                         </div>
@@ -268,7 +256,7 @@ export const RegexTester = () => {
                     </div>
 
                     {/* Regex Info */}
-                    <div className="rounded-lg border border-border bg-surface p-5">
+                    <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-5">
                         <h2 className="mb-4 font-semibold">
                             Regex Information
                         </h2>
@@ -279,7 +267,7 @@ export const RegexTester = () => {
                                     Pattern
                                 </p>
 
-                                <code className="mt-1 block break-all rounded-md bg-surface-embedded p-3 font-mono">
+                                <code className="mt-1 block break-all rounded-full bg-sage p-3 font-mono">
                                     {pattern || "—"}
                                 </code>
                             </div>
@@ -289,7 +277,7 @@ export const RegexTester = () => {
                                     Flags
                                 </p>
 
-                                <code className="mt-1 block rounded-md bg-surface-embedded p-3 font-mono">
+                                <code className="mt-1 block rounded-full bg-sage p-3 font-mono">
                                     {flags || "—"}
                                 </code>
                             </div>
@@ -314,7 +302,7 @@ export const RegexTester = () => {
                 </div>
 
                 {/* Information */}
-                <div className="mt-6 rounded-lg border border-border bg-surface-embedded p-5">
+                <div className="mt-6 rounded-2xl border border-[color:var(--color-line)] bg-sage p-5">
                     <h2 className="font-semibold">About Regex</h2>
 
                     <p className="mt-2 text-sm leading-6 text-text-secondary">

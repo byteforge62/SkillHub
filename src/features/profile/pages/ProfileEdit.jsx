@@ -1,9 +1,16 @@
-﻿import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Camera, RefreshCw } from "lucide-react";
+
+import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
 import Card from "@/components/ui/Card";
+import EmptyState from "@/components/ui/EmptyState";
+import PageHeader from "@/components/ui/PageHeader";
+import Skeleton from "@/components/ui/Skeleton";
+import Input, { Textarea } from "@/components/ui/Input";
+import useCurrentUser from "@/features/auth/hooks/useCurrentUser";
 
 import { updateProfile, uploadProfileAvatar } from "../api/profileApi";
 
@@ -12,14 +19,16 @@ const profileFields = ["fullname", "bio", "github", "linkedin", "twitter"];
 const profileFromUser = (user) =>
   Object.fromEntries(profileFields.map((field) => [field, user?.[field] || ""]));
 
-export const ProfileEdit = ({ user }) => {
+export const ProfileEdit = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [profile, setProfile] = useState("");
+  const { data: user, isLoading } = useCurrentUser();
+
+  const [profile, setProfile] = useState(null);
   const [avatarError, setAvatarError] = useState("");
-  const initialProfile = user ? profileFromUser(user) : null;
   const fileInputRef = useRef(null);
 
+  const initialProfile = user ? profileFromUser(user) : null;
   const profileValues = profile ?? profileFromUser(user);
   const hasUnsavedChanges = initialProfile
     ? JSON.stringify(profileValues) !== JSON.stringify(initialProfile)
@@ -29,7 +38,7 @@ export const ProfileEdit = ({ user }) => {
     mutationFn: updateProfile,
     onSuccess: (updatedUser) => {
       queryClient.setQueryData(["current-user"], updatedUser);
-      setProfile("");
+      setProfile(null);
       navigate("/profile");
     },
   });
@@ -44,25 +53,48 @@ export const ProfileEdit = ({ user }) => {
 
   const isSubmitting = updateMutation.isPending || avatarMutation.isPending;
 
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-5" role="status">
+        <Skeleton className="h-9 w-56" />
+        <Skeleton className="h-96 w-full rounded-3xl" />
+        <span className="sr-only">Loading your profile...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <EmptyState
+        tone="error"
+        icon={RefreshCw}
+        title="We couldn't open your profile"
+        description="Your account details are not available right now."
+        action={
+          <Button as={Link} to="/dashboard" variant="secondary">
+            Back to dashboard
+          </Button>
+        }
+      />
+    );
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setAvatarError("");
-    if (!user) return;
-
-    const payload = { userId: user._id, profile: profileValues };
-    updateMutation.mutate(payload);
+    updateMutation.mutate({ userId: user._id, profile: profileValues });
   };
 
   const handleCancel = () => {
-    if (hasUnsavedChanges) {
-      if (window.confirm("You have unsaved changes. Are you sure you want to cancel?")) {
-        setProfile("");
-        navigate("/profile");
-      }
-    } else {
-      setProfile("");
-      navigate("/profile");
+    if (
+      hasUnsavedChanges &&
+      !window.confirm("You have unsaved changes. Leave without saving?")
+    ) {
+      return;
     }
+
+    setProfile(null);
+    navigate("/profile");
   };
 
   const handleAvatarChange = (event) => {
@@ -92,54 +124,35 @@ export const ProfileEdit = ({ user }) => {
     }));
   };
 
-  const initials = (user.fullname || user.email || "U")
-    .split(/\s+/)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
   return (
     <div className="mx-auto max-w-3xl">
-      <header className="mb-6">
-        <NavLink
-          to="/profile"
-          className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary mb-4"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Profile
-        </NavLink>
+      <PageHeader
+        backTo="/profile"
+        backLabel="Profile"
+        title="Edit profile"
+        description="These details are visible in communities and event discussions."
+      />
 
-        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-          Your account
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Edit Profile</h1>
-        <p className="mt-3 text-sm leading-6 text-text-muted">
-          Update your personal information and profile photo.
-        </p>
-      </header>
+      <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+        <Card>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+            <Avatar
+              src={user.avatar}
+              name={user.fullname}
+              email={user.email}
+              size="xl"
+              className="h-[76px] w-[76px] text-[22px]"
+            />
 
-      <Card>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-center">
-            <div className="flex flex-col items-center sm:items-start gap-3">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={`${user.fullname || "Your"} avatar`}
-                  className="h-20 w-20 rounded-full border border-border object-cover"
-                />
-              ) : (
-                <div
-                  className="flex h-20 w-20 items-center justify-center rounded-full border border-border bg-surface-embedded text-2xl font-semibold text-text-secondary"
-                >
-                  {initials}
-                </div>
-              )}
+            <div className="flex-1">
+              <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-text-primary">
+                Profile photo
+              </p>
+              <p className="mt-1 text-[13px] leading-6 text-text-muted">
+                JPEG, PNG or WebP up to 5 MB. A square image works best.
+              </p>
 
-              <label className="cursor-pointer">
+              <label className="mt-3 inline-flex cursor-pointer">
                 <input
                   ref={fileInputRef}
                   id="profile-avatar"
@@ -149,32 +162,36 @@ export const ProfileEdit = ({ user }) => {
                   className="sr-only"
                   onChange={handleAvatarChange}
                 />
-                <span className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-hover px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Change Photo
+                <span className="inline-flex h-9 items-center gap-2 rounded-full border border-[color:var(--color-line)] bg-white px-4 text-[13px] font-semibold text-text-primary transition-colors hover:border-primary/40 hover:bg-sage/50">
+                  <Camera size={15} strokeWidth={1.9} aria-hidden="true" />
+                  {avatarMutation.isPending ? "Uploading..." : "Change photo"}
                 </span>
               </label>
             </div>
           </div>
 
           {(avatarError || avatarMutation.isError) && (
-            <p className="mt-4 text-sm text-error" role="alert">
-              {avatarError || avatarMutation.error?.response?.data?.message || "Your profile photo could not be uploaded."}
-            </p>
-          )}
-          {avatarMutation.isSuccess && (
-            <p className="mt-4 text-sm text-success" role="status">
-              Profile photo updated.
+            <p className="mt-4 text-[12.5px] text-error" role="alert">
+              {avatarError ||
+                avatarMutation.error?.response?.data?.message ||
+                "Your profile photo could not be uploaded."}
             </p>
           )}
 
-          <div className="mt-6 space-y-5">
+          {avatarMutation.isSuccess && (
+            <p className="mt-4 text-[12.5px] text-success" role="status">
+              Profile photo updated.
+            </p>
+          )}
+        </Card>
+
+        <Card>
+          <h2 className="text-[15px] font-semibold tracking-[-0.02em]">About you</h2>
+
+          <div className="mt-5 space-y-5">
             <Input
               id="fullname"
-              label="Full Name"
+              label="Full name"
               type="text"
               value={profileValues.fullname}
               onChange={(event) => handleChange("fullname", event.target.value)}
@@ -182,41 +199,37 @@ export const ProfileEdit = ({ user }) => {
               placeholder="Your full name"
             />
 
-            <label className="block">
-              <span className="block text-sm font-medium text-text-primary mb-1">Bio</span>
-              <textarea
-                id="bio"
-                value={profileValues.bio}
-                onChange={(event) => handleChange("bio", event.target.value)}
-                maxLength={2000}
-                placeholder="Tell us about yourself..."
-                className="mt-1 block min-h-28 w-full resize-y rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
-                spellCheck={false}
+            <Textarea
+              id="bio"
+              label="Bio"
+              value={profileValues.bio}
+              onChange={(event) => handleChange("bio", event.target.value)}
+              maxLength={2000}
+              placeholder="What are you learning, and what are you building?"
+              hint={`${profileValues.bio.length}/2000 characters`}
+            />
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Input
+                id="github"
+                label="GitHub"
+                type="text"
+                value={profileValues.github}
+                onChange={(event) => handleChange("github", event.target.value)}
+                maxLength={500}
+                placeholder="github.com/username"
               />
-              <p className="mt-1 text-xs text-text-muted">
-                {profileValues.bio.length}/2000 characters
-              </p>
-            </label>
 
-            <Input
-              id="github"
-              label="GitHub"
-              type="text"
-              value={profileValues.github}
-              onChange={(event) => handleChange("github", event.target.value)}
-              maxLength={500}
-              placeholder="github.com/username"
-            />
-
-            <Input
-              id="linkedin"
-              label="LinkedIn"
-              type="text"
-              value={profileValues.linkedin}
-              onChange={(event) => handleChange("linkedin", event.target.value)}
-              maxLength={500}
-              placeholder="linkedin.com/in/username"
-            />
+              <Input
+                id="linkedin"
+                label="LinkedIn"
+                type="text"
+                value={profileValues.linkedin}
+                onChange={(event) => handleChange("linkedin", event.target.value)}
+                maxLength={500}
+                placeholder="linkedin.com/in/username"
+              />
+            </div>
 
             <Input
               id="twitter"
@@ -230,27 +243,33 @@ export const ProfileEdit = ({ user }) => {
           </div>
 
           {updateMutation.isError && (
-            <p className="mt-4 text-sm text-error" role="alert">
-              {updateMutation.error?.response?.data?.message || "Your profile could not be saved."}
+            <p className="mt-4 text-[12.5px] text-error" role="alert">
+              {updateMutation.error?.response?.data?.message ||
+                "Your profile could not be saved."}
             </p>
           )}
-          {updateMutation.isSuccess && (
-            <p className="mt-4 text-sm text-success" role="status">
-              Profile changes saved.
-            </p>
-          )}
+        </Card>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
-              Save Changes
-            </Button>
-            <Button type="button" variant="secondary" onClick={handleCancel} disabled={isSubmitting}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </Card>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
+            Save changes
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleCancel}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+
+          {hasUnsavedChanges && (
+            <span className="text-[12.5px] text-text-muted">Unsaved changes</span>
+          )}
+        </div>
+      </form>
     </div>
   );
 };
 
+export default ProfileEdit;

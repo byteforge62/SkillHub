@@ -1,69 +1,95 @@
-import React from 'react'
-import { Controller, useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom'
-import useVerifyResetOtp from '../hooks/useVerifyResetOtp';
-import { zodResolver } from '@hookform/resolvers/zod';
-import verifyEmailFormSchema from '../validation/verifyEmailFormSchema';
-import Card from '@/components/ui/Card';
-import AuthHeader from '@/components/auth/AuthHeader';
-import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
-import OtpInput from '@/components/ui/OtpInput';
+import { Controller, useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ShieldCheck } from "lucide-react";
+
+import AuthFormShell from "@/components/auth/AuthFormShell";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import OtpInput from "@/components/ui/OtpInput";
+
+import verifyEmailFormSchema from "../validation/verifyEmailFormSchema";
+import useVerifyResetOtp from "../hooks/useVerifyResetOtp";
 
 export const VerifyResetOtpForm = () => {
-    const location = useLocation();
-    const email = location.state?.email || "";
-    const verifyResetOtpMutation = useVerifyResetOtp();
+  const location = useLocation();
+  const email = location.state?.email || "";
+  const verifyResetOtpMutation = useVerifyResetOtp();
 
-    const { register, control, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(verifyEmailFormSchema),
-        defaultValues: {
-            email,
-            otp: ""
-        }
-    });
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(verifyEmailFormSchema),
+    defaultValues: {
+      email,
+      otp: "",
+    },
+  });
 
-    const onSubmit = (values) => {
-        verifyResetOtpMutation.mutate(values);
-    }
-    return (
-        <Card className="w-full max-w-md">
-            <AuthHeader
-                title="Verify Reset Code"
-                subtitle="Enter the 6-digit verification code sent to your email."
-            />
+  const onSubmit = (values) => {
+    verifyResetOtpMutation.mutate(values);
+  };
 
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="space-y-5"
-            >
-                <Input
-                    id="email"
-                    label="Email"
-                    disabled
-                    error={errors.email?.message}
-                    {...register("email")}
-                />
+  return (
+    <AuthFormShell
+      title="Confirm the reset code"
+      subtitle="Enter the six-digit code from your email to continue to a new password."
+      footer={
+        <p className="text-center text-[12px] leading-5 text-text-muted">
+          Codes expire shortly after they are sent. You can request a new one
+          from the reset page.
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+        <Input
+          id="email"
+          label="Email address"
+          disabled
+          error={errors.email?.message}
+          {...register("email")}
+        />
 
-                <Controller
-                    name="otp"
-                    control={control}
-                    render={({ field }) => (
-                        <OtpInput
-                            value={field.value}
-                            onChange={field.onChange}
-                        />
-                    )}
-                />
+        <div>
+          <p className="mb-2 text-[13px] font-medium text-text-secondary">
+            Reset code
+          </p>
 
-                <Button
-                    type="submit"
-                    loading={verifyResetOtpMutation.isPending}
-                    fullWidth
-                >
-                    Verify Code
-                </Button>
-            </form>
-        </Card>
-    )
-}
+          <Controller
+            name="otp"
+            control={control}
+            render={({ field }) => (
+              <OtpInput
+                value={field.value}
+                onChange={field.onChange}
+                error={Boolean(errors.otp)}
+              />
+            )}
+          />
+
+          {errors.otp?.message && (
+            <p className="mt-2 text-[12.5px] text-error" role="alert">
+              {errors.otp.message}
+            </p>
+          )}
+        </div>
+
+        <Button
+          type="submit"
+          fullWidth
+          size="lg"
+          loading={verifyResetOtpMutation.isPending}
+          disabled={verifyResetOtpMutation.isPending}
+          iconLeft={ShieldCheck}
+        >
+          {verifyResetOtpMutation.isPending ? "Verifying" : "Verify code"}
+        </Button>
+      </form>
+    </AuthFormShell>
+  );
+};
+
+export default VerifyResetOtpForm;

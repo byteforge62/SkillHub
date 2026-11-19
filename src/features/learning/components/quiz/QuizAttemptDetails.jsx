@@ -5,15 +5,15 @@ export const QuizAttemptDetails = ({ attempt, onClose }) => {
   if (!attempt) return null;
 
   return (
-    <div className="mt-6 rounded-lg border border-border bg-surface p-6">
+    <div className="mt-6 rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
+      <div className="flex items-start justify-between gap-4 border-b border-[color:var(--color-line)] pb-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
             Attempt Details
           </p>
 
-          <h3 className="mt-2 text-xl font-semibold text-text-primary">
+          <h3 className="mt-2 text-[18px] font-bold tracking-[-0.025em] text-text-primary">
             {attempt.quiz?.title || "Quiz Attempt"}
           </h3>
 
@@ -36,24 +36,24 @@ export const QuizAttemptDetails = ({ attempt, onClose }) => {
 
       {/* Summary */}
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-lg border border-border bg-surface-embedded p-4">
+        <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-4">
           <p className="text-xs text-text-muted">Score</p>
-          <p className="mt-1 text-lg font-semibold text-text-primary">
+          <p className="mt-1 text-[15px] font-bold tracking-[-0.02em] text-text-primary">
             {attempt.score}
           </p>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface-embedded p-4">
+        <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-4">
           <p className="text-xs text-text-muted">Percentage</p>
-          <p className="mt-1 text-lg font-semibold text-text-primary">
+          <p className="mt-1 text-[15px] font-bold tracking-[-0.02em] text-text-primary">
             {attempt.percentage}%
           </p>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface-embedded p-4">
+        <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-4">
           <p className="text-xs text-text-muted">Status</p>
           <p
-            className={`mt-1 text-lg font-semibold ${
+            className={`mt-1 text-[15px] font-bold tracking-[-0.02em] ${
               attempt.passed ? "text-success" : "text-error"
             }`}
           >

@@ -30,7 +30,7 @@ export const AdminDashboardPage = () => {
         <p className="text-xs font-semibold uppercase tracking-wider text-primary">
           Administration
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+        <h1 className="mt-2 text-[26px] font-bold tracking-[-0.03em]">
           Platform overview
         </h1>
       </header>
@@ -67,7 +67,7 @@ export const AdminDashboardPage = () => {
           >
             {statCards.map(([label, key]) => (
               <Card key={key}>
-                <p className="text-sm text-text-muted">{label}</p>
+                <p className="text-[13px] leading-6 text-text-muted">{label}</p>
                 <p className="mt-2 text-2xl font-semibold">
                   {(overview.stats?.[key] ?? 0).toLocaleString()}
                 </p>
@@ -77,7 +77,7 @@ export const AdminDashboardPage = () => {
 
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
             <section>
-              <h2 className="text-xl font-semibold">Latest reports</h2>
+              <h2 className="text-[18px] font-bold tracking-[-0.025em]">Latest reports</h2>
               {overview.latestReports?.length ? (
                 <div className="mt-3 space-y-3">
                   {overview.latestReports.map((report) => (
@@ -85,7 +85,7 @@ export const AdminDashboardPage = () => {
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <p className="font-medium capitalize">{report.type}</p>
-                          <p className="mt-1 text-sm text-text-muted">
+                          <p className="mt-1 text-[13px] leading-6 text-text-muted">
                             {report.reporter?.fullname || "Member"} ·{" "}
                             {report.targetType}
                           </p>
@@ -104,7 +104,7 @@ export const AdminDashboardPage = () => {
                 </div>
               ) : (
                 <Card className="mt-3">
-                  <p className="text-sm text-text-muted">
+                  <p className="text-[13px] leading-6 text-text-muted">
                     There are no reports to review.
                   </p>
                 </Card>
@@ -112,7 +112,7 @@ export const AdminDashboardPage = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold">Most enrolled courses</h2>
+              <h2 className="text-[18px] font-bold tracking-[-0.025em]">Most enrolled courses</h2>
               {overview.topCourses?.length ? (
                 <Card className="mt-3 divide-y divide-border">
                   {overview.topCourses.map((course, index) => (
@@ -121,7 +121,7 @@ export const AdminDashboardPage = () => {
                       className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
                     >
                       <p className="font-medium">{course.title}</p>
-                      <p className="shrink-0 text-sm text-text-muted">
+                      <p className="shrink-0 text-[13px] leading-6 text-text-muted">
                         {course.count.toLocaleString()} enrollments
                       </p>
                     </div>
@@ -129,7 +129,7 @@ export const AdminDashboardPage = () => {
                 </Card>
               ) : (
                 <Card className="mt-3">
-                  <p className="text-sm text-text-muted">
+                  <p className="text-[13px] leading-6 text-text-muted">
                     Course enrollment data is not available yet.
                   </p>
                 </Card>

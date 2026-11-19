@@ -25,7 +25,7 @@ export const QuizAnswerReview = ({ answers = [], questions = [] }) => {
         return (
           <div
             key={questionId?.toString() || index}
-            className={`rounded-lg border p-5 ${
+            className={`rounded-2xl border p-5 ${
               isCorrect
                 ? "border-success/20 bg-success/5"
                 : "border-error/20 bg-error/5"
@@ -44,7 +44,7 @@ export const QuizAnswerReview = ({ answers = [], questions = [] }) => {
               </span>
 
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-text-muted">
                   Question {index + 1}
                 </p>
                 <p className="mt-1 text-sm font-medium leading-6 text-text-primary">
@@ -53,7 +53,7 @@ export const QuizAnswerReview = ({ answers = [], questions = [] }) => {
               </div>
             </div>
 
-            <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+            <div className="mt-4 rounded-2xl border border-[color:var(--color-line)] bg-white p-4">
               <p className="text-xs font-medium text-text-muted">Your answer</p>
               <p
                 className={`mt-1 text-sm font-medium ${
@@ -65,7 +65,7 @@ export const QuizAnswerReview = ({ answers = [], questions = [] }) => {
             </div>
 
             {!isCorrect && correctAnswerText && (
-              <div className="mt-3 rounded-lg border border-success/20 bg-success/5 p-4">
+              <div className="mt-3 rounded-2xl border border-success/20 bg-success/5 p-4">
                 <p className="text-xs font-medium text-text-muted">
                   Correct answer
                 </p>
