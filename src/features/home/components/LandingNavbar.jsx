@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { AnimatedButton } from "@/components/animation/AnimatedButton";
-import { AnimatedReveal } from "@/components/animation/AnimatedReveal";
 
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Menu, X } from "lucide-react";
+
+import { AnimatedButton } from "@/components/animation/AnimatedButton";
 import Logo from "@/components/ui/Logo";
 
 const navigation = [
@@ -15,136 +15,230 @@ const navigation = [
   { label: "Tools", href: "#tools" },
 ];
 
+const menuVariants = {
+  hidden: {
+    opacity: 0,
+    height: 0,
+    y: -8,
+  },
+  visible: {
+    opacity: 1,
+    height: "auto",
+    y: 0,
+    transition: {
+      duration: 0.25,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    height: 0,
+    y: -8,
+    transition: {
+      duration: 0.2,
+      ease: "easeInOut",
+    },
+  },
+};
+
 export const LandingNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const closeMenu = () => setIsOpen(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, []);
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"}`}>
-      <div className={`absolute inset-0 transition-all duration-300 ${isScrolled ? "bg-background/95" : "bg-transparent"}`} aria-hidden="true" />
-      
-      <div className="relative container-narrow flex h-24 items-center">
-        <Link
-          to="/"
-          className="flex shrink-0 items-center gap-3"
-          aria-label="SkillHub home"
-          onClick={closeMenu}
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:px-6 sm:pt-4">
+      <div className="container-narrow mx-auto">
+        <motion.div
+          animate={{
+            boxShadow: isScrolled
+              ? "0 8px 30px rgba(0, 0, 0, 0.06)"
+              : "0 0 0 rgba(0, 0, 0, 0)",
+          }}
+          transition={{ duration: 0.25 }}
+          className={`relative rounded-2xl border transition-all duration-300 ${
+            isScrolled
+              ? "border-border bg-background/95 backdrop-blur-xl"
+              : "border-border/60 bg-background/80 backdrop-blur-lg"
+          }`}
         >
-          <AnimatedReveal delay={0.1} distance={8}>
-            <Logo className="text-2xl sm:text-3xl font-bold tracking-tight" />
-          </AnimatedReveal>
-          <span className="hidden sm:block h-6 w-px bg-border/50" aria-hidden="true" />
-          <AnimatedReveal delay={0.15} distance={8}>
-            <span className="text-xs font-medium text-text-muted uppercase tracking-[0.15em] hidden md:inline">
-              Learning Studio
-            </span>
-          </AnimatedReveal>
-        </Link>
-
-        <AnimatedReveal delay={0.2} distance={8}>
-          <nav className="ml-8 hidden items-center gap-1 sm:flex lg:ml-12" role="navigation" aria-label="Main navigation">
-            {navigation.map((item, index) => (
-              <AnimatedReveal key={item.href} delay={0.05 * index} distance={6}>
-                <a
-                  href={item.href}
-                  className="relative px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover rounded-xl before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-primary before:transition-all before:duration-300 hover:before:w-3/4"
-                  onClick={closeMenu}
-                >
-                  {item.label}
-                </a>
-              </AnimatedReveal>
-            ))}
-          </nav>
-        </AnimatedReveal>
-
-        <AnimatedReveal delay={0.3} distance={8}>
-          <div className="ml-auto hidden items-center gap-3 md:flex">
+          {/* Main navbar */}
+          <div className="flex h-[68px] items-center px-4 sm:px-5 lg:px-6">
+            {/* Brand */}
             <Link
-              to="/login"
-              className="px-5 py-2.5 text-sm font-medium text-text-secondary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover rounded-xl"
+              to="/"
+              onClick={closeMenu}
+              aria-label="SkillHub home"
+              className="group flex shrink-0 items-center"
             >
-              Sign in
+              <Logo className="text-2xl font-bold tracking-tight sm:text-[26px]" />
             </Link>
 
-            <AnimatedButton
-              variant="primary"
-              size="md"
-              asChild
-              className="relative overflow-hidden"
+            {/* Brand separator */}
+            <div
+              className="mx-5 hidden h-7 w-px bg-border md:block"
+              aria-hidden="true"
+            />
+
+            {/* Brand description */}
+            <span className="hidden text-[11px] font-semibold uppercase tracking-[0.16em] text-text-muted lg:block">
+              Learning Studio
+            </span>
+
+            {/* Desktop navigation */}
+            <nav
+              className="ml-auto hidden items-center gap-1 lg:flex"
+              aria-label="Main navigation"
             >
-              <Link to="/register" onClick={closeMenu}>
-                Enter SkillHub
-                <span aria-hidden="true" className="ml-2 transition-transform group-hover:translate-x-1">→</span>
-              </Link>
-            </AnimatedButton>
-          </div>
-        </AnimatedReveal>
-
-        <AnimatedReveal delay={0.35} distance={8}>
-          <button
-            type="button"
-            aria-label={isOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={isOpen}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="ml-auto flex h-11 w-11 items-center justify-center border border-border text-text-primary transition-colors hover:border-primary hover:bg-surface-hover rounded-xl md:hidden"
-          >
-            {isOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
-          </button>
-        </AnimatedReveal>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <motion.div
-          className="border-t border-border bg-background/95 backdrop-blur-md md:hidden"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <nav className="container-narrow flex flex-col py-6" role="navigation" aria-label="Mobile navigation">
-            {navigation.map((item, index) => (
-              <AnimatedReveal key={item.href} delay={0.05 * index} distance={8}>
+              {navigation.map((item) => (
                 <a
+                  key={item.href}
                   href={item.href}
-                  onClick={closeMenu}
-                  className="px-4 py-3.5 text-base font-medium text-text-secondary transition-colors hover:text-text-primary hover:bg-surface-hover rounded-xl border-l-4 border-transparent hover:border-primary"
+                  className="rounded-lg px-3.5 py-2 text-[13px] font-medium text-text-secondary transition-colors duration-200 hover:bg-surface-hover hover:text-text-primary"
                 >
                   {item.label}
                 </a>
-              </AnimatedReveal>
-            ))}
+              ))}
+            </nav>
 
-            <AnimatedReveal delay={0.3} distance={8}>
-              <div className="flex flex-col gap-3 pt-4 border-t border-border">
-                <AnimatedButton
-                  variant="tertiary"
-                  size="md"
-                  fullWidth
-                  asChild
-                >
-                  <Link to="/login" onClick={closeMenu}>
-                    Sign in
-                  </Link>
-                </AnimatedButton>
-                <AnimatedButton
-                  variant="primary"
-                  size="md"
-                  fullWidth
-                  asChild
-                >
-                  <Link to="/register" onClick={closeMenu}>
-                    Enter SkillHub
-                    <span aria-hidden="true" className="ml-2">→</span>
-                  </Link>
-                </AnimatedButton>
-              </div>
-            </AnimatedReveal>
-          </nav>
+            {/* Desktop actions */}
+            <div className="ml-auto hidden items-center gap-2.5 lg:flex">
+              <Link
+                to="/login"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
+              >
+                Sign in
+              </Link>
+
+              <AnimatedButton
+                variant="primary"
+                size="md"
+                asChild
+                className="group"
+              >
+                <Link to="/register" className="inline-flex items-center gap-2">
+                  Get started
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform duration-200 group-hover:translate-x-1"
+                  />
+                </Link>
+              </AnimatedButton>
+            </div>
+
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
+              className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl border border-border text-text-primary transition-colors hover:bg-surface-hover lg:hidden"
+            >
+              {isOpen ? (
+                <X size={19} />
+              ) : (
+                <Menu size={19} />
+              )}
+            </button>
+          </div>
+
+          {/* Mobile navigation panel */}
+          <AnimatePresence initial={false}>
+            {isOpen && (
+              <motion.div
+                id="mobile-navigation"
+                variants={menuVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="overflow-hidden lg:hidden"
+              >
+                <div className="border-t border-border px-4 pb-4 pt-3 sm:px-5">
+                  <nav
+                    className="flex flex-col gap-1"
+                    aria-label="Mobile navigation"
+                  >
+                    {navigation.map((item, index) => (
+                      <motion.a
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMenu}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          delay: index * 0.035,
+                          duration: 0.2,
+                        }}
+                        className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary"
+                      >
+                        {item.label}
+                        <ArrowRight
+                          size={15}
+                          className="text-text-muted"
+                          aria-hidden="true"
+                        />
+                      </motion.a>
+                    ))}
+                  </nav>
+
+                  {/* Mobile actions */}
+                  <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border pt-4">
+                    <Link
+                      to="/login"
+                      onClick={closeMenu}
+                      className="flex h-11 items-center justify-center rounded-xl border border-border text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
+                    >
+                      Sign in
+                    </Link>
+
+                    <AnimatedButton
+                      variant="primary"
+                      size="md"
+                      fullWidth
+                      asChild
+                    >
+                      <Link
+                        to="/register"
+                        onClick={closeMenu}
+                        className="inline-flex items-center justify-center gap-2"
+                      >
+                        Get started
+                        <ArrowRight size={15} />
+                      </Link>
+                    </AnimatedButton>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
-      )}
+      </div>
     </header>
   );
 };
