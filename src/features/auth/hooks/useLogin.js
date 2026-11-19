@@ -12,17 +12,20 @@ const useLogin = () => {
     return useMutation({
         mutationFn: loginRequest,
 
-        onSuccess: ({ data, message }) => {
-            setAccessToken(data.accessToken);
+        onSuccess: (response) => {
+            // Backend returns: { token, data: user, message }
+            const { token, data: user, message } = response;
+            
+            setAccessToken(token);
 
             queryClient.setQueryData(
                 ["current-user"],
-                data.user
+                user
             );
 
             toast.success(message);
 
-            if (data.user.role === "admin") {
+            if (user.role === "admin") {
                 navigate("/admin");
             } else {
                 navigate("/dashboard");
@@ -31,7 +34,7 @@ const useLogin = () => {
 
         onError: (error) => {
             toast.error(
-                error.response?.data?.message || "Unable to login.Please try again.",
+                error.response?.data?.message || "Unable to login. Please try again.",
             );
         },
     });
