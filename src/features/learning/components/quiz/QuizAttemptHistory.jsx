@@ -11,7 +11,7 @@ export const QuizAttemptHistory = ({
 
     if (loading) {
         return (
-            <div className="rounded-lg border border-border bg-surface p-6">
+            <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
                 <p className="text-sm text-text-muted">
                     Loading previous attempts...
                 </p>
@@ -21,8 +21,8 @@ export const QuizAttemptHistory = ({
 
     if (error) {
         return (
-            <div className="rounded-lg border border-error/20 bg-error/5 p-6" role="alert">
-                <h3 className="text-lg font-semibold text-error">
+            <div className="rounded-2xl border border-error/20 bg-error/5 p-6" role="alert">
+                <h3 className="text-[15px] font-bold tracking-[-0.02em] text-error">
                     Unable to load previous attempts
                 </h3>
                 <p className="mt-2 text-sm text-text-muted">
@@ -41,8 +41,8 @@ export const QuizAttemptHistory = ({
 
     if (attempts.length === 0) {
         return (
-            <div className="rounded-lg border border-border bg-surface p-6">
-                <h3 className="text-lg font-semibold text-text-primary">
+            <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
+                <h3 className="text-[15px] font-bold tracking-[-0.02em] text-text-primary">
                     Previous Attempts
                 </h3>
 
@@ -54,9 +54,9 @@ export const QuizAttemptHistory = ({
     }
 
     return (
-        <div className="rounded-lg border border-border bg-surface p-6">
+        <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
             <div>
-                <h3 className="text-lg font-semibold text-text-primary">
+                <h3 className="text-[15px] font-bold tracking-[-0.02em] text-text-primary">
                     Previous Attempts
                 </h3>
 
@@ -71,7 +71,7 @@ export const QuizAttemptHistory = ({
                         type="button"
                         key={attempt._id}
                         onClick={() => onSelectAttempt(attempt._id)}
-                        className="group w-full rounded-lg border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover"
+                        className="group w-full rounded-2xl border border-[color:var(--color-line)] bg-white p-4 text-left transition-all duration-200 hover:border-primary/40 hover:bg-surface-hover"
                     >
                         <div className="flex items-center justify-between gap-4">
                             <div>

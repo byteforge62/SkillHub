@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import {
+  BookOpen,
+  CheckCircle2,
+  ChevronLeft,
+  Layers,
+  RefreshCw,
+} from "lucide-react";
 
+import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import Logo from "@/components/ui/Logo";
+import ProgressBar from "@/components/ui/ProgressBar";
+import Skeleton from "@/components/ui/Skeleton";
+
 import { LessonContent } from "../components/LessonContent";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
@@ -79,36 +91,36 @@ const LearningWorkspace = ({ courseId }) => {
 
   const course = courseData?.data;
 
-  const sections = Array.isArray(sectionsData?.data)
-    ? sectionsData.data
-    : [];
+  const sections = Array.isArray(sectionsData?.data) ? sectionsData.data : [];
 
   const enrollment = Array.isArray(enrollmentData?.data)
     ? enrollmentData.data.find(
-      (item) =>
-        item.courseId?._id === courseId ||
-        item.courseId === courseId
-    )
+        (item) => item.courseId?._id === courseId || item.courseId === courseId,
+      )
     : null;
+
   const currentLessonId = selectedLesson?._id;
-  const isLessonCompleted = enrollment?.completedLessons?.some(
-    (completedLesson) =>
-      String(completedLesson?._id ?? completedLesson) ===
-      String(currentLessonId),
-  ) ?? false;
+  const isLessonCompleted =
+    enrollment?.completedLessons?.some(
+      (completedLesson) =>
+        String(completedLesson?._id ?? completedLesson) === String(currentLessonId),
+    ) ?? false;
   const completionMutationIsCurrent =
     completeLessonMutation.variables?.lessonId === currentLessonId;
 
   if (courseLoading || enrollmentLoading || sectionsLoading) {
     return (
-      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
-        <div className="mx-auto max-w-7xl">
-          <div className="h-6 w-32 animate-pulse rounded-md bg-surface-hover" />
-
-          <div className="mt-6 grid gap-6 lg:grid-cols-[300px_1fr]">
-            <div className="h-[650px] animate-pulse rounded-lg bg-surface shadow-card" />
-            <div className="h-[650px] animate-pulse rounded-lg bg-surface shadow-card" />
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-[color:var(--color-line)] bg-white/80 px-5 py-5">
+          <div className="mx-auto max-w-[1320px]">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="mt-3 h-6 w-72" />
           </div>
+        </div>
+
+        <div className="mx-auto grid max-w-[1320px] gap-5 px-5 py-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <Skeleton className="h-[520px] rounded-3xl" />
+          <Skeleton className="h-[520px] rounded-3xl" />
         </div>
       </div>
     );
@@ -116,435 +128,302 @@ const LearningWorkspace = ({ courseId }) => {
 
   if (courseError || sectionsError || enrollmentError) {
     return (
-      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
-        <div className="mx-auto max-w-3xl">
-          <Card>
-            <div className="text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-error/10 text-error">
-                !
-              </div>
+      <div className="flex min-h-screen items-center justify-center bg-background px-5 py-16">
+        <Card className="w-full max-w-md text-center">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-error-soft text-error">
+            <RefreshCw size={20} strokeWidth={1.9} aria-hidden="true" />
+          </span>
 
-              <h1 className="mt-5 text-2xl">
-                Unable to load learning workspace
-              </h1>
+          <h1 className="mt-5 text-[20px] font-bold tracking-[-0.03em]">
+            Unable to load this workspace
+          </h1>
 
-              <p className="mt-3 text-sm text-text-muted">
-                Something went wrong while loading this course.
-              </p>
+          <p className="mt-2 text-[13px] leading-6 text-text-muted">
+            Something went wrong while loading the course.
+          </p>
 
-              <Link to="/courses" className="mt-6 inline-flex">
-                <Button variant="secondary">
-                  ← Back to Courses
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        </div>
+          <Button as={Link} to="/learning" variant="secondary" className="mt-6">
+            Back to my learning
+          </Button>
+        </Card>
       </div>
     );
   }
 
-  if (!course) {
-    return null;
-  }
+  if (!course) return null;
 
   if (!enrollment) {
     return (
-      <div className="min-h-screen bg-background px-5 py-10 text-text-primary">
-        <div className="mx-auto max-w-3xl">
-          <Card>
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-surface-embedded text-2xl">
-                📚
-              </div>
+      <div className="flex min-h-screen items-center justify-center bg-background px-5 py-16">
+        <Card className="w-full max-w-md text-center">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-sage text-primary">
+            <BookOpen size={22} strokeWidth={1.8} aria-hidden="true" />
+          </span>
 
-              <h1 className="mt-5 text-2xl">
-                Enrollment Required
-              </h1>
+          <h1 className="mt-5 text-[20px] font-bold tracking-[-0.03em]">
+            Enrolment required
+          </h1>
 
-              <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-text-muted">
-                You need to enroll in this course before you can
-                start learning.
-              </p>
+          <p className="mt-2 text-[13px] leading-6 text-text-muted">
+            Enrol in this course before you start working through its lessons.
+          </p>
 
-              <Link
-                to={`/courses/${courseId}`}
-                className="mt-6 inline-flex"
-              >
-                <Button>
-                  Go to Course
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        </div>
+          <Button as={Link} to={`/courses/${courseId}`} className="mt-6">
+            Go to course
+          </Button>
+        </Card>
       </div>
     );
   }
 
-  const progress = enrollment.progress || 0;
+  const progress = Math.min(Math.max(enrollment.progress || 0, 0), 100);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary">
-      {/* Header */}
-      <header className="border-b border-border bg-surface">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8">
-          <div className="min-w-0">
-            <Link
-              to="/courses"
-              className="text-sm text-text-muted transition-colors hover:text-text-primary"
-            >
-              ← Courses
-            </Link>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-white/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1320px] items-center gap-4 px-4 py-3.5 sm:px-6">
+          <Link
+            to="/learning"
+            aria-label="Back to my learning"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--color-line)] text-text-secondary transition-colors hover:bg-sage hover:text-primary"
+          >
+            <ChevronLeft size={16} aria-hidden="true" />
+          </Link>
 
-            <h1 className="mt-2 truncate text-xl sm:text-2xl">
+          <Link to="/dashboard" className="hidden sm:block" aria-label="SkillHub workspace">
+            <Logo markClassName="h-7 w-7" showWordmark={false} />
+          </Link>
+
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
+              Lesson workspace
+            </p>
+            <h1 className="truncate text-[13.5px] font-semibold tracking-[-0.02em] text-text-primary">
               {course.title}
             </h1>
           </div>
 
-          <div className="hidden shrink-0 text-right sm:block">
-            <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-              Course Progress
-            </p>
-
-            <p className="mt-1 text-lg font-semibold text-primary">
-              {progress}%
-            </p>
+          <div className="hidden w-40 shrink-0 sm:block">
+            <ProgressBar value={progress} label="Progress" showValue size="sm" />
           </div>
-        </div>
 
-        {/* Progress bar */}
-        <div className="h-1 w-full bg-surface-hover">
-          <div
-            className="h-full bg-primary transition-all duration-500"
-            style={{
-              width: `${Math.min(Math.max(progress, 0), 100)}%`,
-            }}
-          />
+          <Badge variant="sage" size="sm" className="sm:hidden">
+            {progress}%
+          </Badge>
         </div>
       </header>
 
-      {/* Workspace */}
-      <main
-        className={[
-          "mx-auto max-w-7xl px-5 py-6 sm:px-8 transition-all duration-300 ease-in-out",
-          selectedLesson
-            ? "block"
-            : "grid gap-6 lg:grid-cols-[300px_1fr]",
-        ].join(" ")}
-      >
-        {/* Sidebar */}
-        {!selectedLesson && (
-          <Card
-            className={[
-              "!p-0 overflow-hidden",
-              "transition-all duration-300 ease-in-out",
-            ].join(" ")}
-          >
-            <div className="border-b border-border px-5 py-5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                Course Content
-              </p>
+      <main className="mx-auto max-w-[1320px] px-4 py-6 sm:px-6">
+        <div
+          className={
+            selectedLesson
+              ? "block"
+              : "grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start"
+          }
+        >
+          {!selectedLesson && (
+            <Card padded={false} className="overflow-hidden lg:sticky lg:top-[92px]">
+              <div className="border-b border-border-subtle px-5 py-5">
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
+                  Course content
+                </p>
 
-              <h2 className="mt-2 text-lg">
-                {course.title}
-              </h2>
+                <h2 className="mt-2 line-clamp-2 text-[15px] font-bold tracking-[-0.025em]">
+                  {course.title}
+                </h2>
 
-              <div className="mt-4">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-text-muted">
-                    Progress
-                  </span>
-
-                  <span className="font-medium text-text-secondary">
-                    {progress}%
-                  </span>
-                </div>
-
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-hover">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all duration-500"
-                    style={{
-                      width: `${Math.min(Math.max(progress, 0), 100)}%`,
-                    }}
-                  />
+                <div className="mt-4">
+                  <ProgressBar value={progress} label="Progress" showValue size="sm" />
                 </div>
               </div>
-            </div>
 
-            <div className="p-4">
-              {/* --------------------------------------------- */}
-              {/* SECTION LIST                                 */}
-              {/* --------------------------------------------- */}
-
-              {!selectedSection ? (
-                sections.length === 0 ? (
-                  <div className="rounded-lg border border-border bg-surface-embedded p-5 text-center">
-                    <p className="text-sm text-text-muted">
+              <div className="p-3">
+                {!selectedSection ? (
+                  sections.length === 0 ? (
+                    <p className="rounded-2xl bg-background p-4 text-[12.5px] leading-6 text-text-muted">
                       No sections are available for this course yet.
                     </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {sections.map((section) => (
-                      <button
-                        key={section._id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedSection(section);
-                          setSelectedLesson(null);
-                        }}
-                        className="w-full rounded-lg border border-border bg-surface p-4 text-left transition-all duration-200 hover:border-primary/50 hover:bg-surface-hover"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                              Section {section.order}
-                            </p>
-
-                            <h3 className="mt-1 text-sm font-semibold text-text-primary">
-                              {section.title}
-                            </h3>
-
-                            {section.description && (
-                              <p className="mt-1 text-xs leading-5 text-text-muted">
-                                {section.description}
-                              </p>
-                            )}
-                          </div>
-
-                          <span className="shrink-0 text-xs text-text-muted">
-                            {section.order}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )
-              ) : (
-                /* --------------------------------------------- */
-                /* LESSON LIST                                  */
-                /* --------------------------------------------- */
-
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedSection(null);
-                      setSelectedLesson(null);
-                    }}
-                    className="mb-4 inline-flex items-center gap-2 text-xs font-medium text-text-muted transition-colors hover:text-text-primary"
-                  >
-                    ← All Sections
-                  </button>
-
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                      Section {selectedSection.order}
-                    </p>
-
-                    <h3 className="mt-1 text-lg font-semibold text-text-primary">
-                      {selectedSection.title}
-                    </h3>
-                  </div>
-
-                  {lessonsLoading ? (
-                    <p className="px-2 py-3 text-xs text-text-muted">
-                      Loading lessons...
-                    </p>
-                  ) : lessonsError ? (
-                    <div className="px-2 py-3">
-                      <p className="text-xs text-error">
-                        Unable to load lessons.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => refetchLessons()}
-                        className="mt-2 text-xs font-medium text-primary underline-offset-2 hover:underline"
-                      >
-                        Retry
-                      </button>
-                    </div>
-                  ) : (lessonsData?.data || []).length === 0 ? (
-                    <p className="px-2 py-3 text-xs text-text-muted">
-                      No lessons available.
-                    </p>
                   ) : (
-                    <div className="space-y-1">
-                      {(lessonsData?.data || []).map((lesson, index) => (
-                        <button
-                          key={lesson._id}
-                          type="button"
-                          onClick={() => {
-                            completeLessonMutation.reset();
-                            setSelectedLesson(lesson);
-                          }}
-                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
-                        >
-                          <span className="shrink-0 text-xs text-text-muted">
-                            {index + 1}
-                          </span>
+                    <ul className="space-y-1.5">
+                      {sections.map((section) => (
+                        <li key={section._id}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedSection(section);
+                              setSelectedLesson(null);
+                            }}
+                            className="group flex w-full items-start gap-3 rounded-2xl px-3 py-3 text-left transition-colors hover:bg-sage/60"
+                          >
+                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[10.5px] font-semibold text-primary">
+                              {section.order}
+                            </span>
 
-                          <span className="min-w-0 truncate">
-                            {lesson.title}
-                          </span>
-                        </button>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-[13px] font-semibold text-text-primary">
+                                {section.title}
+                              </span>
+
+                              {section.description && (
+                                <span className="mt-0.5 block line-clamp-2 text-[11.5px] leading-5 text-text-muted">
+                                  {section.description}
+                                </span>
+                              )}
+                            </span>
+                          </button>
+                        </li>
                       ))}
+                    </ul>
+                  )
+                ) : (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedSection(null);
+                        setSelectedLesson(null);
+                      }}
+                      className="mb-3 inline-flex items-center gap-1 px-2 text-[11.5px] font-medium text-text-muted transition-colors hover:text-primary"
+                    >
+                      <ChevronLeft size={12} aria-hidden="true" />
+                      All sections
+                    </button>
+
+                    <div className="px-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+                        Section {selectedSection.order}
+                      </p>
+                      <h3 className="mt-1 text-[14px] font-semibold tracking-[-0.02em]">
+                        {selectedSection.title}
+                      </h3>
                     </div>
-                  )}
-                </div>
+
+                    <div className="mt-3">
+                      {lessonsLoading ? (
+                        <p className="px-2 py-3 text-[12px] text-text-muted" role="status">
+                          Loading lessons...
+                        </p>
+                      ) : lessonsError ? (
+                        <div className="px-2 py-3">
+                          <p className="text-[12px] text-error">
+                            Unable to load lessons.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => refetchLessons()}
+                            className="mt-2 text-[12px] font-semibold text-primary hover:underline"
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      ) : (lessonsData?.data || []).length === 0 ? (
+                        <p className="px-2 py-3 text-[12px] text-text-muted">
+                          No lessons available.
+                        </p>
+                      ) : (
+                        <ul className="space-y-0.5">
+                          {(lessonsData?.data || []).map((lesson, index) => (
+                            <li key={lesson._id}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  completeLessonMutation.reset();
+                                  setSelectedLesson(lesson);
+                                }}
+                                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[12.5px] text-text-secondary transition-colors hover:bg-sage/60 hover:text-primary"
+                              >
+                                <span className="w-4 shrink-0 text-[10.5px] text-text-muted">
+                                  {index + 1}
+                                </span>
+                                <span className="min-w-0 truncate">{lesson.title}</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+
+          <div className="min-w-0">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedLesson(null)}
+                aria-label="Open course outline"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--color-line)] bg-white px-3.5 py-2 text-[11.5px] font-medium text-text-secondary transition-colors hover:border-primary/30 hover:text-primary"
+              >
+                <Layers size={13} aria-hidden="true" />
+                {selectedSection ? `Section ${selectedSection.order}` : "Course sections"}
+              </button>
+
+              {selectedLesson && (
+                <Badge variant="sage" size="sm">
+                  Lesson {selectedLesson.order}
+                </Badge>
               )}
             </div>
-          </Card>
-        )}
 
-        {/* --------------------------------------------- */}
-        {/* LESSON WORKSPACE                             */}
-        {/* --------------------------------------------- */}
+            <Card className="min-h-[560px]">
+              {!selectedLesson ? (
+                <div className="flex min-h-[520px] items-center justify-center px-6 text-center">
+                  <div className="max-w-sm">
+                    <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-sage text-primary">
+                      <BookOpen size={24} strokeWidth={1.7} aria-hidden="true" />
+                    </span>
 
-        <div
-          className={[
-            selectedLesson
-              ? "w-full"
-              : "",
-            "transition-all duration-300 ease-in-out",
-          ].join(" ")}
-        >
-          {/* Learning Navigation */}
-          <div className="mb-6 flex items-center gap-3">
-            {/* Section */}
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedLesson(null);
-              }}
-              className={[
-                "group flex min-w-[110px] max-w-[min(45vw,280px)] flex-col items-center justify-center",
-                "rounded-lg border px-5 py-3",
-                "transition-all duration-200 ease-out",
-                "hover:-translate-y-0.5 hover:shadow-sm",
-                selectedSection
-                  ? "border-primary/30 bg-primary/5"
-                  : "border-border bg-surface",
-              ].join(" ")}
-              aria-label="Open section navigation"
-              aria-expanded={!selectedLesson}
-            >
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                {selectedSection
-                  ? `Section ${selectedSection.order}`
-                  : "Course Sections"}
-              </span>
+                    <h2 className="mt-5 text-[20px] font-bold tracking-[-0.03em]">
+                      {selectedSection ? "Choose a lesson" : "Choose a section"}
+                    </h2>
 
-              <span className="mt-1 w-full truncate text-sm font-semibold text-text-primary">
-                {selectedSection?.title || "Choose a section"}
-              </span>
-            </button>
-
-            {/* Lesson */}
-            {selectedSection && (
-              <>
-                <span
-                  className="text-lg text-text-muted transition-opacity duration-200"
-                >
-                  ›
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedLesson(null);
-                  }}
-                  className={[
-                    "flex min-w-[110px] flex-col items-center justify-center",
-                    "max-w-[min(45vw,280px)]",
-                    "rounded-lg border px-5 py-3",
-                    "animate-in fade-in slide-in-from-left-2",
-                    "transition-all duration-200 ease-out",
-                    "hover:-translate-y-0.5 hover:shadow-sm",
-                    selectedLesson
-                      ? "border-primary/30 bg-primary/5"
-                      : "border-border bg-surface",
-                  ].join(" ")}
-                  aria-label="Open lesson navigation"
-                  aria-expanded={!selectedLesson}
-                >
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-                    {selectedLesson
-                      ? `Lesson ${selectedLesson.order}`
-                      : "Section Lessons"}
-                  </span>
-
-                  <span className="mt-1 w-full truncate text-sm font-semibold text-text-primary">
-                    {selectedLesson?.title || "Choose a lesson"}
-                  </span>
-                </button>
-              </>
-            )}
-          </div>
-
-          <Card className="min-h-[650px]">
-            {!selectedLesson ? (
-              <div className="flex min-h-[600px] items-center justify-center p-8 text-center">
-                <div className="max-w-md">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-surface-embedded text-3xl">
-                    📚
+                    <p className="mt-2 text-[13px] leading-6 text-text-muted">
+                      {selectedSection
+                        ? "Pick a lesson from the outline to open it here."
+                        : "Start with a section in the course outline to see its lessons."}
+                    </p>
                   </div>
-
-                  <h2 className="mt-6 text-2xl">
-                    {selectedSection
-                      ? "Select a Lesson"
-                      : "Select a Section"}
-                  </h2>
-
-                  <p className="mt-3 text-sm leading-6 text-text-muted">
-                    {selectedSection
-                      ? "Choose a lesson from the sidebar to begin learning."
-                      : "Choose a section from the course content to begin learning."}
-                  </p>
                 </div>
-              </div>
-            ) : (
-              lessonLoading ? (
-                <div
-                  className="flex min-h-[600px] items-center justify-center text-sm text-text-muted"
-                  role="status"
-                >
-                  Loading lesson...
+              ) : lessonLoading ? (
+                <div className="flex min-h-[520px] items-center justify-center" role="status">
+                  <span className="text-[13px] text-text-muted">Loading lesson...</span>
                 </div>
               ) : lessonError ? (
-                <div className="flex min-h-[600px] flex-col items-center justify-center gap-3 text-center">
-                  <p className="text-sm text-error">
-                    Unable to load this lesson.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => refetchLesson()}
-                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover"
-                  >
+                <div className="flex min-h-[520px] flex-col items-center justify-center gap-3 text-center">
+                  <p className="text-[13px] text-error">Unable to load this lesson.</p>
+                  <Button variant="secondary" size="sm" onClick={() => refetchLesson()}>
                     Retry
-                  </button>
+                  </Button>
                 </div>
               ) : lessonData?.data ? (
-                <div className="pt-2">
-                  <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-sm text-text-muted">
-                      {isLessonCompleted
-                        ? "Your progress for this lesson is saved."
-                        : "Mark this lesson complete when you finish it."}
-                    </p>
+                <div>
+                  <div className="flex flex-col gap-3 border-b border-border-subtle pb-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2
+                        size={16}
+                        className={isLessonCompleted ? "mt-0.5 text-success" : "mt-0.5 text-text-muted"}
+                        strokeWidth={1.9}
+                        aria-hidden="true"
+                      />
+                      <p className="text-[12.5px] leading-6 text-text-muted">
+                        {isLessonCompleted
+                          ? "Progress for this lesson is saved."
+                          : "Mark this lesson complete when you finish it."}
+                      </p>
+                    </div>
+
                     <Button
+                      size="sm"
                       variant={isLessonCompleted ? "secondary" : "primary"}
                       loading={
-                        completeLessonMutation.isPending &&
-                        completionMutationIsCurrent
+                        completeLessonMutation.isPending && completionMutationIsCurrent
                       }
                       disabled={
                         isLessonCompleted ||
-                        (completeLessonMutation.isPending &&
-                          completionMutationIsCurrent) ||
-                        (completeLessonMutation.isSuccess &&
-                          completionMutationIsCurrent) ||
+                        (completeLessonMutation.isPending && completionMutationIsCurrent) ||
+                        (completeLessonMutation.isSuccess && completionMutationIsCurrent) ||
                         enrollment.status !== "active"
                       }
                       onClick={() =>
@@ -556,41 +435,41 @@ const LearningWorkspace = ({ courseId }) => {
                     >
                       {isLessonCompleted
                         ? "Lesson completed"
-                        : completionMutationIsCurrent &&
-                            completeLessonMutation.isSuccess
+                        : completionMutationIsCurrent && completeLessonMutation.isSuccess
                           ? "Saved"
-                          : completionMutationIsCurrent &&
-                              completeLessonMutation.isError
+                          : completionMutationIsCurrent && completeLessonMutation.isError
                             ? "Retry saving progress"
                             : "Mark lesson complete"}
                     </Button>
                   </div>
-                  {completionMutationIsCurrent &&
-                    completeLessonMutation.isError && (
-                      <p className="mb-5 text-sm text-error" role="alert">
-                        Unable to save lesson progress. Please try again.
-                      </p>
-                    )}
-                  {completionMutationIsCurrent &&
-                    completeLessonMutation.isSuccess && (
-                      <p className="mb-5 text-sm text-success" role="status">
-                        Lesson progress saved.
-                      </p>
-                    )}
-                  <LessonContent
-                    key={selectedLesson._id}
-                    lesson={lessonData?.data}
-                  />
+
+                  {completionMutationIsCurrent && completeLessonMutation.isError && (
+                    <p className="mt-4 text-[12.5px] text-error" role="alert">
+                      Unable to save lesson progress. Please try again.
+                    </p>
+                  )}
+
+                  {completionMutationIsCurrent && completeLessonMutation.isSuccess && (
+                    <p className="mt-4 text-[12.5px] text-success" role="status">
+                      Lesson progress saved.
+                    </p>
+                  )}
+
+                  <div className="mt-6">
+                    <LessonContent key={selectedLesson._id} lesson={lessonData?.data} />
+                  </div>
                 </div>
               ) : (
-                <div className="flex min-h-[600px] items-center justify-center text-sm text-text-muted">
+                <div className="flex min-h-[520px] items-center justify-center px-6 text-center text-[13px] text-text-muted">
                   This lesson is no longer available.
                 </div>
-              )
-            )}
-          </Card>
+              )}
+            </Card>
+          </div>
         </div>
       </main>
     </div>
   );
 };
+
+export default LearningPage;

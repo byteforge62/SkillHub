@@ -1,64 +1,62 @@
-import { ArrowLeft, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ArrowLeft, Wrench } from "lucide-react";
+
+import Badge from "@/components/ui/Badge";
 
 export const ToolPageLayout = ({
-    title,
-    description,
-    category,
-    usefulFor = [],
-    children,
-}) => {
-    return (
-        <main className="min-h-screen bg-background px-6 py-8 text-text-primary">
-            <div className="mx-auto max-w-6xl">
-                {/* Back */}
-                <Link
-                    to="/tools"
-                    className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-text-muted transition-colors hover:text-text-primary"
-                >
-                    <ArrowLeft size={16} />
-                    Back to Tools
-                </Link>
+  title,
+  description,
+  category,
+  usefulFor = [],
+  children,
+}) => (
+  <main>
+    <section className="sage-mesh relative overflow-hidden border-b border-[color:var(--color-line)]">
+      <div className="architectural-grid absolute inset-0" aria-hidden="true" />
 
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface-embedded px-3 py-1.5 text-xs font-semibold text-text-secondary">
-                        <Wrench size={14} />
-                        {category}
-                    </div>
+      <div className="container-wide relative py-10 sm:py-14">
+        <Link
+          to="/tools"
+          className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-text-muted transition-colors hover:text-primary"
+        >
+          <ArrowLeft size={14} aria-hidden="true" />
+          All tools
+        </Link>
 
-                    <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        {title}
-                    </h1>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <Badge variant="forest" size="sm" icon={Wrench}>
+            {category}
+          </Badge>
+          <Badge variant="outline" size="sm">
+            Runs in your browser
+          </Badge>
+        </div>
 
-                    <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted">
-                        {description}
-                    </p>
+        <h1 className="mt-4 max-w-3xl text-[clamp(1.9rem,4vw,2.9rem)] font-bold leading-[1.05] tracking-[-0.04em]">
+          {title}
+        </h1>
 
-                    {usefulFor.length > 0 && (
-                        <div className="mt-5">
-                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                                Useful for
-                            </p>
+        <p className="text-lead mt-4 max-w-2xl">{description}</p>
 
-                            <div className="flex flex-wrap gap-2">
-                                {usefulFor.map((item) => (
-                                    <span
-                                        key={item}
-                                        className="rounded-full bg-surface-embedded px-3 py-1.5 text-xs font-medium text-text-secondary"
-                                    >
-                                        {item}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Tool */}
-                <section>{children}</section>
+        {usefulFor.length > 0 && (
+          <div className="mt-5">
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+              Useful for
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {usefulFor.map((item) => (
+                <Badge key={item} variant="outline" size="sm">
+                  {item}
+                </Badge>
+              ))}
             </div>
-        </main>
-    );
-};
+          </div>
+        )}
+      </div>
+    </section>
 
+    <section className="container-wide py-10 sm:py-14">{children}</section>
+  </main>
+);
+
+export default ToolPageLayout;

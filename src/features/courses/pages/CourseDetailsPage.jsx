@@ -1,295 +1,264 @@
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import {
+  BookOpen,
+  CheckCircle2,
+  Clock3,
+  Languages,
+  Layers,
+  RefreshCw,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
+
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import EmptyState from "@/components/ui/EmptyState";
+import PageHeader from "@/components/ui/PageHeader";
+import Skeleton from "@/components/ui/Skeleton";
 
 import { getCourseById } from "../api/courseApi";
 
 import useMyEnrollments from "@/features/enrollment/hooks/useEnrollment";
 import useEnrollInCourse from "@/features/enrollment/hooks/useErollInCourse";
 
-import Card from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+const metaItems = (course) =>
+  [
+    course.level && { icon: Layers, label: course.level },
+    course.language && { icon: Languages, label: course.language },
+    course.duration !== undefined &&
+      course.duration !== null && { icon: Clock3, label: `${course.duration} min` },
+  ].filter(Boolean);
+
 export const CourseDetailsPage = () => {
   const { courseId } = useParams();
-
-  const {
-    data: enrollmentData,
-    isLoading: enrollmentsLoading,
-  } = useMyEnrollments();
-
+  const enrollmentQuery = useMyEnrollments();
   const enrollMutation = useEnrollInCourse();
-
-  const enrollments = enrollmentData?.data || [];
-
-  const enrollment = enrollments.find(
-    (item) =>
-      item.courseId?._id === courseId ||
-      item.courseId === courseId
-  );
-
-  const isEnrolled = enrollment?.status === "active";
-  const isCompleted = enrollment?.status === "completed";
 
   const {
     data,
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["course", courseId],
     queryFn: () => getCourseById(courseId),
     enabled: Boolean(courseId),
   });
 
+  const enrollments = enrollmentQuery.data?.data || [];
+  const enrollment = enrollments.find(
+    (item) => item.courseId?._id === courseId || item.courseId === courseId,
+  );
+
+  const isEnrolled = enrollment?.status === "active";
+  const isCompleted = enrollment?.status === "completed";
   const course = data?.data;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background px-5 py-10 sm:px-8">
-        <div className="mx-auto max-w-6xl animate-pulse space-y-8">
-          <div className="h-4 w-32 rounded bg-border" />
-          <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-            <div className="space-y-5">
-              <div className="h-5 w-32 rounded bg-border" />
-              <div className="h-14 w-4/5 rounded bg-border" />
-              <div className="h-20 w-full rounded bg-border" />
-            </div>
-
-            <div className="h-96 rounded-lg bg-surface shadow-card" />
-            <div className="h-96 rounded-lg bg-surface shadow-card" />
+      <div className="space-y-6" role="status">
+        <Skeleton className="h-4 w-40" />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+          <div className="space-y-4">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-12 w-4/5" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-8 w-64 rounded-full" />
           </div>
+          <Skeleton className="h-[380px] rounded-3xl" />
         </div>
+        <span className="sr-only">Loading course...</span>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="min-h-screen bg-background px-5 py-10 sm:px-8">
-        <div className="mx-auto max-w-3xl">
-          <Card className="border-error/20">
-            <p className="text-sm font-medium text-error">
-              Unable to load course
-            </p>
-
-            <h1 className="mt-2 text-2xl text-text-primary">
-              Something went wrong
-            </h1>
-
-            <p className="mt-3 text-sm text-text-muted">
-              {error?.response?.data?.message ||
-                error?.message ||
-                "Something went wrong while loading this course."}
-            </p>
-
-            <Link
-              to="/courses"
-              className="mt-6 inline-flex text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
-            >
-              ← Back to Courses
-            </Link>
-          </Card>
-        </div>
-      </div>
+      <EmptyState
+        tone="error"
+        icon={RefreshCw}
+        title="This course couldn't be loaded"
+        description={
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong while loading this course."
+        }
+        action={
+          <div className="flex flex-wrap justify-center gap-2.5">
+            <Button variant="secondary" onClick={() => refetch()}>
+              Try again
+            </Button>
+            <Button as={Link} to="/courses" variant="ghost">
+              Back to catalog
+            </Button>
+          </div>
+        }
+      />
     );
   }
 
-  if (!course) {
-    return null;
-  }
+  if (!course) return null;
 
   const categoryName =
-    typeof course.category === "object"
-      ? course.category?.name
-      : course.category;
+    typeof course.category === "object" ? course.category?.name : course.category;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 lg:px-10">
+    <div>
+      <PageHeader
+        backTo="/courses"
+        backLabel="Course catalog"
+        title={course.title}
+        description={course.description}
+      />
 
-        {/* Back */}
-        <Link
-          to="/courses"
-          className="inline-flex items-center text-sm font-medium text-text-muted transition-colors hover:text-text-primary"
-        >
-          ← Back to Courses
-        </Link>
-
-        {/* Hero */}
-        <section className="mt-8 grid gap-10 lg:grid-cols-[1.5fr_1fr]">
-
-          {/* Course information */}
-          <div className="flex flex-col justify-center">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-2">
             {categoryName && (
-              <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+              <Badge variant="sage" size="sm">
                 {categoryName}
-              </p>
+              </Badge>
             )}
 
-            <h1 className="mt-3 max-w-3xl text-4xl text-text-primary sm:text-5xl lg:text-6xl">
-              {course.title}
-            </h1>
+            {metaItems(course).map((item) => {
+              const Icon = item.icon;
 
-            <p className="mt-6 max-w-2xl text-base leading-7 text-text-muted">
-              {course.description}
-            </p>
-
-            {/* Metadata */}
-            <div className="mt-7 flex flex-wrap gap-3">
-              {course.level && (
-                <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary">
-                  {course.level}
-                </span>
-              )}
-
-              {course.language && (
-                <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary">
-                  {course.language}
-                </span>
-              )}
-
-              {course.duration !== undefined &&
-                course.duration !== null && (
-                  <span className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary">
-                    {course.duration} min
-                  </span>
-                )}
-            </div>
+              return (
+                <Badge key={item.label} variant="outline" size="sm" icon={Icon}>
+                  {item.label}
+                </Badge>
+              );
+            })}
           </div>
 
-          {/* Course card */}
-          <Card className="overflow-hidden p-0">
-            <div className="aspect-video overflow-hidden bg-surface-hover">
-              {course.imageUrl ? (
-                <img
-                  src={course.imageUrl}
-                  alt={course.title}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-            <div className="flex h-full items-center justify-center bg-surface-embedded">
-                  <span className="text-5xl">📚</span>
-                </div>
-              )}
-            </div>
-
-            <div className="p-6">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm text-text-muted">
-                    Course price
-                  </p>
-
-                  <p className="mt-1 text-3xl font-semibold text-text-primary">
-                    ${course.price}
-                  </p>
-                </div>
-
-                {course.duration !== undefined &&
-                  course.duration !== null && (
-                    <span className="text-sm text-text-muted">
-                      {course.duration} min
-                    </span>
-                  )}
-              </div>
-
-              {enrollmentsLoading ? (
-                <Button
-                  fullWidth
-                  disabled
-                  className="mt-6"
-                >
-                  Checking enrollment...
-                </Button>
-              ) : isEnrolled ? (
-                <Link
-                  to={`/learning/${courseId}`}
-                  className="mt-6 block"
-                >
-                  <Button fullWidth>
-                    Continue Learning
-                  </Button>
-                </Link>
-              ) : isCompleted ? (
-                <Link
-                  to={`/learning/${courseId}`}
-                  className="mt-6 block"
-                >
-                  <Button
-                    fullWidth
-                    className="bg-success hover:bg-success/90"
+          {Array.isArray(course.tags) && course.tags.length > 0 && (
+            <Card>
+              <h2 className="text-[15px] font-semibold tracking-[-0.02em]">
+                What you'll cover
+              </h2>
+              <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                {course.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="flex items-start gap-2 text-[13.5px] leading-6 text-text-secondary"
                   >
-                    Review Course
-                  </Button>
-                </Link>
-              ) : (
-                <Button
-                  fullWidth
-                  loading={enrollMutation.isPending}
-                  disabled={enrollMutation.isPending}
-                  onClick={() => enrollMutation.mutate(courseId)}
-                  className="mt-6"
-                >
-                  Enroll & Start Learning
-                </Button>
-              )}
-            </div>
-          </Card>
-        </section>
-
-        {/* Overview */}
-        {course.overview && (
-          <section className="mt-14 max-w-4xl">
-            <h2 className="text-2xl text-text-primary">
-              Course Overview
-            </h2>
-
-            <p className="mt-4 leading-7 text-text-muted">
-              {course.overview}
-            </p>
-          </section>
-        )}
-
-        {/* Tags */}
-        {Array.isArray(course.tags) && course.tags.length > 0 && (
-          <section className="mt-12 max-w-4xl">
-            <h2 className="text-2xl text-text-primary">
-              What you'll learn
-            </h2>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {course.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium text-text-secondary"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Instructor */}
-        {course.createdBy && (
-          <section className="mt-12 max-w-4xl">
-            <h2 className="text-2xl text-text-primary">
-              Instructor
-            </h2>
-
-            <Card className="mt-5">
-              <p className="font-semibold text-text-primary">
-                {course.createdBy.fullname}
-              </p>
-
-              {course.createdBy.email && (
-                <p className="mt-1 text-sm text-text-muted">
-                  {course.createdBy.email}
-                </p>
-              )}
+                    <CheckCircle2
+                      size={15}
+                      strokeWidth={1.9}
+                      className="mt-0.5 shrink-0 text-primary"
+                      aria-hidden="true"
+                    />
+                    {tag}
+                  </li>
+                ))}
+              </ul>
             </Card>
-          </section>
-        )}
+          )}
+
+          {course.overview && (
+            <Card>
+              <h2 className="text-[15px] font-semibold tracking-[-0.02em]">Course overview</h2>
+              <p className="mt-3 whitespace-pre-line text-[14px] leading-7 text-text-secondary">
+                {course.overview}
+              </p>
+            </Card>
+          )}
+
+          {course.createdBy && (
+            <Card>
+              <h2 className="text-[15px] font-semibold tracking-[-0.02em]">Instructor</h2>
+              <div className="mt-4 flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-sage text-primary">
+                  <UserRound size={18} strokeWidth={1.8} aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-[14px] font-semibold text-text-primary">
+                    {course.createdBy.fullname}
+                  </p>
+                  {course.createdBy.email && (
+                    <p className="truncate text-[12.5px] text-text-muted">
+                      {course.createdBy.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+
+        <Card className="lg:sticky lg:top-[92px]">
+          <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-sage">
+            {course.imageUrl ? (
+              <img
+                src={course.imageUrl}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center text-primary/50">
+                <BookOpen size={36} strokeWidth={1.4} aria-hidden="true" />
+              </span>
+            )}
+          </div>
+
+          <div className="mt-5 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-[11.5px] font-medium text-text-muted">Course price</p>
+              <p className="mt-1 text-[26px] font-bold leading-none tracking-[-0.04em] text-text-primary">
+                ${course.price ?? 0}
+              </p>
+            </div>
+
+            {course.duration !== undefined && course.duration !== null && (
+              <Badge variant="outline" size="sm" icon={Clock3}>
+                {course.duration} min
+              </Badge>
+            )}
+          </div>
+
+          <div className="mt-5">
+            {enrollmentQuery.isLoading ? (
+              <Button fullWidth disabled>
+                Checking enrollment...
+              </Button>
+            ) : isEnrolled || isCompleted ? (
+              <Button
+                as={Link}
+                to={`/learning/${courseId}`}
+                fullWidth
+                variant={isCompleted ? "secondary" : "primary"}
+                iconRight={Sparkles}
+              >
+                {isCompleted ? "Review course" : "Continue learning"}
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                loading={enrollMutation.isPending}
+                onClick={() => enrollMutation.mutate(courseId)}
+              >
+                Enrol and start learning
+              </Button>
+            )}
+          </div>
+
+          {enrollMutation.isError && (
+            <p className="mt-3 text-[12.5px] text-error" role="alert">
+              {enrollMutation.error?.response?.data?.message ||
+                "Enrolment failed. Please try again."}
+            </p>
+          )}
+
+          <p className="mt-3 text-center text-[11.5px] leading-5 text-text-muted">
+            Includes sections, lessons, quizzes and saved progress.
+          </p>
+        </Card>
       </div>
     </div>
   );
 };
+
+export default CourseDetailsPage;

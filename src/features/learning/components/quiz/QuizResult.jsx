@@ -23,12 +23,12 @@ export const QuizResult = ({
     return (
         <div className="space-y-6">
             {/* Result Header */}
-            <div className="border-b border-border pb-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+            <div className="border-b border-[color:var(--color-line)] pb-5">
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                     Quiz Completed
                 </p>
 
-                <h3 className="mt-2 text-2xl font-semibold text-text-primary">
+                <h3 className="mt-2 text-[22px] font-bold tracking-[-0.03em] text-text-primary">
                     {quiz?.title || "Quiz"}
                 </h3>
 
@@ -39,8 +39,8 @@ export const QuizResult = ({
 
             {/* Result Summary */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-border bg-surface-embedded p-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-5 text-center">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-text-muted">
                         Score
                     </p>
 
@@ -49,8 +49,8 @@ export const QuizResult = ({
                     </p>
                 </div>
 
-                <div className="rounded-lg border border-border bg-surface-embedded p-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-5 text-center">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-text-muted">
                         Percentage
                     </p>
 
@@ -59,8 +59,8 @@ export const QuizResult = ({
                     </p>
                 </div>
 
-                <div className="rounded-lg border border-border bg-surface-embedded p-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-5 text-center">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-text-muted">
                         Result
                     </p>
 
@@ -77,7 +77,7 @@ export const QuizResult = ({
 
             {/* Passing Score */}
             {quiz?.passingScore !== undefined && (
-                <div className="rounded-lg border border-border bg-surface-embedded p-4">
+                <div className="rounded-2xl border border-[color:var(--color-line)] bg-sage p-4">
                     <p className="text-sm text-text-muted">
                         Passing score:{" "}
                         <span className="font-semibold text-text-primary">
@@ -93,7 +93,7 @@ export const QuizResult = ({
             />
 
             {/* Retake */}
-            <div className="flex justify-end border-t border-border pt-5">
+            <div className="flex justify-end border-t border-[color:var(--color-line)] pt-5">
                 <Button
                     variant="secondary"
                     onClick={onRetake}
@@ -105,7 +105,7 @@ export const QuizResult = ({
             {selectedAttemptId ? (
                 <div className="mt-6">
                     {savedAttemptLoading && (
-                        <div className="rounded-lg border border-border bg-surface p-6">
+                        <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-6">
                             <p className="text-sm text-text-muted">
                                 Loading attempt details...
                             </p>
@@ -113,7 +113,7 @@ export const QuizResult = ({
                     )}
 
                     {savedAttemptError && (
-                        <div className="rounded-lg border border-error/20 bg-error/5 p-6">
+                        <div className="rounded-2xl border border-error/20 bg-error/5 p-6">
                             <p className="text-sm text-error">
                                 Unable to load this attempt.
                             </p>

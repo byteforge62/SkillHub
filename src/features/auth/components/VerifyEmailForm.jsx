@@ -1,20 +1,19 @@
-import { Controller } from "react-hook-form";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ShieldCheck } from "lucide-react";
 
-import Card from "@/components/ui/Card";
+import AuthFormShell from "@/components/auth/AuthFormShell";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import OtpInput from "@/components/ui/OtpInput";
-import AuthHeader from "@/components/auth/AuthHeader";
 
 import verifyEmailFormSchema from "../validation/verifyEmailFormSchema";
 import useVerifyEmail from "../hooks/useVerifyEmail";
 import useResendVerification from "../hooks/useResendVerification";
 
 const VerifyEmailForm = () => {
-  const location = useLocation()
+  const location = useLocation();
   const email = location.state?.email || "";
 
   const verifyMutation = useVerifyEmail();
@@ -38,62 +37,77 @@ const VerifyEmailForm = () => {
   };
 
   const handleResend = () => {
-    resendMutation.mutate({
-      email,
-    });
+    resendMutation.mutate({ email });
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <AuthFormShell
+      title="Verify your email"
+      subtitle="We sent a six-digit code. Enter it below to activate your account."
+      footer={
+        <div className="flex flex-col items-center gap-2 border-t border-border-subtle pt-4">
+          <p className="text-[12.5px] text-text-muted">
+            Didn't get the code? Check spam, or send another.
+          </p>
 
-      <AuthHeader
-        title="Verify Email"
-        subtitle="Enter the 6-digit verification code sent to your email."
-      />
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
-
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            loading={resendMutation.isPending}
+            disabled={resendMutation.isPending || !email}
+            onClick={handleResend}
+          >
+            Resend code
+          </Button>
+        </div>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
         <Input
-        id="email"
-          label="Email"
+          id="email"
+          label="Email address"
           disabled
-          {...register("email")}
           error={errors.email?.message}
+          {...register("email")}
         />
 
-        <Controller
-          name="otp"
-          control={control}
-          render={({ field }) => (
-            <OtpInput
-              value={field.value}
-              onChange={field.onChange}
-            />
+        <div>
+          <p className="mb-2 text-[13px] font-medium text-text-secondary">
+            Verification code
+          </p>
+
+          <Controller
+            name="otp"
+            control={control}
+            render={({ field }) => (
+              <OtpInput
+                value={field.value}
+                onChange={field.onChange}
+                error={Boolean(errors.otp)}
+              />
+            )}
+          />
+
+          {errors.otp?.message && (
+            <p className="mt-2 text-[12.5px] text-error" role="alert">
+              {errors.otp.message}
+            </p>
           )}
-        />
+        </div>
 
         <Button
           type="submit"
-          loading={verifyMutation.isPending}
           fullWidth
+          size="lg"
+          loading={verifyMutation.isPending}
+          disabled={verifyMutation.isPending}
+          iconLeft={ShieldCheck}
         >
-          Verify Email
+          {verifyMutation.isPending ? "Verifying" : "Verify email"}
         </Button>
-
       </form>
-
-      <button
-        type="button"
-        onClick={handleResend}
-        className="mt-6 w-full text-sm text-primary hover:underline"
-      >
-        Resend OTP
-      </button>
-
-    </Card>
+    </AuthFormShell>
   );
 };
 

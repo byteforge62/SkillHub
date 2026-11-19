@@ -1,11 +1,6 @@
-import LoginForm from "@/features/auth/components/LoginForm";
+import LoginForm from "../components/LoginForm";
 
-const LoginPage = () => {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <LoginForm/>
-    </main>
-  )
-}
+const LoginPage = () => <LoginForm />;
 
 export default LoginPage;
+export { LoginPage };

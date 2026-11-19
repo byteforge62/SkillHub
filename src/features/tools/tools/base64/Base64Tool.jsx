@@ -107,26 +107,16 @@ export const Base64Tool = () => {
       category="Authentication & Security"
       usefulFor={["Base64", "Data Encoding", "Web Development"]}
     >
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        {/* HEADER */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Base64 Encoder / Decoder</h1>
-
-          <p className="mt-2 max-w-2xl text-text-muted">
-            Encode text to Base64 or decode Base64 values directly in your
-            browser.
-          </p>
-        </div>
-
-        {/* MODE */}
+      <div className="space-y-6">
+{/* MODE */}
         <div className="mb-6 flex flex-wrap gap-3">
           <button
             type="button"
             onClick={() => handleModeChange("encode")}
             aria-pressed={mode === "encode"}
-            className={`rounded-md px-4 py-2 text-sm font-semibold transition ${mode === "encode"
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${mode === "encode"
                 ? "bg-primary text-white"
-                : "border border-border hover:bg-surface-hover"
+                : "border border-[color:var(--color-line)] hover:bg-surface-hover"
               }`}
           >
             Encode
@@ -136,9 +126,9 @@ export const Base64Tool = () => {
             type="button"
             onClick={() => handleModeChange("decode")}
             aria-pressed={mode === "decode"}
-            className={`rounded-md px-4 py-2 text-sm font-semibold transition ${mode === "decode"
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${mode === "decode"
                 ? "bg-primary text-white"
-                : "border border-border hover:bg-surface-hover"
+                : "border border-[color:var(--color-line)] hover:bg-surface-hover"
               }`}
           >
             Decode
@@ -152,12 +142,12 @@ export const Base64Tool = () => {
             <div className="mb-2 flex items-center justify-between">
               <label
                 htmlFor="base64-input"
-                className="text-sm font-semibold"
+                className="code-field-label"
               >
                 {mode === "encode" ? "Text Input" : "Base64 Input"}
               </label>
 
-              <span className="text-xs text-text-muted">
+              <span className="code-field-meta">
                 {input.length} characters
               </span>
             </div>
@@ -176,7 +166,7 @@ export const Base64Tool = () => {
                   ? "Enter text to encode..."
                   : "Enter Base64 value to decode..."
               }
-              className="min-h-[360px] w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm outline-none focus:border-primary"
+              className="code-field min-h-[360px]"
               spellCheck={false}
             />
 
@@ -209,12 +199,12 @@ export const Base64Tool = () => {
             <div className="mb-2 flex items-center justify-between">
               <label
                 htmlFor="base64-output"
-                className="text-sm font-semibold"
+                className="code-field-label"
               >
                 {mode === "encode" ? "Base64 Output" : "Decoded Text"}
               </label>
 
-              <span className="text-xs text-text-muted">
+              <span className="code-field-meta">
                 {output.length} characters
               </span>
             </div>
@@ -228,7 +218,7 @@ export const Base64Tool = () => {
                   ? "Encoded Base64 will appear here..."
                   : "Decoded text will appear here..."
               }
-              className="min-h-[360px] w-full resize-y rounded-lg border border-border bg-surface-embedded p-4 font-mono text-sm outline-none"
+              className="code-field min-h-[360px]"
               spellCheck={false}
             />
 
@@ -243,13 +233,13 @@ export const Base64Tool = () => {
             </div>
 
             {error && (
-              <div className="mt-4 rounded-lg border border-error/20 bg-error/5 p-4 text-sm text-error">
+              <div className="mt-4 rounded-2xl border border-error/20 bg-error/5 p-4 text-sm text-error">
                 {error}
               </div>
             )}
 
             {!error && output && (
-              <div className="mt-4 rounded-lg border border-success/20 bg-success/5 p-4 text-sm text-success">
+              <div className="mt-4 rounded-2xl border border-success/20 bg-success/5 p-4 text-sm text-success">
                 {mode === "encode"
                   ? "Text successfully encoded."
                   : "Base64 successfully decoded."}
@@ -259,7 +249,7 @@ export const Base64Tool = () => {
         </div>
 
         {/* INFO */}
-        <div className="mt-8 rounded-lg border border-border bg-surface-embedded p-5">
+        <div className="mt-8 rounded-2xl border border-[color:var(--color-line)] bg-sage p-5">
           <h2 className="font-semibold">About Base64</h2>
 
           <p className="mt-2 text-sm leading-6 text-text-secondary">

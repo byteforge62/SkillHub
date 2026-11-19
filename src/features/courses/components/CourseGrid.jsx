@@ -1,27 +1,40 @@
+import { Link } from "react-router-dom";
+import { SearchX } from "lucide-react";
+
+import Button from "@/components/ui/Button";
+import EmptyState from "@/components/ui/EmptyState";
+
 import { CourseCard } from "./CourseCard";
 
-export const CourseGrid = ({ courses = [] }) => {
+export const CourseGrid = ({ courses = [], filtered = false }) => {
   if (courses.length === 0) {
-    return (
-      <div className="rounded-lg border border-border bg-surface px-6 py-16 text-center shadow-card">
-        <div className="text-4xl">📚</div>
-
-        <h3 className="mt-4 text-lg font-semibold text-text-primary">
-          No courses found
-        </h3>
-
-        <p className="mt-2 text-sm text-text-muted">
-          There are no published courses available right now.
-        </p>
-      </div>
+    return filtered ? (
+      <EmptyState
+        icon={SearchX}
+        title="No courses match those filters"
+        description="Try a different level or a shorter search term."
+      />
+    ) : (
+      <EmptyState
+        icon={SearchX}
+        title="No courses published yet"
+        description="New courses appear here as soon as they are published."
+        action={
+          <Button as={Link} to="/events" variant="secondary" size="sm">
+            Browse events instead
+          </Button>
+        }
+      />
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {courses.map((course) => (
         <CourseCard key={course._id} course={course} />
       ))}
     </div>
   );
 };
+
+export default CourseGrid;

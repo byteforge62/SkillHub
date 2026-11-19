@@ -1,22 +1,20 @@
 import { Controller, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { KeyRound } from "lucide-react";
 
-import Card from "@/components/ui/Card";
+import AuthFormShell from "@/components/auth/AuthFormShell";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import PasswordInput from "@/components/ui/PasswordInput";
 import OtpInput from "@/components/ui/OtpInput";
-import AuthHeader from "@/components/auth/AuthHeader";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 import resetPasswordFormSchema from "../validation/resetPasswordFormSchema";
 import useResetPassword from "../hooks/useResetPassword";
 
 const ResetPasswordForm = () => {
   const location = useLocation();
-
   const email = location.state?.email || "";
-
   const resetPasswordMutation = useResetPassword();
 
   const {
@@ -38,37 +36,46 @@ const ResetPasswordForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <AuthHeader
-        title="Reset Password"
-        subtitle="Create a new password for your account."
-      />
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
-      >
+    <AuthFormShell
+      title="Choose a new password"
+      subtitle="Enter the code from your email, then set a password you haven't used before."
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
         <Input
           id="email"
-          label="Email"
+          label="Email address"
           disabled
           error={errors.email?.message}
           {...register("email")}
         />
 
-        <Controller
-          name="otp"
-          control={control}
-          render={({ field }) => (
-            <OtpInput
-              value={field.value}
-              onChange={field.onChange}
-            />
+        <div>
+          <p className="mb-2 text-[13px] font-medium text-text-secondary">
+            Reset code
+          </p>
+
+          <Controller
+            name="otp"
+            control={control}
+            render={({ field }) => (
+              <OtpInput
+                value={field.value}
+                onChange={field.onChange}
+                error={Boolean(errors.otp)}
+              />
+            )}
+          />
+
+          {errors.otp?.message && (
+            <p className="mt-2 text-[12.5px] text-error" role="alert">
+              {errors.otp.message}
+            </p>
           )}
-        />
+        </div>
 
         <PasswordInput
-          label="New Password"
+          id="newPassword"
+          label="New password"
           placeholder="Enter your new password"
           autoComplete="new-password"
           error={errors.newPassword?.message}
@@ -77,13 +84,16 @@ const ResetPasswordForm = () => {
 
         <Button
           type="submit"
-          loading={resetPasswordMutation.isPending}
           fullWidth
+          size="lg"
+          loading={resetPasswordMutation.isPending}
+          disabled={resetPasswordMutation.isPending}
+          iconLeft={KeyRound}
         >
-          Reset Password
+          {resetPasswordMutation.isPending ? "Updating" : "Set new password"}
         </Button>
       </form>
-    </Card>
+    </AuthFormShell>
   );
 };
 

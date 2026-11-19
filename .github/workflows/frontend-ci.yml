@@ -2,41 +2,74 @@ name: SkillHub Frontend CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
   pull_request:
-    branches: [main]
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+
+# Cancel outdated runs on the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Set working directory if your frontend lives in a subfolder (remove if frontend is at repo root)
+defaults:
+  run:
+    working-directory: ./frontend
 
 jobs:
   frontend-ci-cd:
     runs-on: ubuntu-latest
 
     steps:
-      #  Checkout repository
+      # 1. Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      #  Setup Node.js
+      # 2. Setup Node.js LTS
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: '26'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
-      #  Install dependencies
+      # 3. Clean install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      #  Run tests
+      # 4. Run linter (only if script exists)
+      - name: Run linter
+        run: npm run lint --if-present
+
+      # 5. Run tests in non-interactive CI mode
       - name: Run tests
-        run: npm test
+        run: npm test --if-present
+        env:
+          CI: true
 
-      # Build project
+      # 6. Build project
       - name: Build project
         run: npm run build
+        env:
+          CI: true
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
-      #  Deploy to Vercel
+      # 7. Deploy to Vercel (ONLY on direct push to main)
       - name: Deploy to Vercel
-        if: github.event_name == 'push'
-        run: npx vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
