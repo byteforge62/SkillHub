@@ -1,0 +1,824 @@
+﻿
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\Button.jsx
+============================================================
+import clsx from "clsx";
+
+const Button = ({
+  children,
+  type = "button",
+  variant = "primary",
+  size = "md",
+  loading = false,
+  disabled = false,
+  fullWidth = false,
+  className,
+  ...props
+}) => {
+  const baseStyles = [
+    "inline-flex items-center justify-center",
+    "rounded-lg",
+    "font-medium",
+    "transition-all duration-200",
+    "focus:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-primary/40",
+    "disabled:cursor-not-allowed",
+    "disabled:opacity-50",
+  ];
+
+  const variantStyles = {
+    primary: [
+      "bg-primary text-white shadow-sm",
+      "hover:bg-primary-hover",
+      "active:bg-primary-hover",
+    ],
+
+    secondary: [
+      "border border-border",
+      "bg-surface text-text-primary",
+      "hover:bg-surface-hover",
+      "shadow-sm",
+    ],
+
+    tertiary: [
+      "text-text-secondary",
+      "hover:text-text-primary",
+      "hover:bg-surface-hover",
+    ],
+
+    danger: [
+      "bg-red-600 text-white",
+      "hover:bg-red-700",
+    ],
+  };
+
+  const sizeStyles = {
+    sm: "h-9 px-4 text-sm",
+    md: "h-10 px-5 text-sm",
+    lg: "h-11 px-6 text-base",
+  };
+
+  return (
+    <button
+      type={type}
+      disabled={loading || disabled}
+      aria-busy={loading}
+      className={clsx(
+        baseStyles,
+        variantStyles[variant] ?? variantStyles.primary,
+        sizeStyles[size] ?? sizeStyles.md,
+        fullWidth && "w-full",
+        className
+      )}
+      {...props}
+    >
+      {loading ? "Loading..." : children}
+    </button>
+  );
+};
+
+export default Button;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\Card.jsx
+============================================================
+import clsx from "clsx";
+
+const Card = ({
+  children,
+  className,
+  ...props
+}) => {
+  return (
+    <div
+      className={clsx(
+        "rounded-lg border border-border bg-surface p-6 shadow-card",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\Input.jsx
+============================================================
+import { forwardRef } from "react";
+import clsx from "clsx";
+
+const Input = forwardRef(
+  (
+    {
+      id,
+      label,
+      type = "text",
+      error,
+      className,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const inputClassName = clsx(
+      "h-11 w-full rounded-md border bg-surface px-4",
+      "text-text-primary outline-none",
+      "placeholder:text-text-muted",
+      "transition-colors duration-200",
+      "focus:border-primary",
+      "focus:ring-2 focus:ring-primary/20 focus:ring-offset-1",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-60",
+      error ? "border-error" : "border-border",
+      className
+    );
+
+    return (
+      <div className="flex flex-col gap-2">
+        {label && (
+          <label
+            htmlFor={id}
+            className="text-sm font-medium text-text-primary"
+          >
+            {label}
+          </label>
+        )}
+
+        <input
+          ref={ref}
+          id={id}
+          type={type}
+          disabled={disabled}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={inputClassName}
+          {...props}
+        />
+
+        {error && (
+          <p
+            id={`${id}-error`}
+            className="text-sm text-error"
+          >
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = "Input";
+
+export default Input;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\Logo.jsx
+============================================================
+import clsx from "clsx";
+
+const Logo = ({ className }) => {
+  return (
+    <span
+      className={clsx(
+        "text-3xl font-bold tracking-tight",
+        className
+      )}
+    >
+      SkillHub
+    </span>
+  );
+};
+
+export default Logo;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\OtpInput.jsx
+============================================================
+import { useRef } from "react";
+
+const OtpInput = ({
+  length = 6,
+  value = "",
+  onChange,
+}) => {
+  const inputRefs = useRef([]);
+
+  const handleChange = (index, inputValue) => {
+    if (!/^\d*$/.test(inputValue)) return;
+
+    const otp = Array.from(
+      { length },
+      (_, i) => value?.[i] || ""
+    );
+
+    otp[index] = inputValue.slice(-1);
+
+    const newValue = otp.join("");
+
+    onChange(newValue);
+
+    if (inputValue && index < length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index, event) => {
+    switch (event.key) {
+      case "Backspace":
+        if (!value[index] && index > 0) {
+          inputRefs.current[index - 1]?.focus();
+        }
+        break;
+
+      case "ArrowLeft":
+        if (index > 0) {
+          inputRefs.current[index - 1]?.focus();
+        }
+        break;
+
+      case "ArrowRight":
+        if (index < length - 1) {
+          inputRefs.current[index + 1]?.focus();
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const handlePaste = (event) => {
+    event.preventDefault();
+
+    const pastedValue = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, length);
+
+    onChange(pastedValue);
+
+    const lastIndex =
+      Math.min(pastedValue.length, length) - 1;
+
+    if (lastIndex >= 0) {
+      inputRefs.current[lastIndex]?.focus();
+    }
+  };
+
+  return (
+    <div className="grid w-full grid-cols-6 gap-2 sm:gap-3">
+      {Array.from({ length }).map((_, index) => (
+        <input
+          key={index}
+          ref={(element) => {
+            inputRefs.current[index] = element;
+          }}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={value?.[index] ?? ""}
+          onChange={(event) =>
+            handleChange(index, event.target.value)
+          }
+          onKeyDown={(event) =>
+            handleKeyDown(index, event)
+          }
+          onPaste={handlePaste}
+          aria-label={`OTP Digit ${index + 1}`}
+          className="
+            h-12
+            w-full
+            min-w-0
+            rounded-md
+            border
+            border-border
+            bg-surface
+            text-center
+            text-lg
+            font-semibold
+            outline-none
+            transition-all
+            focus:border-primary
+            focus:ring-2
+            focus:ring-primary/20 focus:ring-offset-1
+            sm:h-14
+            sm:text-xl
+          "
+        />
+      ))}
+    </div>
+  );
+};
+
+export default OtpInput;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\ui\PasswordInput.jsx
+============================================================
+import { forwardRef, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import clsx from "clsx";
+
+const PasswordInput = forwardRef(
+  (
+    {
+      id,
+      label,
+      error,
+      className,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const inputClassName = clsx(
+      "h-11 w-full rounded-md border bg-surface px-4 pr-12",
+      "text-text-primary outline-none",
+      "placeholder:text-text-muted",
+      "transition-colors duration-200",
+      "focus:border-primary",
+      "focus:ring-2 focus:ring-primary/20 focus:ring-offset-1",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-60",
+      error ? "border-error" : "border-border",
+      className
+    );
+
+    return (
+      <div className="flex flex-col gap-2">
+        {label && (
+          <label
+            htmlFor={id}
+            className="text-sm font-medium text-text-primary"
+          >
+            {label}
+          </label>
+        )}
+
+        <div className="relative">
+          <input
+            ref={ref}
+            id={id}
+            type={showPassword ? "text" : "password"}
+            disabled={disabled}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? `${id}-error` : undefined}
+            className={inputClassName}
+            {...props}
+          />
+
+          <button
+            type="button"
+            disabled={disabled}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+            onClick={() => setShowPassword((previous) => !previous)}
+            className={clsx(
+              "absolute inset-y-0 right-3 flex items-center",
+              "text-text-secondary transition-colors duration-200",
+              "hover:text-text-primary",
+              "focus:outline-none focus-visible:text-text-primary",
+              "disabled:cursor-not-allowed disabled:opacity-50"
+            )}
+          >
+            {showPassword ? (
+              <EyeOff size={18} aria-hidden="true" />
+            ) : (
+              <Eye size={18} aria-hidden="true" />
+            )}
+          </button>
+        </div>
+
+        {error && (
+          <p
+            id={`${id}-error`}
+            className="text-sm text-error"
+          >
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  }
+);
+
+PasswordInput.displayName = "PasswordInput";
+
+export default PasswordInput;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\animation\AnimatedButton.jsx
+============================================================
+import { motion } from "framer-motion";
+import Button from "@/components/ui/Button";
+
+/**
+ * Animated button built on the shared Button component.
+ * Provides subtle scale and lift feedback on interaction.
+ * Respects prefers-reduced-motion.
+ */
+export const AnimatedButton = ({
+  children,
+  ...props
+}) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      style={{ display: "inline-block" }}
+    >
+      <Button {...props}>{children}</Button>
+    </motion.div>
+  );
+};
+
+export default AnimatedButton;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\animation\AnimatedReveal.jsx
+============================================================
+import { motion } from "framer-motion";
+import { useSyncExternalStore } from "react";
+
+/**
+ * Reusable entrance/reveal animation.
+ * Fades in and slides up when entering the viewport.
+ * Respects prefers-reduced-motion.
+ */
+export const AnimatedReveal = ({
+  children,
+  as = "div",
+  delay = 0,
+  duration = 0.6,
+  distance = 12,
+  once = true,
+  amount = 0.3,
+  className,
+  ...props
+}) => {
+  const getSnapshot = () => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  };
+
+  const getServerSnapshot = () => false;
+
+  const subscribe = (callback) => {
+    if (typeof window === "undefined") return () => {};
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    mediaQuery.addEventListener("change", callback);
+    return () => mediaQuery.removeEventListener("change", callback);
+  };
+
+  const shouldReduce = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  if (shouldReduce) {
+    return (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+
+  const MotionTag = motion[as];
+
+  return (
+    <MotionTag
+      className={className}
+      initial={{ opacity: 0, y: distance }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once, amount }}
+      transition={{
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      {...props}
+    >
+      {children}
+    </MotionTag>
+  );
+};
+
+export default AnimatedReveal;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\animation\AnimatedSection.jsx
+============================================================
+import { motion } from "framer-motion";
+import { useSyncExternalStore } from "react";
+
+/**
+ * Section-level animation wrapper.
+ * Wraps children with a staggered entrance animation.
+ * Respects prefers-reduced-motion.
+ */
+export const AnimatedSection = ({
+  children,
+  stagger = 0.08,
+  delay = 0,
+  once = true,
+  amount = 0.2,
+  className,
+  ...props
+}) => {
+  const getSnapshot = () => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  };
+
+  const getServerSnapshot = () => false;
+
+  const subscribe = (callback) => {
+    if (typeof window === "undefined") return () => {};
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    mediaQuery.addEventListener("change", callback);
+    return () => mediaQuery.removeEventListener("change", callback);
+  };
+
+  const shouldReduce = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  if (shouldReduce) {
+    return (
+      <div className={className} {...props}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once, amount }}
+      transition={{ staggerChildren: stagger, delayChildren: delay }}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export default AnimatedSection;
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\layout\AppShell.jsx
+============================================================
+import React from 'react'
+import Sidebar from './Sidebar'
+import Header from './Header'
+
+export const AppShell = ({ children }) => {
+  return (
+    <div className="min-h-screen bg-background">
+        <Sidebar/>
+        <div className="min-h-screen md:pl-64">
+            <Header/>
+            <main className="px-6 py-6">
+                {children}
+            </main>
+        </div>
+    </div>
+  )
+}
+
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\layout\Header.jsx
+============================================================
+import {
+  Menu,
+  UserCircle,
+} from "lucide-react";
+
+import Button from "@/components/ui/Button";
+import useCurrentUser from "@/features/auth/hooks/useCurrentUser";
+import useLogout from "@/features/auth/hooks/useLogout";
+
+export const Header = ({title = "Dashboard",onMenuClick}) => {
+  const { data: user } = useCurrentUser();
+  const logoutMutation = useLogout();
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+
+  return (
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+      {/* Left side */}
+
+      <div className="flex items-center gap-3">
+        {/* Mobile menu */}
+
+        <button
+          type="button"
+          aria-label="Open navigation"
+          onClick={onMenuClick}
+          className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden focus-visible:ring-2 focus-visible:ring-primary/40"
+        >
+          <Menu
+            size={20}
+            aria-hidden="true"
+          />
+        </button>
+
+        <h1 className="text-lg font-semibold text-text-primary">
+          {title}
+        </h1>
+      </div>
+
+      {/* Right side */}
+
+      <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3">
+          <UserCircle
+            size={32}
+            aria-hidden="true"
+            className="text-text-secondary"
+          />
+
+          <div className="hidden sm:block">
+            <p className="text-sm font-medium text-text-primary">
+              {user?.fullname || "User"}
+            </p>
+
+            <p className="text-xs text-text-secondary">
+              {user?.email || ""}
+            </p>
+          </div>
+        </div>
+
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          loading={logoutMutation.isPending}
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      </div>
+    </header>
+  );
+};
+
+
+
+============================================================
+FILE: C:\Users\patel\Desktop\Skillhub Project\SKillhub-frontend\src\components\layout\Sidebar.jsx
+============================================================
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  BookOpen,
+  GraduationCap,
+  UsersRound,
+  User,
+  Settings,
+  X,
+} from "lucide-react";
+
+import Logo from "@/components/ui/Logo";
+
+const navigation = [
+  {
+    label: "Dashboard",
+    path: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Courses",
+    path: "/courses",
+    icon: GraduationCap,
+  },
+  {
+    label: "My Learning",
+    path: "/learning",
+    icon: BookOpen,
+  },
+  {
+    label: "Communities",
+    path: "/communities",
+    icon: UsersRound,
+  },
+  {
+    label: "Profile",
+    path: "/profile",
+    icon: User,
+  },
+  {
+    label: "Settings",
+    path: "/profile/settings",
+    icon: Settings,
+  },
+];
+
+export const Sidebar = ({open = false,onClose,}) => {
+  return (
+    <>
+      {/* Mobile backdrop */}
+
+      {open && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-black/20 md:hidden"
+        />
+      )}
+
+      <aside
+        className={[
+          "fixed inset-y-0 left-0 z-50 w-64",
+          "border-r border-border bg-surface",
+          "transition-transform duration-200 ease-out",
+          "md:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full",
+        ].join(" ")}
+      >
+        <div className="flex h-full flex-col">
+          {/* Sidebar header */}
+
+          <div className="flex h-16 items-center justify-between border-b border-border px-6">
+            <Logo className="text-xl" />
+
+            <button
+              type="button"
+              aria-label="Close navigation"
+              onClick={onClose}
+              className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary md:hidden focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              <X
+                size={18}
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+
+          {/* Navigation */}
+
+          <nav
+            aria-label="Main navigation"
+            className="flex-1 space-y-1 p-4"
+          >
+            {navigation.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    [
+                      "flex items-center gap-3 rounded-md px-4 py-3",
+                      "text-sm font-medium transition-colors",
+                      "focus:outline-none focus-visible:ring-2",
+                      "focus-visible:ring-primary/40",
+
+                      isActive
+                        ? "bg-primary text-white"
+                        : [
+                            "text-text-secondary",
+                            "hover:bg-surface-hover",
+                            "hover:text-text-primary",
+                          ].join(" "),
+                    ].join(" ")
+                  }
+                >
+                  <Icon
+                    size={18}
+                    aria-hidden="true"
+                  />
+
+                  <span>{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+    </>
+  );
+};
+
