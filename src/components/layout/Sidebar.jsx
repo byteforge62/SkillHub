@@ -55,11 +55,11 @@ export const Sidebar = ({ open = false, onClose }) => (
 
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[272px] p-3 transition-transform duration-300 ease-out lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-50 w-[264px] p-3 transition-transform duration-300 ease-out lg:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full",
       )}
     >
-      <div className="flex h-full flex-col overflow-hidden rounded-[28px] border border-[color:var(--color-line)] bg-white shadow-[0_18px_46px_rgba(20,46,33,0.08)]">
+      <div className="flex h-full flex-col overflow-hidden rounded-[24px] border border-line bg-white shadow-[var(--shadow-header)]">
         <div className="flex h-[68px] shrink-0 items-center justify-between px-5">
           <Link
             to="/"
@@ -101,7 +101,7 @@ export const Sidebar = ({ open = false, onClose }) => (
                       onClick={onClose}
                       className={({ isActive }) =>
                         cn(
-                          "group relative flex items-center gap-2.5 rounded-2xl px-3 py-2.5 text-[13px] font-medium transition-colors",
+                          "group relative flex items-center gap-2.5 rounded-[12px] px-3 py-2.5 text-[13px] font-medium transition-colors",
                           isActive
                             ? "text-white"
                             : "text-text-secondary hover:bg-sage/60 hover:text-primary",
@@ -113,7 +113,7 @@ export const Sidebar = ({ open = false, onClose }) => (
                           {isActive && (
                             <motion.span
                               layoutId="sidebar-active"
-                              className="absolute inset-0 -z-10 rounded-2xl bg-primary"
+                              className="absolute inset-0 -z-10 rounded-[12px] bg-primary"
                               transition={{ type: "spring", stiffness: 320, damping: 30 }}
                             />
                           )}
@@ -140,7 +140,7 @@ export const Sidebar = ({ open = false, onClose }) => (
           <Link
             to="/tools"
             onClick={onClose}
-            className="group block rounded-2xl bg-sage p-3.5 transition-colors hover:bg-sage-soft"
+            className="group block rounded-[12px] bg-sage p-3.5 transition-colors hover:bg-sage-soft"
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-[11px] font-medium text-primary">
@@ -161,7 +161,7 @@ export const Sidebar = ({ open = false, onClose }) => (
           <Link
             to="/"
             onClick={onClose}
-            className="mt-2 flex items-center justify-between rounded-2xl px-3 py-2 text-[12px] font-medium text-text-muted transition-colors hover:bg-sage/60 hover:text-primary"
+            className="mt-2 flex items-center justify-between rounded-[12px] px-3 py-2 text-[12px] font-medium text-text-muted transition-colors hover:bg-sage/60 hover:text-primary"
           >
             Back to public site
             <ArrowUpRight size={13} aria-hidden="true" />

@@ -1,4 +1,4 @@
-export { default as Avatar, initialsOf } from "./Avatar";
+export { default as Avatar, AvatarStack, initialsOf } from "./Avatar";
 export { default as Badge, PillBadge } from "./Badge";
 export { default as Button, Button as ButtonPrimitive } from "./Button";
 export { default as Card, BentoCard, GlassCard, ForestCard } from "./Card";

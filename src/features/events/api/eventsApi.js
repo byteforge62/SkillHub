@@ -15,6 +15,11 @@ export const getMyEvents = async () => {
   return response.data;
 };
 
+export const rsvpEvent = async (eventId) => {
+  const response = await apiClient.patch(`/events/${eventId}/rsvp`);
+  return response.data;
+};
+
 export const createEvent = async (eventData) => {
   const response = await apiClient.post("/event", eventData);
   return response.data;

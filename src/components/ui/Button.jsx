@@ -4,30 +4,35 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Buttons are letterpress stamps, not pills: a cut 10px corner, a hairline
- * border and a hard offset edge that collapses when pressed.
+ * Buttons follow design.md §4.01:
+ * - pill (9999px) for standard hero/form actions
+ * - 12px radius for compact toolbar and destructive variants
+ * Labels are Plus Jakarta Sans, 13.5px, medium.
  */
+const baseStyles =
+  "group/button inline-flex select-none items-center justify-center whitespace-nowrap font-display text-[13.5px] font-medium leading-none tracking-[-0.01em] transition-[background-color,border-color,color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas";
+
 const variantStyles = {
   primary:
-    "border border-primary bg-primary text-white shadow-[2px_2px_0_0_rgba(22,66,48,0.32)] hover:-translate-x-px hover:-translate-y-px hover:bg-primary-hover hover:shadow-[3px_3px_0_0_rgba(22,66,48,0.34)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+    "border border-primary bg-primary text-white hover:bg-primary-hover disabled:border-[#9ba8a1] disabled:bg-[#9ba8a1] disabled:text-white/80",
   secondary:
-    "border border-[color:var(--color-line)] bg-white text-ink shadow-[2px_2px_0_0_rgba(30,86,63,0.12)] hover:-translate-x-px hover:-translate-y-px hover:border-primary/40 hover:bg-sage/60 hover:shadow-[3px_3px_0_0_rgba(30,86,63,0.16)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+    "border border-transparent bg-sage text-text-primary hover:bg-sage-soft disabled:bg-[#f3f6f4] disabled:text-[#9ba8a1]",
   outline:
-    "border border-primary/35 bg-transparent text-primary hover:border-primary hover:bg-sage/60",
+    "border border-line bg-white text-text-primary hover:border-[#c5d3ca] hover:bg-sage/70 disabled:border-[#eaefea] disabled:text-[#b0bcb5]",
   ghost:
-    "border border-transparent bg-transparent text-text-secondary hover:bg-sage/60 hover:text-primary",
+    "border border-transparent bg-transparent text-text-secondary hover:bg-sage hover:text-text-primary disabled:text-[#b0bcb5]",
+  danger:
+    "border border-error bg-error text-white hover:bg-[#b91c1c] disabled:border-[#f5a5a5] disabled:bg-[#f5a5a5] disabled:text-white",
   onDark:
     "border border-white/25 bg-white/10 text-white hover:border-white/40 hover:bg-white/15",
-  danger:
-    "border border-error bg-error text-white shadow-[2px_2px_0_0_rgba(186,60,60,0.28)] hover:-translate-x-px hover:-translate-y-px hover:bg-[#a33333] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
-  link: "h-auto rounded-none border-0 bg-transparent p-0 text-primary underline-offset-4 hover:underline",
+  link: "h-auto border-0 bg-transparent p-0 text-primary underline-offset-4 hover:underline",
 };
 
 const sizeStyles = {
-  sm: "h-9 gap-2 px-3.5 text-[10.5px]",
-  md: "h-11 gap-2 px-5 text-[11.5px]",
-  lg: "h-12 gap-2.5 px-6 text-[12px]",
-  icon: "h-10 w-10 p-0",
+  sm: "h-9 gap-2 rounded-[12px] px-3.5 text-[13px]",
+  md: "h-11 gap-2 rounded-full px-5",
+  lg: "h-12 gap-2.5 rounded-full px-6 text-[14px]",
+  icon: "h-10 w-10 rounded-full p-0",
 };
 
 /**
@@ -54,6 +59,8 @@ const Button = forwardRef(function Button(
 ) {
   const Component = as || "button";
   const isNativeButton = Component === "button";
+  const isCompact = size === "sm" || variant === "danger";
+  const rounded = variant === "link" ? "rounded-none" : isCompact ? "rounded-[12px]" : "rounded-full";
 
   return (
     <Component
@@ -62,14 +69,13 @@ const Button = forwardRef(function Button(
       aria-busy={loading || undefined}
       aria-disabled={!isNativeButton && (disabled || loading) ? true : undefined}
       className={cn(
-        "group/button inline-flex select-none items-center justify-center whitespace-nowrap rounded-[10px] font-semibold uppercase leading-none tracking-[0.1em]",
-        "transition-[background-color,border-color,color,box-shadow,transform] duration-200",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        baseStyles,
+        rounded,
         variantStyles[variant] ?? variantStyles.primary,
-        variant === "link" && "normal-case tracking-normal",
         sizeStyles[size] ?? sizeStyles.md,
+        variant === "link" && "h-auto p-0",
         fullWidth && "w-full",
-        (disabled || loading) && "pointer-events-none opacity-55",
+        (disabled || loading) && "pointer-events-none",
         className,
       )}
       {...props}

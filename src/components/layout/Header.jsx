@@ -133,7 +133,7 @@ export const Header = ({ onMenuClick }) => {
 
   return (
     <header ref={headerRef} className='sticky top-0 z-30 px-3 pt-3 sm:px-5'>
-      <div className='relative mx-auto flex h-[60px] max-w-[1200px] items-center justify-between gap-3 rounded-full border border-[color:var(--color-line)] bg-white/80 px-3 shadow-[0_6px_22px_rgba(20,46,33,0.05)] backdrop-blur-xl sm:px-4'>
+      <div className='relative mx-auto flex h-[60px] max-w-[1200px] items-center justify-between gap-3 rounded-full border border-line bg-white/85 px-3 shadow-[var(--shadow-header)] backdrop-blur-xl sm:px-4'>
         {/* Left: Mobile Menu & Page Title */}
         <div className='flex min-w-0 items-center gap-2.5'>
           <button

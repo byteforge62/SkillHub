@@ -23,7 +23,7 @@ export const Card = ({
 }) => (
   <Component
     className={cn(
-      "relative rounded-3xl",
+      "relative rounded-[24px]",
       padded && "p-6 sm:p-7",
       variantStyles[variant] ?? variantStyles.surface,
       variant !== "forest" && variant !== "plain" && "shadow-[var(--shadow-card)]",

@@ -459,7 +459,7 @@ export const SiteHeader = () => {
                   <Link
                     to="/login"
                     onClick={closeAll}
-                    className="hidden h-9 items-center justify-center rounded-[10px] border border-[color:var(--color-line)] bg-white px-3.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-text-primary shadow-[2px_2px_0_0_rgba(30,86,63,0.1)] transition-[background-color,border-color,box-shadow,transform] hover:-translate-x-px hover:-translate-y-px hover:border-primary/40 hover:bg-sage/60 sm:inline-flex"
+                    className="hidden h-9 items-center justify-center rounded-full px-4 text-[13.5px] font-medium text-text-secondary transition-colors hover:bg-sage hover:text-text-primary sm:inline-flex"
                   >
                     Sign in
                   </Link>
@@ -467,7 +467,7 @@ export const SiteHeader = () => {
                   <Link
                     to="/register"
                     onClick={closeAll}
-                    className="group inline-flex h-9 items-center gap-1.5 rounded-[10px] border border-primary bg-primary px-3.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white shadow-[2px_2px_0_0_rgba(22,66,48,0.3)] transition hover:-translate-x-px hover:-translate-y-px hover:bg-primary-hover sm:px-4"
+                    className="group inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-[13.5px] font-medium text-white transition-colors hover:bg-primary-hover"
                   >
                     <span className="hidden sm:inline">Get started</span>
                     <span className="sm:hidden">Join</span>

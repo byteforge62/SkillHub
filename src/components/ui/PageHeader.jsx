@@ -3,7 +3,12 @@ import { ArrowLeft } from "lucide-react";
 
 import { cn } from "@/lib/cn";
 
+/**
+ * Workspace page heading: 18–22px semibold (design.md §2) with an optional
+ * muted eyebrow, keeping internal pages quieter than the public landing.
+ */
 export const PageHeader = ({
+  eyebrow,
   title,
   description,
   action,
@@ -11,11 +16,11 @@ export const PageHeader = ({
   backLabel = "Back",
   className,
 }) => (
-  <header className={cn("flex flex-col gap-5 sm:gap-6", className)}>
+  <header className={cn("flex flex-col gap-4", className)}>
     {backTo && (
       <Link
         to={backTo}
-        className="inline-flex w-fit items-center gap-1.5 text-[13px] font-medium text-text-muted transition-colors hover:text-primary"
+        className="inline-flex w-fit items-center gap-1.5 text-[12.5px] font-medium text-text-muted transition-colors hover:text-primary"
       >
         <ArrowLeft size={14} aria-hidden="true" />
         {backLabel}
@@ -24,12 +29,16 @@ export const PageHeader = ({
 
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="max-w-2xl">
-        <h1 className="text-[clamp(1.9rem,3.4vw,2.5rem)] font-bold leading-[1.05] tracking-[-0.04em] text-text-primary">
+        {eyebrow && (
+          <p className="section-label mb-2">{eyebrow}</p>
+        )}
+
+        <h1 className="text-[22px] font-semibold leading-[1.3] tracking-[-0.02em] text-text-primary">
           {title}
         </h1>
 
         {description && (
-          <p className="mt-3 text-[15px] leading-7 text-text-secondary">
+          <p className="mt-1.5 text-[14px] leading-[1.55] text-text-secondary">
             {description}
           </p>
         )}

@@ -3,25 +3,24 @@ import { cn } from "@/lib/cn";
 const variantStyles = {
   sage: "bg-sage text-primary",
   forest: "bg-primary text-white",
-  outline:
-    "border border-[color:var(--color-line)] bg-white/70 text-text-secondary",
+  outline: "border border-line bg-white text-text-secondary",
   glass: "glass-surface text-primary",
   soft: "bg-sage-soft text-primary",
   warning: "bg-warning-soft text-warning",
   success: "bg-success-soft text-success",
   danger: "bg-error-soft text-error",
-  neutral: "bg-white text-text-secondary border border-border-subtle",
+  neutral: "bg-white text-text-secondary border border-border",
+  live: "bg-success-soft text-success",
 };
 
 const sizeStyles = {
-  sm: "h-5 gap-1.5 px-1.5 text-[9px]",
-  md: "h-6 gap-1.5 px-2 text-[9.5px]",
-  lg: "h-7 gap-2 px-2.5 text-[10px]",
+  sm: "gap-1.5 px-2 py-0.5 text-[11px]",
+  md: "gap-1.5 px-2.5 py-0.5 text-[11.5px]",
+  lg: "gap-2 px-3 py-1 text-[12px]",
 };
 
 /**
- * Catalogue tags: square-cornered, micro-capped, set like an index label
- * rather than a rounded chip.
+ * Status pill — always rounded-full, 11.5px medium (design.md §4.03).
  */
 export const Badge = ({
   children,
@@ -34,7 +33,7 @@ export const Badge = ({
 }) => (
   <span
     className={cn(
-      "inline-flex items-center rounded-[4px] border border-transparent font-semibold uppercase leading-none tracking-[0.1em]",
+      "inline-flex items-center rounded-full border border-transparent font-medium leading-[1.4]",
       variantStyles[variant] ?? variantStyles.sage,
       sizeStyles[size] ?? sizeStyles.md,
       className,
@@ -43,7 +42,7 @@ export const Badge = ({
   >
     {dot && (
       <span
-        className="h-1 w-1 rounded-[1px] bg-current opacity-80"
+        className="h-1.5 w-1.5 rounded-full bg-current"
         aria-hidden="true"
       />
     )}
