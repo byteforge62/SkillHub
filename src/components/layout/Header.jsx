@@ -17,11 +17,16 @@ import {
 } from "lucide-react";
 
 import Avatar from "@/components/ui/Avatar";
+import Badge from "@/components/ui/Badge";
 import SearchDialog from "@/components/ui/SearchDialog";
 import { dropdownMotion } from "@/lib/motion";
 import useCurrentUser from "@/features/auth/hooks/useCurrentUser";
 import useLogout from "@/features/auth/hooks/useLogout";
+import useMyEnrollments from "@/features/enrollment/hooks/useEnrollment";
+import { getEvents } from "@/features/events/api/eventsApi";
 import toolRegistry from "@/features/tools/toolRegistry";
+import { useQuery } from "@tanstack/react-query";
+import { formatEventDate } from "@/features/events/utils/eventDate";
 
 const titles = {
   "/dashboard": "Workspace",

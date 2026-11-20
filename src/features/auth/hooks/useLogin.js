@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "sonner";
 
 import { loginRequest } from "@/features/auth/api/authApi";
-import { setAccessToken } from "@/features/auth/utils/tokenManager";
+import { setAccessToken, initializeAccessToken } from "@/features/auth/utils/tokenManager";
 
 const useLogin = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+
+    // Initialize from localStorage on every login
+    initializeAccessToken();
 
     return useMutation({
         mutationFn: loginRequest,
