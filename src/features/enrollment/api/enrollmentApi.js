@@ -24,3 +24,23 @@ export const dropCourse = async (enrollmentId) => {
   const response = await apiClient.patch(`/enrollments/${enrollmentId}/drop`);
   return response.data;
 };
+
+export const toggleSavedEnrollment = async (enrollmentId) => {
+  const response = await apiClient.patch(`/enrollments/${enrollmentId}/saved`);
+  return response.data;
+};
+
+export const getLessonNote = async (enrollmentId, lessonId) => {
+  const response = await apiClient.get(
+    `/enrollments/${enrollmentId}/lessons/${lessonId}/note`,
+  );
+  return response.data;
+};
+
+export const saveLessonNote = async (enrollmentId, lessonId, content) => {
+  const response = await apiClient.put(
+    `/enrollments/${enrollmentId}/lessons/${lessonId}/note`,
+    { content },
+  );
+  return response.data;
+};

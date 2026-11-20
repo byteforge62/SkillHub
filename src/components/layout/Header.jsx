@@ -91,6 +91,13 @@ export const Header = ({ onMenuClick }) => {
     };
   }, []);
 
+  // Any workspace surface can open this one dialog instead of duplicating it.
+  useEffect(() => {
+    const openSearch = () => setSearchOpen(true);
+    window.addEventListener('skillhub:open-search', openSearch);
+    return () => window.removeEventListener('skillhub:open-search', openSearch);
+  }, []);
+
   const enrollments = enrollmentsQuery.data?.data || [];
   const activeCourses = useMemo(
     () => enrollments.filter((e) => e.status === 'active'),

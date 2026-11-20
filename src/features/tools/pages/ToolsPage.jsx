@@ -63,7 +63,7 @@ export const ToolsPage = () => {
         description="Small instruments that run in the browser. Nothing is uploaded — useful when you want to check a token, a pattern or a payload while you study."
         action={
           <Badge variant="outline" size="md" icon={KeyRound}>
-            {toolRegistry.length} tools · no sign-in
+            {toolRegistry.length} tools · nothing uploaded
           </Badge>
         }
       />

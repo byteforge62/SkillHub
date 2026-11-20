@@ -1,14 +1,17 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
   ArrowUpRight,
+  Bookmark,
   BookOpen,
   CalendarDays,
-  CheckCircle2,
-  Clock,
+  ChevronRight,
+  NotebookPen,
+  Play,
   RefreshCw,
-  Sparkles,
+  Search,
 } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
@@ -19,9 +22,10 @@ import Skeleton from "@/components/ui/Skeleton";
 
 import useCurrentUser from "@/features/auth/hooks/useCurrentUser";
 import useMyEnrollments from "@/features/enrollment/hooks/useEnrollment";
+import { toggleSavedEnrollment } from "@/features/enrollment/api/enrollmentApi";
+import { NotesDialog } from "@/features/enrollment/components/NotesDialog";
 import useCourses from "@/features/courses/hooks/useCourses";
-import { getEvents, rsvpEvent } from "@/features/events/api/eventsApi";
-import toolRegistry from "@/features/tools/toolRegistry";
+import { getEvents } from "@/features/events/api/eventsApi";
 
 const greetingFor = (hour) => {
   if (hour < 12) return "Good morning";
@@ -34,53 +38,83 @@ const courseOf = (enrollment) =>
     ? enrollment.courseId
     : null;
 
-const eventDate = (value) => {
+const clampProgress = (value) =>
+  Math.min(100, Math.max(0, Math.round(Number(value) || 0)));
+
+const formatMinutes = (minutes) => {
+  const value = Number(minutes) || 0;
+  if (value <= 0) return "Self-paced";
+  if (value < 60) return `${value}m`;
+
+  const hours = Math.floor(value / 60);
+  const rest = value % 60;
+  return rest > 0 ? `${hours}h ${rest}m` : `${hours}h`;
+};
+
+const minutesLeftLabel = (minutes) => {
+  const value = Number(minutes) || 0;
+  if (value <= 0) return "LESSON READY";
+  return `${value} MIN LEFT`;
+};
+
+const scheduleLabel = (value) => {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return { weekday: "—", day: "—", time: "" };
+    return "SCHEDULE TBC";
   }
 
-  return {
-    weekday: new Intl.DateTimeFormat(undefined, { weekday: "short" })
-      .format(date)
-      .toUpperCase(),
-    day: new Intl.DateTimeFormat(undefined, { day: "2-digit" }).format(date),
-    time: new Intl.DateTimeFormat(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date),
-  };
+  const parts = new Intl.DateTimeFormat(undefined, {
+    weekday: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZoneName: "short",
+  }).formatToParts(date);
+
+  const read = (type) => parts.find((part) => part.type === type)?.value || "";
+
+  const time = [read("hour"), read("minute")].filter(Boolean).join(":");
+
+  return [read("weekday"), read("day"), "·", time, read("timeZoneName")]
+    .filter(Boolean)
+    .join(" ")
+    .toUpperCase();
 };
 
-const formatMinutes = (minutes) => {
-  if (!minutes || minutes <= 0) return "Ready to start";
+const badgeFor = (course) => {
+  if (!course) return null;
 
-  if (minutes < 60) return `${minutes} min left`;
+  const created = course.createdAt ? new Date(course.createdAt) : null;
+  const isNew =
+    created && Date.now() - created.getTime() < 30 * 24 * 60 * 60 * 1000;
 
-  const hours = Math.floor(minutes / 60);
-  const rest = minutes % 60;
-
-  return rest > 0 ? `${hours}h ${rest}m left` : `${hours}h left`;
+  if ((course.enrollmentCount ?? 0) >= 2) return "POPULAR";
+  if (isNew) return "NEW";
+  return null;
 };
-
-const RailSection = ({ label, action, children }) => (
-  <section>
-    <div className="mb-3 flex items-baseline justify-between gap-3">
-      <h2 className="section-label">{label}</h2>
-      {action}
-    </div>
-    {children}
-  </section>
-);
 
 const SpotlightSkeleton = () => (
-  <div className="rounded-[24px] border border-line bg-white p-7">
-    <div className="h-3 w-28 rounded bg-sage" />
-    <div className="mt-4 h-6 w-2/3 rounded bg-sage" />
-    <div className="mt-3 h-3 w-1/2 rounded bg-sage" />
-    <div className="mt-6 h-1.5 w-full rounded-full bg-sage" />
-    <div className="mt-6 h-10 w-36 rounded-full bg-sage" />
+  <div className="overflow-hidden rounded-[24px] border border-line bg-white">
+    <div className="grid lg:grid-cols-[1.35fr_1fr]">
+      <div className="space-y-4 p-6 sm:p-7">
+        <Skeleton className="h-3 w-32" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-6 w-2/3" />
+        <Skeleton className="h-1.5 w-full rounded-full" />
+        <Skeleton className="h-10 w-44 rounded-full" />
+      </div>
+      <Skeleton className="m-3 h-[190px] rounded-[18px] lg:m-4" />
+    </div>
+  </div>
+);
+
+const CuratedSkeleton = () => (
+  <div className="space-y-2">
+    {[0, 1, 2].map((item) => (
+      <Skeleton key={item} className="h-[68px] rounded-[16px]" />
+    ))}
   </div>
 );
 
@@ -91,13 +125,15 @@ export const DashboardPage = () => {
   const coursesQuery = useCourses({ page: 1, limit: 8 });
   const eventsQuery = useQuery({
     queryKey: ["events", "dashboard"],
-    queryFn: () => getEvents({ page: 1, limit: 6 }),
+    queryFn: () => getEvents({ page: 1, limit: 4 }),
   });
 
-  const rsvpMutation = useMutation({
-    mutationFn: rsvpEvent,
+  const [notesFor, setNotesFor] = useState(null);
+
+  const saveMutation = useMutation({
+    mutationFn: (enrollmentId) => toggleSavedEnrollment(enrollmentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
     },
   });
 
@@ -111,51 +147,41 @@ export const DashboardPage = () => {
   )[0];
 
   const spotlightCourse = courseOf(spotlight);
-  const spotlightTotal =
-    spotlight?.totalLessons ?? spotlightCourse?.lessonCount ?? 0;
-  const spotlightDone = spotlight?.completedLessonsCount ?? 0;
-  const spotlightProgress = Math.min(
-    100,
-    Math.max(0, Math.round(spotlight?.progress ?? 0)),
-  );
-  const currentLesson =
-    spotlight?.currentLesson ?? spotlight?.lastAccessedLesson;
-  const instructor =
-    spotlightCourse?.createdBy?.fullname || "SkillHub instructor";
-  const resumeTo = spotlightCourse?._id
-    ? `/learning/${spotlightCourse._id}`
-    : "/learning";
+  const lesson =
+    spotlight?.currentLesson ?? spotlight?.lastAccessedLesson ?? null;
+  const progress = clampProgress(spotlight?.progress);
+  const totalLessons = spotlight?.totalLessons ?? spotlightCourse?.lessonCount ?? 0;
+  const doneLessons = spotlight?.completedLessonsCount ?? 0;
+  const instructor = spotlightCourse?.createdBy?.fullname || "SkillHub instructor";
+  const statusLabel =
+    spotlight?.status === "completed"
+      ? "COMPLETED"
+      : spotlightCourse?.cohortLabel
+        ? spotlightCourse.cohortLabel.toUpperCase()
+        : "IN PROGRESS";
 
   const lessonsComplete = enrollments.reduce(
     (total, item) => total + (item.completedLessonsCount ?? 0),
     0,
   );
-  const minutesRemaining = active.reduce(
-    (total, item) => total + (item.minutesRemaining ?? 0),
-    0,
-  );
-  const averageProgress = active.length
-    ? Math.round(
-        active.reduce((total, item) => total + (item.progress || 0), 0) /
-          active.length,
-      )
-    : 0;
 
   const enrolledCourseIds = new Set(
-    enrollments.map((item) =>
-      String(courseOf(item)?._id ?? item.courseId ?? ""),
-    ),
+    enrollments.map((item) => String(courseOf(item)?._id ?? item.courseId ?? "")),
   );
   const catalog = coursesQuery.data?.data?.courses ?? [];
   const curated = catalog
     .filter((course) => !enrolledCourseIds.has(String(course._id)))
-    .slice(0, 4);
+    .filter((course) => (course.lessonCount ?? 0) > 0)
+    .sort(
+      (left, right) =>
+        (right.enrollmentCount ?? 0) - (left.enrollmentCount ?? 0),
+    )
+    .slice(0, 3);
 
   const events = (eventsQuery.data?.data ?? [])
     .filter((event) => new Date(event.date) > new Date())
-    .slice(0, 4);
+    .slice(0, 3);
 
-  const tools = toolRegistry.slice(0, 4);
   const firstName = (user?.fullname || "").split(" ")[0];
   const today = new Intl.DateTimeFormat(undefined, {
     weekday: "long",
@@ -163,117 +189,241 @@ export const DashboardPage = () => {
     month: "long",
   }).format(new Date());
 
+  const openSearch = () => {
+    window.dispatchEvent(new Event("skillhub:open-search"));
+  };
+
+  const media = spotlightCourse?.imageUrl;
+
   return (
     <div className="pb-4">
-      <header className="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+      {/* Contextual bar: breadcrumb + workspace search */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex min-w-0 items-center gap-1.5 text-[11.5px]"
+        >
+          <span className="text-text-muted">Workspace</span>
+          <ChevronRight size={11} className="text-text-muted" aria-hidden="true" />
+          <span className="truncate font-medium text-text-primary">
+            {spotlightCourse?.title || "Dashboard"}
+          </span>
+        </nav>
+
+        <button
+          type="button"
+          onClick={openSearch}
+          className="group flex items-center gap-3 rounded-full border border-line bg-white px-3.5 py-2 text-[12px] text-text-muted transition-colors hover:border-primary/35 hover:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+        >
+          <Search size={14} aria-hidden="true" />
+          <span>Search workspace</span>
+          <kbd className="rounded border border-line bg-canvas px-1.5 py-0.5 font-mono text-[10px] text-text-muted">
+            ⌘K
+          </kbd>
+        </button>
+      </div>
+
+      {/* Greeting */}
+      <header className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <p className="section-label">{today}</p>
-          <h1 className="mt-2 text-[22px] font-semibold leading-[1.3] tracking-[-0.02em]">
+          <h1 className="mt-2 text-[26px] font-semibold leading-[1.2] tracking-[-0.025em] sm:text-[30px]">
             {greetingFor(new Date().getHours())}, {firstName || "Learner"}
           </h1>
         </div>
 
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-text-muted">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-text-muted">
           <span>
             <span className="font-medium text-text-primary">{active.length}</span>{" "}
             active
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            <span className="font-medium text-text-primary">
-              {lessonsComplete}
-            </span>{" "}
+            <span className="font-medium text-text-primary">{lessonsComplete}</span>{" "}
             lessons complete
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            <span className="font-medium text-text-primary">
-              {completed.length}
-            </span>{" "}
+            <span className="font-medium text-text-primary">{completed.length}</span>{" "}
             finished
           </span>
-          <span aria-hidden="true">·</span>
-          <span>{averageProgress}% average</span>
         </p>
       </header>
 
       <div className="editorial-split mt-8">
-        {/* 65% — main column */}
         <div className="min-w-0 space-y-10">
+          {/* Continue learning */}
           <section>
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <h2 className="section-label">Continue learning</h2>
-              {spotlight && (
-                <Badge variant="success" size="sm" dot>
-                  In progress
-                </Badge>
-              )}
+              <Link
+                to="/learning"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-primary"
+              >
+                All tracks
+                <ArrowUpRight size={12} aria-hidden="true" />
+              </Link>
             </div>
 
             {enrollmentsQuery.isLoading ? (
               <SpotlightSkeleton />
-            ) : spotlight ? (
-              <article className="rounded-[24px] border border-line bg-white p-6 sm:p-7">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-[11.5px] text-text-muted">
-                      {spotlightCourse?.category?.name || "Track"}
-                      {spotlightCourse?.level
-                        ? ` · ${spotlightCourse.level}`
-                        : ""}
-                    </p>
-
-                    <h3 className="mt-1.5 text-[19px] font-semibold leading-[1.3] tracking-[-0.02em]">
-                      {spotlightCourse?.title || "Your current course"}
-                    </h3>
-
-                    <p className="mt-1.5 text-[13px] text-text-secondary">
-                      {currentLesson
-                        ? `Chapter ${currentLesson.index} · ${
-                            currentLesson.sectionTitle || currentLesson.title
-                          }`
-                        : "Pick up where you left off"}
-                      <span className="text-text-muted"> · {instructor}</span>
-                    </p>
-                  </div>
-
-                  <Button as={Link} to={resumeTo} size="sm" iconRight={ArrowRight}>
-                    Resume lesson
+            ) : enrollmentsQuery.isError ? (
+              <EmptyState
+                tone="error"
+                icon={RefreshCw}
+                title="Your workspace couldn't load"
+                description="The enrollment service did not respond. Try again in a moment."
+                action={
+                  <Button variant="secondary" onClick={() => enrollmentsQuery.refetch()}>
+                    Try again
                   </Button>
-                </div>
+                }
+              />
+            ) : spotlight ? (
+              <article className="overflow-hidden rounded-[24px] border border-line bg-white">
+                <div className="grid lg:grid-cols-[1.35fr_1fr]">
+                  <div className="flex flex-col justify-between gap-7 p-6 sm:p-7">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[10.5px] font-medium uppercase tracking-[0.1em] text-text-muted">
+                          Continue learning
+                        </span>
+                        <Badge
+                          dot
+                          size="sm"
+                          variant={spotlightCourse?.cohortLabel ? "live" : "sage"}
+                          className="uppercase tracking-[0.08em]"
+                        >
+                          {statusLabel}
+                        </Badge>
+                      </div>
 
-                <div className="mt-6">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <p className="text-[12.5px] text-text-secondary">
-                      <span className="font-medium text-text-primary">
-                        {spotlightDone} of {spotlightTotal}
-                      </span>{" "}
-                      lessons complete
-                    </p>
-                    <p className="text-[12.5px] font-semibold tabular-nums text-text-primary">
-                      {spotlightProgress}%
-                    </p>
+                      <div className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[11.5px] text-text-muted">
+                        <span className="truncate">
+                          {spotlightCourse?.title || "Course"}
+                        </span>
+                        <ChevronRight size={11} aria-hidden="true" />
+                        <span className="truncate">
+                          {lesson?.sectionTitle || "Section"}
+                        </span>
+                        <ChevronRight size={11} aria-hidden="true" />
+                        <span className="text-text-secondary">
+                          Lesson {lesson?.index ?? 1}
+                        </span>
+                      </div>
+
+                      <h3 className="mt-2 text-[20px] font-semibold leading-[1.3] tracking-[-0.02em] text-text-primary sm:text-[22px]">
+                        {lesson?.title || spotlightCourse?.title || "Your next lesson"}
+                      </h3>
+
+                      <p className="mt-1.5 text-[12.5px] text-text-muted">
+                        with {instructor}
+                        {spotlightCourse?.category?.name
+                          ? ` · ${spotlightCourse.category.name}`
+                          : ""}
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="text-[12px] text-text-muted">
+                          <span className="font-medium text-text-primary">
+                            {doneLessons} of {totalLessons}
+                          </span>{" "}
+                          lessons complete
+                        </p>
+                        <p className="text-[15px] font-semibold tabular-nums text-text-primary">
+                          {progress}%
+                        </p>
+                      </div>
+
+                      <ProgressBar value={progress} className="mt-2" />
+
+                      <div className="mt-5 flex flex-wrap items-center gap-2">
+                        <Button
+                          as={Link}
+                          to={
+                            spotlightCourse?._id
+                              ? `/learning/${spotlightCourse._id}`
+                              : "/learning"
+                          }
+                          size="sm"
+                          iconLeft={Play}
+                        >
+                          Resume lesson
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          iconLeft={Bookmark}
+                          loading={saveMutation.isPending}
+                          onClick={() => saveMutation.mutate(spotlight._id)}
+                          aria-pressed={Boolean(spotlight.saved)}
+                          className={
+                            spotlight.saved
+                              ? "!border-primary/30 !bg-sage !text-primary"
+                              : ""
+                          }
+                        >
+                          {spotlight.saved ? "Saved" : "Save"}
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          iconLeft={NotebookPen}
+                          onClick={() =>
+                            setNotesFor({
+                              enrollmentId: spotlight._id,
+                              lesson,
+                              courseTitle: spotlightCourse?.title,
+                            })
+                          }
+                          disabled={!lesson?._id}
+                        >
+                          Notes
+                        </Button>
+                      </div>
+                    </div>
                   </div>
 
-                  <ProgressBar value={spotlightProgress} className="mt-2.5" />
-
-                  <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-text-muted">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Clock size={12} aria-hidden="true" />
-                      {formatMinutes(spotlight.minutesRemaining)}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <BookOpen size={12} aria-hidden="true" />
-                      {spotlightCourse?.sectionCount ?? 0} sections
-                    </span>
-                    {currentLesson?.title && (
-                      <span className="truncate">
-                        Next:{" "}
-                        <span className="text-text-secondary">
-                          {currentLesson.title}
-                        </span>
-                      </span>
+                  {/* Media preview with duration pill */}
+                  <div className="relative m-3 min-h-[190px] overflow-hidden rounded-[18px] bg-forest-deep lg:m-4">
+                    {media ? (
+                      <img
+                        src={media}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="absolute inset-0">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(169,204,184,0.28),transparent_58%)]" />
+                        <div className="absolute -right-10 -top-8 h-40 w-40 rounded-full border border-white/10" />
+                        <div className="absolute -bottom-14 -left-10 h-48 w-48 rounded-full border border-white/10" />
+                        <div className="relative flex h-full flex-col justify-between p-5">
+                          <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-white/45">
+                            {spotlightCourse?.category?.name || "Track"}
+                          </span>
+                          <div>
+                            <p className="font-mono text-[34px] leading-none tracking-[-0.03em] text-white/20">
+                              M{String(
+                                lesson?.sectionOrder ?? lesson?.index ?? 1,
+                              ).padStart(2, "0")}
+                            </p>
+                            <p className="mt-2 line-clamp-2 text-[13px] font-medium leading-snug text-white/80">
+                              {lesson?.sectionTitle || spotlightCourse?.title}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     )}
+
+                    <span className="absolute bottom-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-forest-deep/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm">
+                      <Play size={10} aria-hidden="true" />
+                      {minutesLeftLabel(lesson?.duration ?? spotlight?.minutesRemaining)}
+                    </span>
                   </div>
                 </div>
               </article>
@@ -281,14 +431,9 @@ export const DashboardPage = () => {
               <EmptyState
                 icon={BookOpen}
                 title="No active track yet"
-                description="Enrol in a course and your next chapter will wait here."
+                description="Enrol in a course and your next lesson will wait here."
                 action={
-                  <Button
-                    as={Link}
-                    to="/courses"
-                    size="sm"
-                    iconRight={ArrowUpRight}
-                  >
+                  <Button as={Link} to="/courses" size="sm" iconRight={ArrowUpRight}>
                     Explore catalog
                   </Button>
                 }
@@ -296,128 +441,72 @@ export const DashboardPage = () => {
             )}
           </section>
 
-          {active.length > 1 && (
-            <section>
-              <RailSection
-                label="My tracks"
-                action={
-                  <Link
-                    to="/learning"
-                    className="inline-flex items-center gap-1 text-[12px] font-medium text-primary"
-                  >
-                    All tracks
-                    <ArrowUpRight size={12} aria-hidden="true" />
-                  </Link>
-                }
-              />
+          {/* Curated for you */}
+          <section>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h2 className="section-label">Curated for you</h2>
+              <Link
+                to="/courses"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-primary"
+              >
+                View all
+                <ArrowUpRight size={12} aria-hidden="true" />
+              </Link>
+            </div>
 
+            {coursesQuery.isLoading ? (
+              <CuratedSkeleton />
+            ) : curated.length > 0 ? (
               <div className="overflow-hidden rounded-[16px] border border-line bg-white">
                 <div className="divide-y divide-line">
-                  {active.slice(1, 5).map((enrollment) => {
-                    const course = courseOf(enrollment);
-                    const progress = Math.min(
-                      100,
-                      Math.max(0, Math.round(enrollment.progress || 0)),
-                    );
+                  {curated.map((course) => {
+                    const badge = badgeFor(course);
 
                     return (
                       <Link
-                        key={enrollment._id}
-                        to={
-                          course?._id ? `/learning/${course._id}` : "/learning"
-                        }
+                        key={course._id}
+                        to={`/courses/${course._id}`}
                         className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sage/60"
                       >
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-[13.5px] font-medium text-text-primary">
-                            {course?.title || "Course"}
-                          </p>
-                          <p className="mt-0.5 truncate text-[11.5px] text-text-muted">
-                            {enrollment.completedLessonsCount ?? 0} of{" "}
-                            {enrollment.totalLessons ??
-                              course?.lessonCount ??
-                              0}{" "}
-                            lessons
-                            {course?.createdBy?.fullname
-                              ? ` · ${course.createdBy.fullname}`
-                              : ""}
+                          <div className="flex items-center gap-2">
+                            <p className="truncate text-[13.5px] font-medium tracking-[-0.01em] text-text-primary">
+                              {course.title}
+                            </p>
+                            {badge && (
+                              <Badge
+                                size="sm"
+                                variant={badge === "POPULAR" ? "forest" : "sage"}
+                                className="shrink-0 uppercase tracking-[0.08em]"
+                              >
+                                {badge}
+                              </Badge>
+                            )}
+                          </div>
+
+                          <p className="mt-1 truncate text-[11.5px] text-text-muted">
+                            {[
+                              course.lessonCount
+                                ? `${course.lessonCount} lessons`
+                                : null,
+                              course.duration
+                                ? formatMinutes(course.duration)
+                                : null,
+                              course.category?.name,
+                            ]
+                              .filter(Boolean)
+                              .join(" · ")}
                           </p>
                         </div>
 
-                        <span className="hidden w-28 shrink-0 sm:block">
-                          <ProgressBar value={progress} size="sm" />
-                        </span>
-
-                        <span className="w-10 shrink-0 text-right text-[12px] font-medium tabular-nums text-text-secondary">
-                          {progress}%
-                        </span>
-
                         <ArrowRight
-                          size={14}
+                          size={15}
                           className="shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
                           aria-hidden="true"
                         />
                       </Link>
                     );
                   })}
-                </div>
-              </div>
-            </section>
-          )}
-
-          <section>
-            <RailSection
-              label="Curated for your path"
-              action={
-                <Link
-                  to="/courses"
-                  className="inline-flex items-center gap-1 text-[12px] font-medium text-primary"
-                >
-                  View all
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </Link>
-              }
-            />
-
-            {coursesQuery.isLoading ? (
-              <div className="space-y-2">
-                {[0, 1, 2].map((item) => (
-                  <Skeleton key={item} className="h-16 rounded-[12px]" />
-                ))}
-              </div>
-            ) : curated.length > 0 ? (
-              <div className="overflow-hidden rounded-[16px] border border-line bg-white">
-                <div className="divide-y divide-line">
-                  {curated.map((course) => (
-                    <Link
-                      key={course._id}
-                      to={`/courses/${course._id}`}
-                      className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sage/60"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13.5px] font-medium text-text-primary">
-                          {course.title}
-                        </p>
-                        <p className="mt-0.5 truncate text-[11.5px] text-text-muted">
-                          {[
-                            course.createdBy?.fullname,
-                            course.level,
-                            course.duration ? `${course.duration} min` : null,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ") || "Self-paced track"}
-                        </p>
-                      </div>
-
-                      <span className="hidden shrink-0 text-[11.5px] text-text-muted sm:block">
-                        {course.lessonCount ?? 0} lessons
-                      </span>
-
-                      <span className="shrink-0 text-[12px] font-medium text-primary">
-                        View
-                      </span>
-                    </Link>
-                  ))}
                 </div>
               </div>
             ) : (
@@ -435,198 +524,112 @@ export const DashboardPage = () => {
           </section>
         </div>
 
-        {/* 35% — context rail */}
-        <aside className="min-w-0 space-y-9 lg:sticky lg:top-[96px]">
-          <RailSection
-            label="Upcoming events"
-            action={
+        {/* Upcoming events rail */}
+        <aside className="min-w-0">
+          <section>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <h2 className="section-label">Upcoming events</h2>
               <Link
                 to="/events"
                 className="inline-flex items-center gap-1 text-[12px] font-medium text-primary"
               >
-                Calendar
+                Open calendar
                 <ArrowUpRight size={12} aria-hidden="true" />
               </Link>
-            }
-          >
+            </div>
+
             <div className="overflow-hidden rounded-[16px] border border-line bg-white">
               <div className="divide-y divide-line">
                 {eventsQuery.isLoading &&
                   [0, 1, 2].map((item) => (
                     <div key={item} className="px-4 py-4">
-                      <Skeleton className="h-10 w-full rounded-[12px]" />
+                      <Skeleton className="h-16 w-full rounded-[12px]" />
                     </div>
                   ))}
 
                 {!eventsQuery.isLoading &&
-                  events.map((event) => {
-                    const date = eventDate(event.date);
-                    const isRegistered = Boolean(
-                      event.isRegistered ||
-                        (rsvpMutation.data?.data?._id === event._id &&
-                          rsvpMutation.data?.data?.isRegistered),
-                    );
-
-                    return (
-                      <div
-                        key={event._id}
-                        className="flex items-start gap-3 px-4 py-3.5"
-                      >
-                        <span className="flex h-11 w-10 shrink-0 flex-col items-center justify-center rounded-[12px] bg-sage text-primary">
-                          <span className="text-[9px] font-medium leading-none">
-                            {date.weekday}
-                          </span>
-                          <span className="mt-0.5 text-[14px] font-semibold leading-none tracking-[-0.02em]">
-                            {date.day}
-                          </span>
-                        </span>
-
-                        <div className="min-w-0 flex-1">
-                          <Link
-                            to={`/events/${event._id}`}
-                            className="block truncate text-[12.5px] font-medium text-text-primary hover:text-primary"
-                          >
-                            {event.title}
-                          </Link>
-                          <p className="mt-0.5 truncate text-[11px] text-text-muted">
-                            {date.time}
-                            {event.host?.fullname
-                              ? ` · ${event.host.fullname}`
-                              : ""}
-                            {event.duration ? ` · ${event.duration} min` : ""}
-                          </p>
-
-                          {event.seatsLeft !== null &&
-                            event.seatsLeft !== undefined && (
-                              <p className="mt-0.5 text-[10.5px] text-text-muted">
-                                {event.seatsLeft} seats left
-                              </p>
-                            )}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => rsvpMutation.mutate(event._id)}
-                          disabled={rsvpMutation.isPending}
-                          className={[
-                            "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors disabled:opacity-60",
-                            isRegistered
-                              ? "bg-success-soft text-success"
-                              : "bg-sage text-primary hover:bg-sage-soft",
-                          ].join(" ")}
-                        >
-                          {isRegistered ? "Going" : "RSVP"}
-                        </button>
-                      </div>
-                    );
-                  })}
-
-                {!eventsQuery.isLoading && events.length === 0 && (
-                  <div className="px-4 py-5">
-                    <p className="inline-flex items-center gap-1.5 text-[12px] text-text-muted">
-                      <CalendarDays size={13} aria-hidden="true" />
-                      No upcoming sessions yet.
-                    </p>
+                  events.map((event) => (
                     <Link
-                      to="/events"
-                      className="mt-2 flex items-center gap-1 text-[12px] font-medium text-primary"
+                      key={event._id}
+                      to={`/events/${event._id}`}
+                      className="group block px-4 py-3.5 transition-colors hover:bg-sage/60"
                     >
-                      Browse the calendar
-                      <ArrowUpRight size={12} aria-hidden="true" />
+                      <p className="truncate text-[12.5px] font-medium text-text-primary group-hover:text-primary">
+                        {event.title}
+                      </p>
+
+                      <p className="mt-1 truncate text-[11px] text-text-muted">
+                        {[
+                          event.duration ? `${event.duration} min` : null,
+                          event.host?.fullname
+                            ? `with ${event.host.fullname}`
+                            : null,
+                          event.location,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+
+                      <span className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-sage px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.06em] text-primary">
+                        <CalendarDays size={10} aria-hidden="true" />
+                        {scheduleLabel(event.date)}
+                      </span>
                     </Link>
+                  ))}
+
+                {!eventsQuery.isLoading &&
+                  !eventsQuery.isError &&
+                  events.length === 0 && (
+                    <div className="px-4 py-5">
+                      <p className="inline-flex items-center gap-1.5 text-[12px] text-text-muted">
+                        <CalendarDays size={13} aria-hidden="true" />
+                        No upcoming sessions yet.
+                      </p>
+                      <Link
+                        to="/events"
+                        className="mt-2 flex items-center gap-1 text-[12px] font-medium text-primary"
+                      >
+                        Browse the calendar
+                        <ArrowUpRight size={12} aria-hidden="true" />
+                      </Link>
+                    </div>
+                  )}
+
+                {eventsQuery.isError && (
+                  <div className="px-4 py-5">
+                    <p className="text-[12px] text-text-muted">
+                      The calendar could not be loaded.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => eventsQuery.refetch()}
+                      className="mt-1.5 text-[12px] font-medium text-primary hover:underline"
+                    >
+                      Try again
+                    </button>
                   </div>
                 )}
               </div>
             </div>
 
-            {rsvpMutation.isError && (
-              <p className="mt-2 inline-flex items-center gap-1.5 text-[11.5px] text-error">
-                <RefreshCw size={11} aria-hidden="true" />
-                {rsvpMutation.error?.response?.data?.message ||
-                  "Could not update your RSVP."}
-              </p>
-            )}
-          </RailSection>
-
-          <RailSection
-            label="Quick tools"
-            action={
-              <span className="text-[11px] text-text-muted">
-                <kbd className="rounded border border-line bg-white px-1.5 py-0.5 font-mono text-[10px]">
-                  ⌘K
-                </kbd>
-              </span>
-            }
-          >
-            <div className="grid grid-cols-2 gap-2">
-              {tools.map((tool) => (
-                <Link
-                  key={tool.id}
-                  to={`/tools/${tool.id}`}
-                  className="group flex flex-col gap-1 rounded-[12px] border border-line bg-white px-3 py-3 transition-colors hover:border-primary/30 hover:bg-sage/60"
-                >
-                  <span className="truncate text-[12.5px] font-medium text-text-primary">
-                    {tool.name}
-                  </span>
-                  <span className="flex items-center justify-between text-[10.5px] text-text-muted">
-                    Open
-                    <ArrowUpRight
-                      size={11}
-                      className="transition-transform group-hover:-translate-y-0.5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </RailSection>
-
-          <section className="rounded-[16px] bg-sage px-5 py-5">
-            <h2 className="section-label">Weekly rhythm</h2>
-            <p className="mt-2 text-[13px] leading-[1.55] text-text-secondary">
-              {active.length > 0 ? (
-                <>
-                  <span className="font-medium text-text-primary">
-                    {lessonsComplete} lessons
-                  </span>{" "}
-                  completed across {active.length}{" "}
-                  {active.length === 1 ? "track" : "tracks"}
-                  {minutesRemaining > 0
-                    ? `, ${formatMinutes(minutesRemaining).replace(
-                        " left",
-                        " of material remaining",
-                      )}.`
-                    : "."}
-                </>
-              ) : (
-                <>
-                  Start a track and this rail will track your pace, lessons and
-                  remaining reading time.
-                </>
-              )}
-            </p>
-
-            {active.length > 0 && (
-              <div className="mt-4 flex items-center gap-2 text-[11.5px] text-text-muted">
-                <CheckCircle2
-                  size={13}
-                  className="text-success"
-                  aria-hidden="true"
-                />
-                {averageProgress}% average across active tracks
-              </div>
-            )}
-
             <Link
-              to="/learning"
-              className="mt-4 inline-flex items-center gap-1 text-[12px] font-medium text-primary"
+              to="/events"
+              className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-primary"
             >
-              <Sparkles size={12} aria-hidden="true" />
-              Open my learning
+              View all events
+              <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </section>
         </aside>
       </div>
+
+      <NotesDialog
+        open={Boolean(notesFor)}
+        onClose={() => setNotesFor(null)}
+        enrollmentId={notesFor?.enrollmentId}
+        lesson={notesFor?.lesson}
+        courseTitle={notesFor?.courseTitle}
+      />
     </div>
   );
 };

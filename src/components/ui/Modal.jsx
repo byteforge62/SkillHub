@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 
 import { cn } from "@/lib/cn";
@@ -61,8 +61,7 @@ export const Modal = ({
   if (typeof document === "undefined") return null;
 
   return createPortal(
-    <AnimatePresence>
-      {open && (
+    open && (
         <div className="fixed inset-0 z-[var(--z-modal)] flex items-start justify-center px-4 pb-8 pt-[12vh] sm:px-6">
           <motion.button
             type="button"
@@ -71,7 +70,6 @@ export const Modal = ({
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
             className="absolute inset-0 h-full w-full cursor-default bg-[#0f221a]/35 backdrop-blur-[3px]"
           />
@@ -84,7 +82,6 @@ export const Modal = ({
             aria-labelledby={title ? labelledBy || "modal-title" : undefined}
             initial={{ opacity: 0, y: prefersReduced ? 0 : -12, scale: prefersReduced ? 1 : 0.985 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: prefersReduced ? 0 : -8, scale: prefersReduced ? 1 : 0.99 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
             className={cn(
               "relative z-10 w-full overflow-hidden rounded-3xl border border-[color:var(--color-line)] bg-white shadow-[0_40px_100px_rgba(15,34,26,0.22)]",
@@ -132,8 +129,7 @@ export const Modal = ({
             )}
           </motion.div>
         </div>
-      )}
-    </AnimatePresence>,
+    ),
     document.body,
   );
 };
