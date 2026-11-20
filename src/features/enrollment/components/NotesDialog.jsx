@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Button from "@/components/ui/Button";
@@ -10,6 +10,7 @@ import {
   getLessonNote,
   saveLessonNote,
 } from "@/features/enrollment/api/enrollmentApi";
+import { usePreferences } from "@/app/providers/PreferencesProvider";
 
 const MAX_LENGTH = 5000;
 
@@ -26,7 +27,10 @@ export const NotesDialog = ({
 }) => {
   const lessonId = lesson?._id;
   const queryClient = useQueryClient();
+  const { settings } = usePreferences();
   const [content, setContent] = useState("");
+  const lastSavedRef = useRef("");
+  const autosaveEnabled = settings.notesAutosave !== false;
 
   const noteQuery = useQuery({
     queryKey: ["lesson-note", enrollmentId, lessonId],
@@ -36,7 +40,9 @@ export const NotesDialog = ({
 
   useEffect(() => {
     if (!open) return;
-    setContent(noteQuery.data?.data?.content ?? "");
+    const saved = noteQuery.data?.data?.content ?? "";
+    setContent(saved);
+    lastSavedRef.current = saved;
   }, [open, noteQuery.data]);
 
   const saveMutation = useMutation({
@@ -47,6 +53,21 @@ export const NotesDialog = ({
       });
     },
   });
+
+  // Autosave follows the account preference; the explicit Save button always
+  // remains available so the user is never trapped by a disabled setting.
+  useEffect(() => {
+    if (!open || !autosaveEnabled || !lessonId || noteQuery.isLoading) return;
+    if (content === lastSavedRef.current) return;
+
+    const timer = setTimeout(() => {
+      lastSavedRef.current = content;
+      saveMutation.mutate();
+    }, 1400);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, open, autosaveEnabled, lessonId, noteQuery.isLoading]);
 
   const close = () => {
     saveMutation.reset();
@@ -98,7 +119,11 @@ export const NotesDialog = ({
               {saveMutation.isError
                 ? saveMutation.error?.response?.data?.message ||
                   "The note could not be saved."
-                : "Saved to this lesson only."}
+                : saveMutation.isPending
+                  ? "Saving…"
+                  : autosaveEnabled
+                    ? "Saved automatically to this lesson."
+                    : "Saved to this lesson only."}
             </span>
             <span className="tabular-nums">
               {content.length}/{MAX_LENGTH}

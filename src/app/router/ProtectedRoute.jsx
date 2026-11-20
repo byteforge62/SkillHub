@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import useCurrentUser from "@/features/auth/hooks/useCurrentUser";
+import { PreferencesProvider } from "@/app/providers/PreferencesProvider";
 
 const ProtectedRoute = () => {
   const location = useLocation();
@@ -24,7 +25,11 @@ const ProtectedRoute = () => {
     );
   }
 
-  return <Outlet />;
+  return (
+    <PreferencesProvider>
+      <Outlet />
+    </PreferencesProvider>
+  );
 };
 
 export default ProtectedRoute;

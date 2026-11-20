@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowRight,
   BookOpen,
   CheckCircle2,
   ChevronLeft,
@@ -12,11 +13,13 @@ import {
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import CourseThumbnail from "@/components/ui/CourseThumbnail";
 import Logo from "@/components/ui/Logo";
 import ProgressBar from "@/components/ui/ProgressBar";
 import Skeleton from "@/components/ui/Skeleton";
 
 import { LessonContent } from "../components/LessonContent";
+import { usePreferences } from "@/app/providers/PreferencesProvider";
 
 import { getCourseById } from "@/features/courses/api/courseApi";
 import { getMyEnrollments } from "@/features/enrollment/api/enrollmentApi";
@@ -37,6 +40,7 @@ const LearningWorkspace = ({ courseId }) => {
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
   const completeLessonMutation = useCompleteLesson();
+  const { settings } = usePreferences();
 
   const {
     data: courseData,
@@ -107,6 +111,12 @@ const LearningWorkspace = ({ courseId }) => {
     ) ?? false;
   const completionMutationIsCurrent =
     completeLessonMutation.variables?.lessonId === currentLessonId;
+
+  const sectionLessons = Array.isArray(lessonsData?.data) ? lessonsData.data : [];
+  const currentLessonIndex = selectedLesson
+    ? sectionLessons.findIndex((lesson) => lesson._id === selectedLesson._id)
+    : -1;
+  const nextLesson = currentLessonIndex >= 0 ? sectionLessons[currentLessonIndex + 1] : null;
 
   if (courseLoading || enrollmentLoading || sectionsLoading) {
     return (
@@ -194,6 +204,14 @@ const LearningWorkspace = ({ courseId }) => {
             <Logo markClassName="h-7 w-7" showWordmark={false} />
           </Link>
 
+          <CourseThumbnail
+            imageUrl={course.imageUrl}
+            title={course.title}
+            className="hidden h-9 w-14 shrink-0 sm:block"
+            rounded="rounded-lg"
+            iconSize={16}
+          />
+
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted">
               Lesson workspace
@@ -223,6 +241,19 @@ const LearningWorkspace = ({ courseId }) => {
         >
           {!selectedLesson && (
             <Card padded={false} className="overflow-hidden lg:sticky lg:top-[92px]">
+              <CourseThumbnail
+                imageUrl={course.imageUrl}
+                title={course.title}
+                categoryName={
+                  typeof course.category === "object"
+                    ? course.category?.name
+                    : course.category
+                }
+                className="h-24 w-full"
+                rounded="rounded-none"
+                iconSize={20}
+              />
+
               <div className="border-b border-border-subtle px-5 py-5">
                 <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-primary">
                   Course content
@@ -414,6 +445,7 @@ const LearningWorkspace = ({ courseId }) => {
                       </p>
                     </div>
 
+                    <div className="flex shrink-0 items-center gap-2">
                     <Button
                       size="sm"
                       variant={isLessonCompleted ? "secondary" : "primary"}
@@ -441,6 +473,21 @@ const LearningWorkspace = ({ courseId }) => {
                             ? "Retry saving progress"
                             : "Mark lesson complete"}
                     </Button>
+
+                    {nextLesson && settings.autoplayNextLesson !== false && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        iconRight={ArrowRight}
+                        onClick={() => {
+                          completeLessonMutation.reset();
+                          setSelectedLesson(nextLesson);
+                        }}
+                      >
+                        Next
+                      </Button>
+                    )}
+                    </div>
                   </div>
 
                   {completionMutationIsCurrent && completeLessonMutation.isError && (

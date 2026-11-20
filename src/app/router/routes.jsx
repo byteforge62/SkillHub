@@ -21,6 +21,12 @@ import { CourseDetailsPage } from "@/features/courses/pages/CourseDetailsPage";
 import { MyLearningPage } from "@/features/enrollment/pages/MyLearningPage";
 import { LearningPage } from "@/features/learning/pages/LearningPage";
 
+import { StudioPage } from "@/features/studio/pages/StudioPage";
+import {
+  CourseEditorPage,
+  NewCoursePage,
+} from "@/features/studio/pages/CourseEditorPage";
+
 import { ToolsPage } from "@/features/tools/pages/ToolsPage";
 import { ToolRoute } from "@/features/tools/toolRoutes";
 
@@ -88,6 +94,9 @@ const router = createHashRouter([
           { path: "/courses", element: <CoursesPage /> },
           { path: "/courses/:courseId", element: <CourseDetailsPage /> },
           { path: "/learning", element: <MyLearningPage /> },
+          { path: "/studio", element: <StudioPage /> },
+          { path: "/studio/new", element: <NewCoursePage /> },
+          { path: "/studio/:courseId", element: <CourseEditorPage /> },
           { path: "/tools", element: <ToolsPage /> },
           { path: "/tools/:toolId", element: <ToolRoute /> },
           { path: "/events", element: <EventsPage /> },

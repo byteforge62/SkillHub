@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, BookOpen, RefreshCw, Sparkles } from "lucide-
 
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import CourseThumbnail from "@/components/ui/CourseThumbnail";
 import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import ProgressBar from "@/components/ui/ProgressBar";
@@ -170,8 +171,29 @@ export const MyLearningPage = () => {
                     return (
                       <div
                         key={enrollment._id}
-                        className="flex flex-col gap-4 px-5 py-4 transition-colors hover:bg-sage/60 sm:flex-row sm:items-center"
+                        className="course-row flex flex-col gap-4 px-4 py-4 transition-colors hover:bg-sage/60 sm:flex-row sm:items-center sm:px-5"
                       >
+                        <CourseThumbnail
+                          imageUrl={course?.imageUrl}
+                          title={course?.title || "Course"}
+                          categoryName={
+                            typeof course?.category === "object"
+                              ? course.category?.name
+                              : course?.category
+                          }
+                          className="h-20 w-full shrink-0 sm:h-16 sm:w-24"
+                          rounded="rounded-xl"
+                        >
+                          {!isDropped && (
+                            <span className="absolute inset-x-0 bottom-0 h-1 bg-black/20">
+                              <span
+                                className="block h-full bg-white/85"
+                                style={{ width: `${progress}%` }}
+                              />
+                            </span>
+                          )}
+                        </CourseThumbnail>
+
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             <h2 className="truncate text-[14px] font-semibold tracking-[-0.01em] text-text-primary">

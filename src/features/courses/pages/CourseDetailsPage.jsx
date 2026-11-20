@@ -14,6 +14,7 @@ import {
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import CourseThumbnail from "@/components/ui/CourseThumbnail";
 import EmptyState from "@/components/ui/EmptyState";
 import PageHeader from "@/components/ui/PageHeader";
 import Skeleton from "@/components/ui/Skeleton";
@@ -190,19 +191,13 @@ export const CourseDetailsPage = () => {
         </div>
 
         <Card className="lg:sticky lg:top-[92px]">
-          <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-sage">
-            {course.imageUrl ? (
-              <img
-                src={course.imageUrl}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="flex h-full w-full items-center justify-center text-primary/50">
-                <BookOpen size={36} strokeWidth={1.4} aria-hidden="true" />
-              </span>
-            )}
-          </div>
+          <CourseThumbnail
+            imageUrl={course.imageUrl}
+            title={course.title}
+            categoryName={categoryName}
+            className="aspect-[16/10] w-full"
+            iconSize={34}
+          />
 
           <div className="mt-5 flex items-end justify-between gap-4">
             <div>

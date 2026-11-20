@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { loginRequest } from "@/features/auth/api/authApi";
 import { setAccessToken, initializeAccessToken } from "@/features/auth/utils/tokenManager";
+import { getDefaultHome } from "@/features/profile/api/profileApi";
 
 const useLogin = () => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const useLogin = () => {
     return useMutation({
         mutationFn: loginRequest,
 
-        onSuccess: ({ data, message }) => {
+        onSuccess: async ({ data, message }) => {
             setAccessToken(data.accessToken);
 
             queryClient.setQueryData(
@@ -27,9 +28,17 @@ const useLogin = () => {
 
             if (data.user.role === "admin") {
                 navigate("/admin");
-            } else {
-                navigate("/dashboard");
+                return;
             }
+
+            // Respect the account's configured landing page without blocking
+            // on a slow settings request.
+            const defaultHome = await getDefaultHome(data.user._id);
+            const target = ["learning", "courses", "studio"].includes(defaultHome)
+                ? `/${defaultHome}`
+                : "/dashboard";
+
+            navigate(target);
         },
 
         onError: (error) => {

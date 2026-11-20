@@ -6,6 +6,7 @@ import {
   CalendarDays,
   GraduationCap,
   LayoutDashboard,
+  PenLine,
   Settings,
   User,
   Users,
@@ -23,6 +24,7 @@ const groups = [
       { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard, end: true },
       { label: "My learning", to: "/learning", icon: BookOpen },
       { label: "Courses", to: "/courses", icon: GraduationCap },
+      { label: "Creator studio", to: "/studio", icon: PenLine },
     ],
   },
   {
@@ -55,7 +57,7 @@ export const Sidebar = ({ open = false, onClose }) => (
 
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[264px] p-3 transition-transform duration-300 ease-out lg:translate-x-0",
+        "app-sidebar fixed inset-y-0 left-0 z-50 w-[264px] p-3 transition-transform duration-300 ease-out lg:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full",
       )}
     >
@@ -85,7 +87,7 @@ export const Sidebar = ({ open = false, onClose }) => (
         >
           {groups.map((group) => (
             <div key={group.label} className="mb-5">
-              <p className="px-3 pb-1.5 pt-1 text-[11px] font-medium text-text-muted">
+              <p className="sidebar-section-label px-3 pb-1.5 pt-1 text-[11px] font-medium text-text-muted">
                 {group.label}
               </p>
 
@@ -125,7 +127,7 @@ export const Sidebar = ({ open = false, onClose }) => (
                             className={isActive ? "text-white" : "text-text-muted"}
                           />
 
-                          {item.label}
+                          <span className="sidebar-label">{item.label}</span>
                         </>
                       )}
                     </NavLink>
@@ -136,7 +138,7 @@ export const Sidebar = ({ open = false, onClose }) => (
           ))}
         </nav>
 
-        <div className="shrink-0 p-3">
+        <div className="sidebar-footer shrink-0 p-3">
           <Link
             to="/tools"
             onClick={onClose}

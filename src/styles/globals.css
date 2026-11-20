@@ -410,6 +410,53 @@ video {
   transition-duration: 0.01ms !important;
 }
 
+/* ------------------------------------------------------------
+   Account preferences (applied by PreferencesProvider)
+   ------------------------------------------------------------ */
+
+[data-font="sm"] body {
+  font-size: 15px;
+}
+
+[data-font="lg"] body {
+  font-size: 17px;
+}
+
+[data-compact="true"] .app-main > main {
+  padding-top: 1rem;
+}
+
+[data-compact="true"] .course-row {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+/* Compact sidebar: icons only, labels appear on hover for discoverability. */
+@media (min-width: 1024px) {
+  [data-sidebar="compact"] .app-sidebar {
+    width: 88px;
+  }
+
+  [data-sidebar="compact"] .app-main {
+    padding-left: 88px;
+  }
+
+  [data-sidebar="compact"] .sidebar-label,
+  [data-sidebar="compact"] .sidebar-section-label {
+    display: none;
+  }
+
+  [data-sidebar="compact"] .sidebar-footer {
+    display: none;
+  }
+
+  [data-sidebar="compact"] .app-sidebar nav a {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 @media print {
   .no-print {
     display: none !important;

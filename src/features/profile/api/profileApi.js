@@ -23,3 +23,17 @@ export const updateProfileSettings = async ({ userId, settings }) => {
   const response = await apiClient.put(`/user/${userId}/settings`, settings);
   return response.data;
 };
+
+export const resetProfileSettings = async (userId) => {
+  const response = await apiClient.post(`/user/${userId}/settings/reset`);
+  return response.data;
+};
+
+export const getDefaultHome = async (userId) => {
+  try {
+    const response = await apiClient.get(`/user/${userId}/settings`);
+    return response.data?.data?.defaultHome || "dashboard";
+  } catch {
+    return "dashboard";
+  }
+};

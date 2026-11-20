@@ -12,6 +12,7 @@ import {
   Play,
   RefreshCw,
   Search,
+  Target,
 } from "lucide-react";
 
 import Badge from "@/components/ui/Badge";
@@ -26,6 +27,7 @@ import { toggleSavedEnrollment } from "@/features/enrollment/api/enrollmentApi";
 import { NotesDialog } from "@/features/enrollment/components/NotesDialog";
 import useCourses from "@/features/courses/hooks/useCourses";
 import { getEvents } from "@/features/events/api/eventsApi";
+import { usePreferences } from "@/app/providers/PreferencesProvider";
 
 const greetingFor = (hour) => {
   if (hour < 12) return "Good morning";
@@ -526,6 +528,8 @@ export const DashboardPage = () => {
 
         {/* Upcoming events rail */}
         <aside className="min-w-0">
+          <WeeklyGoalCard />
+
           <section>
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <h2 className="section-label">Upcoming events</h2>
@@ -631,6 +635,46 @@ export const DashboardPage = () => {
         courseTitle={notesFor?.courseTitle}
       />
     </div>
+  );
+};
+
+
+/**
+ * The weekly goal comes straight from the account preferences, so changing it
+ * in Settings is reflected here without a separate request.
+ */
+const WeeklyGoalCard = () => {
+  const { settings, isLoading } = usePreferences();
+  const minutes = Number(settings.weeklyGoalMinutes) || 180;
+  const hours = Math.round((minutes / 60) * 10) / 10;
+  const perDay = Math.round(minutes / 5);
+
+  return (
+    <section className="mb-8 rounded-[16px] bg-sage px-5 py-4">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="section-label inline-flex items-center gap-1.5">
+          <Target size={12} strokeWidth={2} aria-hidden="true" />
+          Weekly goal
+        </h2>
+        <Link
+          to="/profile/settings"
+          className="text-[11.5px] font-medium text-primary hover:underline"
+        >
+          Adjust
+        </Link>
+      </div>
+
+      <p className="mt-2 flex items-baseline gap-1.5">
+        <span className="text-[26px] font-bold leading-none tracking-[-0.03em] text-primary">
+          {isLoading ? "—" : hours}
+        </span>
+        <span className="text-[12px] text-text-secondary">hours per week</span>
+      </p>
+
+      <p className="mt-2 text-[11.5px] leading-5 text-text-secondary">
+        Roughly {perDay} minutes on five days keeps the track moving.
+      </p>
+    </section>
   );
 };
 
